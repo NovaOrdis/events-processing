@@ -16,11 +16,15 @@
 
 package io.novaordis.events.processing.describe;
 
-import io.novaordis.events.processing.Procedure;
+import io.novaordis.events.processing.MockEvent;
 import io.novaordis.events.processing.ProcedureTest;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -43,11 +47,46 @@ public class DescribeTest extends ProcedureTest {
     @Test
     public void commandLineLabel() throws Exception {
 
-        Procedure p = getProcedureToTest();
+        Describe d = getProcedureToTest();
 
-        String cll = p.getCommandLineLabel();
+        String cll = d.getCommandLineLabel();
 
         assertEquals(Describe.COMMAND_LINE_LABEL, cll);
+    }
+
+    @Test
+    public void initializedInstance() throws Exception {
+
+        Describe d = getProcedureToTest();
+
+        try {
+
+            d.process(new MockEvent());
+            fail("should have thrown exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+
+            assertTrue(msg.contains("incorrectly initialized"));
+            assertTrue(msg.contains("no output stream"));
+        }
+    }
+
+    @Test
+    public void happyPath() throws Exception {
+
+        Describe d = getProcedureToTest();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        d.setOutputStream(baos);
+
+        MockEvent me = new MockEvent();
+
+        d.process(me);
+
+        fail("return here, check expected output");
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -55,7 +94,7 @@ public class DescribeTest extends ProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Procedure getProcedureToTest() throws Exception {
+    protected Describe getProcedureToTest() throws Exception {
 
         return new Describe();
     }

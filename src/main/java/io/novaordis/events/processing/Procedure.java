@@ -16,7 +16,13 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.events.api.event.Event;
+
 /**
+ * The implementations must have a public no-argument constructor, as they will be instantiated via reflection.
+ *
+ * @see ProcedureFactory#find(String)
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
@@ -33,5 +39,11 @@ public interface Procedure {
      * case sensitive.
      */
     String getCommandLineLabel();
+
+    /**
+     * Process an incoming event. If corresponding output events are produced, they will be offered for consumption
+     * though means particular to a specific implementation.
+     */
+    void process(Event in) throws EventProcessingException;
 
 }

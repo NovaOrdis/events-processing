@@ -16,16 +16,14 @@
 
 package io.novaordis.events.processing;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public abstract class ProcedureTest {
+public class MockOutputStream extends OutputStream {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -35,31 +33,19 @@ public abstract class ProcedureTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    // OutputStream overrides ------------------------------------------------------------------------------------------
+
+    @Override
+    public void write(int b) throws IOException {
+
+        throw new RuntimeException("write() NOT YET IMPLEMENTED");
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
-
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void nonNullCommandLineLabel() throws Exception {
-
-        Procedure p = getProcedureToTest();
-        String cll = p.getCommandLineLabel();
-        assertNotNull(cll);
-    }
-
-    @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        fail("Return here");
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract Procedure getProcedureToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

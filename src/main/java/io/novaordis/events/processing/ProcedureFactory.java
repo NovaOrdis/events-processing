@@ -16,20 +16,25 @@
 
 package io.novaordis.events.processing;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public abstract class ProcedureTest {
+public class ProcedureFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * Instantiates the procedure with the given command line label.
+     *
+     * @return null if no such procedure is found in classpath.
+     */
+    public static Procedure find(String commandLineLabel) {
+
+        throw new RuntimeException("NYE");
+    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
@@ -37,29 +42,9 @@ public abstract class ProcedureTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void nonNullCommandLineLabel() throws Exception {
-
-        Procedure p = getProcedureToTest();
-        String cll = p.getCommandLineLabel();
-        assertNotNull(cll);
-    }
-
-    @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        fail("Return here");
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract Procedure getProcedureToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

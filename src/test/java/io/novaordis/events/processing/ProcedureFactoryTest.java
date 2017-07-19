@@ -18,14 +18,13 @@ package io.novaordis.events.processing;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public abstract class ProcedureTest {
+public class ProcedureFactoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -40,26 +39,15 @@ public abstract class ProcedureTest {
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
-    public void nonNullCommandLineLabel() throws Exception {
+    public void noSuchProcedure() throws Exception {
 
-        Procedure p = getProcedureToTest();
-        String cll = p.getCommandLineLabel();
-        assertNotNull(cll);
-    }
-
-    @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        fail("Return here");
+        Procedure p = ProcedureFactory.find("I-am-pretty-sure-there-is-no-such-procedure");
+        assertNull(p);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract Procedure getProcedureToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 
