@@ -58,7 +58,7 @@ public class ProcedureFactory {
         }
         else {
 
-            log.warn("unknown command line label: \"" + commandLineLabel + "\"");
+            log.debug("unknown command line label: \"" + commandLineLabel + "\"");
         }
 
         return null;
