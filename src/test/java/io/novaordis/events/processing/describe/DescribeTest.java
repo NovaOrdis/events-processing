@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,14 @@ public class DescribeTest extends ProcedureTest {
 
         Describe d = (Describe)ProcedureFactory.find(Describe.COMMAND_LINE_LABEL);
         assertNotNull(d);
+
+        //
+        // the instance must come with default configuration that should allow it to work correctly (albeit in a
+        // simplest possible case)
+        //
+
+        OutputStream os = d.getOutputStream();
+        assertNotNull(os);
     }
 
     // Tests -----------------------------------------------------------------------------------------------------------

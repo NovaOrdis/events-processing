@@ -33,7 +33,8 @@ public class ProcedureFactory {
     // Static ----------------------------------------------------------------------------------------------------------
 
     /**
-     * Instantiates the procedure with the given command line label.
+     * Instantiates the procedure with the given command line label. The instance must come with default configuration
+     * that should allow it to work correctly (albeit in the simplest possible case)
      *
      * @return null if no such procedure is found in classpath.
      */
@@ -46,7 +47,14 @@ public class ProcedureFactory {
 
         if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
-            return new Describe();
+            Describe d = new Describe();
+
+            //
+            // unless configured otherwise, write to System.out
+            //
+
+            d.setOutputStream(System.out);
+            return d;
         }
         else {
 

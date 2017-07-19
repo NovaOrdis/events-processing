@@ -139,6 +139,7 @@ public class Describe extends ProcedureBase {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private OutputStream os;
     private BufferedWriter bw;
 
     private Set<String> signatures;
@@ -199,6 +200,20 @@ public class Describe extends ProcedureBase {
             throw new IllegalArgumentException("null output stream");
         }
 
+        if (this.os != null) {
+
+            try {
+
+                this.os.close();
+            }
+            catch(IOException e) {
+
+                String msg = "failed to close the current writer";
+                log.warn(msg);
+                log.debug(msg, e);
+            }
+        }
+
         if (bw != null) {
 
             try {
@@ -213,8 +228,16 @@ public class Describe extends ProcedureBase {
             }
         }
 
-        bw = new BufferedWriter(new OutputStreamWriter(os));
+        this.os = os;
+        this.bw = new BufferedWriter(new OutputStreamWriter(os));
+    }
 
+    /**
+     * May return null.
+     */
+    public OutputStream getOutputStream() {
+
+        return os;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
