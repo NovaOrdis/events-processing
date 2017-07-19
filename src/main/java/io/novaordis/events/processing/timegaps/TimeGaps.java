@@ -1,0 +1,159 @@
+/*
+ * Copyright (c) 2017 Nova Ordis LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.novaordis.events.processing.timegaps;
+
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.TimedEvent;
+import io.novaordis.events.processing.EventProcessingException;
+import io.novaordis.events.processing.ProcedureBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
+/**
+ * @author Ovidiu Feodorov <ovidiu@novaordis.com>
+ * @since 7/19/17
+ */
+public class TimeGaps extends ProcedureBase {
+
+    // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(TimeGaps.class);
+
+    public static final String COMMAND_LINE_LABEL = "time-gaps";
+
+    // Static ----------------------------------------------------------------------------------------------------------
+
+    // Attributes ------------------------------------------------------------------------------------------------------
+
+    private OutputStream os;
+    private BufferedWriter bw;
+
+    private TimedEvent previous;
+
+    // Constructors ----------------------------------------------------------------------------------------------------
+
+    public TimeGaps() {
+    }
+
+    // Procedure implementation ----------------------------------------------------------------------------------------
+
+    @Override
+    public String getCommandLineLabel() {
+
+        return COMMAND_LINE_LABEL;
+    }
+
+    @Override
+    public void process(Event in) throws EventProcessingException {
+
+        invocationCount ++;
+
+        if (bw == null) {
+
+            throw new IllegalStateException("incorrectly initialized instance: no output stream");
+        }
+
+        if (!(in instanceof TimedEvent)) {
+
+            return;
+        }
+
+        TimedEvent te = (TimedEvent)in;
+
+        Long t = te.getTime();
+
+
+        if (previous != null) {
+
+            Long pt = previous.getTime();
+
+            long delta = t - pt;
+
+            System.out.println(delta);
+        }
+
+
+
+
+
+    }
+
+    // Public ----------------------------------------------------------------------------------------------------------
+
+    public void setOutputStream(OutputStream os) {
+
+        if (os == null) {
+
+            throw new IllegalArgumentException("null output stream");
+        }
+
+        if (this.os != null) {
+
+            try {
+
+                this.os.close();
+            }
+            catch(IOException e) {
+
+                String msg = "failed to close the current writer";
+                log.warn(msg);
+                log.debug(msg, e);
+            }
+        }
+
+        if (bw != null) {
+
+            try {
+
+                bw.close();
+            }
+            catch(IOException e) {
+
+                String msg = "failed to close the current writer";
+                log.warn(msg);
+                log.debug(msg, e);
+            }
+        }
+
+        this.os = os;
+        this.bw = new BufferedWriter(new OutputStreamWriter(os));
+    }
+
+    /**
+     * May return null.
+     */
+    public OutputStream getOutputStream() {
+
+        return os;
+    }
+
+    // Package protected -----------------------------------------------------------------------------------------------
+
+    // Protected -------------------------------------------------------------------------------------------------------
+
+    // Static Protected ------------------------------------------------------------------------------------------------
+
+    // Private ---------------------------------------------------------------------------------------------------------
+
+    // Inner classes ---------------------------------------------------------------------------------------------------
+
+}

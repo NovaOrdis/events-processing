@@ -17,6 +17,7 @@
 package io.novaordis.events.processing;
 
 import io.novaordis.events.processing.describe.Describe;
+import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,17 @@ public class ProcedureFactory {
 
             d.setOutputStream(System.out);
             return d;
+        }
+        else if (TimeGaps.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            TimeGaps t = new TimeGaps();
+
+            //
+            // unless configured otherwise, write to System.out
+            //
+
+            t.setOutputStream(System.out);
+            return t;
         }
         else {
 
