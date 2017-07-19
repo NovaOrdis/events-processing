@@ -97,7 +97,14 @@ public class TimeGaps extends ProcedureBase {
 
                 long delta = Math.abs(t - pt);
 
-                if (delta > maxTimeGap) {
+                if (delta > 3600 * 1000L) {
+
+                    //
+                    // ignore
+                    //
+                    log.warn("ignored delta " + delta + " ms");
+                }
+                else if (delta > maxTimeGap) {
 
                     maxTimeGap = delta;
                     maxTimeGapFirst = previous;
