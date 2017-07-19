@@ -16,19 +16,15 @@
 
 package io.novaordis.events.processing;
 
-import org.junit.Test;
+import io.novaordis.events.api.event.Event;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public abstract class ProcedureTest {
+public abstract class ProcedureBase implements Procedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -36,54 +32,32 @@ public abstract class ProcedureTest {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    protected volatile long invocationCount;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    // Procedure implementation ----------------------------------------------------------------------------------------
+
+    @Override
+    public void process(List<Event> events) throws EventProcessingException {
+
+        for(Event e: events) {
+
+            process(e);
+        }
+    }
+
+    @Override
+    public long getInvocationCount() {
+
+        return invocationCount;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
-
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    @Test
-    public abstract void procedureFactoryFind() throws Exception;
-
-    @Test
-    public void nonNullCommandLineLabel() throws Exception {
-
-        Procedure p = getProcedureToTest();
-        String cll = p.getCommandLineLabel();
-        assertNotNull(cll);
-    }
-
-    @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        // public no-argument constructor
-        Constructor c = p.getClass().getConstructor();
-
-        assertNotNull(c);
-    }
-
-    @Test
-    public void processListOfEvents() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        assertEquals(0, p.getInvocationCount());
-
-        MockEvent me = new MockEvent();
-        MockEvent me2 = new MockEvent();
-
-        p.process(Arrays.asList(me, me2));
-
-        assertEquals(2, p.getInvocationCount());
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract Procedure getProcedureToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

@@ -82,7 +82,7 @@ public class DescribeTest extends ProcedureTest {
     @Test
     public void initializedInstance() throws Exception {
 
-        Describe d = getProcedureToTest();
+        Describe d = new Describe();
 
         try {
 
@@ -321,7 +321,9 @@ public class DescribeTest extends ProcedureTest {
     @Override
     protected Describe getProcedureToTest() throws Exception {
 
-        return new Describe();
+        Describe d = new Describe();
+        d.setOutputStream(System.out);
+        return d;
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

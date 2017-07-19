@@ -21,7 +21,7 @@ import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.Procedure;
+import io.novaordis.events.processing.ProcedureBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import java.util.Set;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class Describe implements Procedure {
+public class Describe extends ProcedureBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -101,6 +101,7 @@ public class Describe implements Procedure {
 
                     signature += yamlStandard ? "" : "{";
                     List<String> keys = new ArrayList<>();
+                    //noinspection Convert2streamapi
                     for(Object o: ((MapProperty)p).getMap().keySet()) {
                         keys.add(o.toString());
                     }
@@ -159,6 +160,8 @@ public class Describe implements Procedure {
 
     @Override
     public void process(Event in) throws EventProcessingException {
+
+        invocationCount ++;
 
         if (bw == null) {
 
@@ -221,9 +224,11 @@ public class Describe implements Procedure {
     // Static Protected ------------------------------------------------------------------------------------------------
 
     static String indentation(int level) {
+
         //
         // two spaces per level
         //
+
         if (level == 0) {
             return "";
         }
