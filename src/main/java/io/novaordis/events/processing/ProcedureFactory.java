@@ -16,6 +16,10 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.events.processing.describe.Describe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -23,6 +27,8 @@ package io.novaordis.events.processing;
 public class ProcedureFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(ProcedureFactory.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -33,7 +39,21 @@ public class ProcedureFactory {
      */
     public static Procedure find(String commandLineLabel) {
 
-        throw new RuntimeException("NYE");
+        //
+        // TODO: we currently only return the procedures we know of, but this is a hack, use an annotation and
+        // annotation scanning instead.
+        //
+
+        if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            return new Describe();
+        }
+        else {
+
+            log.warn("unknown command line label: \"" + commandLineLabel + "\"");
+        }
+
+        return null;
     }
 
     // Attributes ------------------------------------------------------------------------------------------------------

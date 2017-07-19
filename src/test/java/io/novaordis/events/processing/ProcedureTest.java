@@ -18,8 +18,9 @@ package io.novaordis.events.processing;
 
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -40,6 +41,9 @@ public abstract class ProcedureTest {
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
+    public abstract void procedureFactoryFind() throws Exception;
+
+    @Test
     public void nonNullCommandLineLabel() throws Exception {
 
         Procedure p = getProcedureToTest();
@@ -52,7 +56,10 @@ public abstract class ProcedureTest {
 
         Procedure p = getProcedureToTest();
 
-        fail("Return here");
+        // public no-argument constructor
+        Constructor c = p.getClass().getConstructor();
+
+        assertNotNull(c);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

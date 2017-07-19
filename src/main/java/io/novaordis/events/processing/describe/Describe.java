@@ -17,6 +17,9 @@
 package io.novaordis.events.processing.describe;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.MapProperty;
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.Procedure;
 import org.slf4j.Logger;
@@ -26,7 +29,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A procedure that looks at a stream of incoming events, and writes to the given OutputStream a description of distinct
@@ -43,15 +52,101 @@ public class Describe implements Procedure {
 
     public static final String COMMAND_LINE_LABEL = "describe";
 
+    public static final boolean YAML = true;
+
+    public static final boolean YAML_INLINE = false;
+
     // Static ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * @param yamlStandard if true, the output will use standard YAML notation, otherwise will use YAML in-line (
+     *                     brackets for lists, braces for Maps) notation.
+     */
+    public static String getSignature(Event event, boolean yamlStandard) {
+
+        String signature = "";
+        int level = 0;
+
+        Class c = event.getClass();
+
+        signature += c.getSimpleName() + (yamlStandard ? "" : "[");
+
+        level++;
+
+        if (event instanceof TimedEvent) {
+
+            signature += (yamlStandard ? "\n" + indentation(level) : "") + "timestamp";
+        }
+
+        Set<Property> properties = event.getProperties();
+
+        if (!properties.isEmpty()) {
+
+            signature += yamlStandard ? "" : ", ";
+
+            List<Property> sortedProperties = new ArrayList<>(properties);
+            Collections.sort(sortedProperties);
+
+            for(Iterator<Property> i = sortedProperties.iterator(); i.hasNext(); ) {
+
+                Property p = i.next();
+                Class type = p.getType();
+
+                signature += (yamlStandard ? "\n" + indentation(level) : "") +
+                        p.getName() + "(" + type.getSimpleName() + ")";
+
+                if (Map.class.equals(type)) {
+
+                    level++;
+
+                    signature += yamlStandard ? "" : "{";
+                    List<String> keys = new ArrayList<>();
+                    for(Object o: ((MapProperty)p).getMap().keySet()) {
+                        keys.add(o.toString());
+                    }
+                    Collections.sort(keys);
+
+                    if (yamlStandard && keys.isEmpty()) {
+                        signature += "\n" + indentation(level) + "<empty>";
+                    }
+
+                    for(Iterator<String> j = keys.iterator(); j.hasNext(); ) {
+
+                        signature += (yamlStandard ? "\n" + indentation(level) : "") + j.next();
+
+                        if (j.hasNext()) {
+                            signature += (yamlStandard ? "": ", ");
+                        }
+                    }
+
+                    signature += yamlStandard ? "" : "}";
+
+                    level--;
+                }
+
+                if (i.hasNext()) {
+                    signature += yamlStandard ? "" : ", ";
+                }
+            }
+        }
+
+        signature += yamlStandard ? "\n" : "]";
+
+        return signature;
+    }
+
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private BufferedWriter bw;
 
+    private Set<String> signatures;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public Describe() {
+
+        this.signatures = new HashSet<>();
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -70,7 +165,26 @@ public class Describe implements Procedure {
             throw new IllegalStateException("incorrectly initialized Describe instance: no output stream");
         }
 
-        throw new RuntimeException("process() NOT YET IMPLEMENTED");
+        String signature = getSignature(in, YAML_INLINE);
+
+        if (!signatures.contains(signature)) {
+
+            signatures.add(signature);
+
+            String yamlSignature = getSignature(in, YAML);
+
+            try {
+
+                bw.write(yamlSignature);
+                bw.newLine();
+                bw.flush();
+
+            }
+            catch(IOException e) {
+
+                throw new EventProcessingException(e);
+            }
+        }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -103,6 +217,36 @@ public class Describe implements Procedure {
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    // Static Protected ------------------------------------------------------------------------------------------------
+
+    static String indentation(int level) {
+        //
+        // two spaces per level
+        //
+        if (level == 0) {
+            return "";
+        }
+        else if (level == 1) {
+            return "  ";
+        }
+        else if (level == 2) {
+            return "    ";
+        }
+        else if (level == 3) {
+            return "      ";
+        }
+        else if (level == 4) {
+            return "        ";
+        }
+        else {
+            String s = "";
+            for(int i = 0; i < level; i ++) {
+                s += "  ";
+            }
+            return s;
+        }
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 
