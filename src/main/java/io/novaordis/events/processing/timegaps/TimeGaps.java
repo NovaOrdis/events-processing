@@ -48,6 +48,10 @@ public class TimeGaps extends ProcedureBase {
     private BufferedWriter bw;
 
     private TimedEvent previous;
+    private long maxTimeGap;
+    private TimedEvent maxTimeGapFirst;
+    private TimedEvent maxTimeGapSecond;
+
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -91,9 +95,16 @@ public class TimeGaps extends ProcedureBase {
 
                 Long pt = previous.getTime();
 
-                long delta = t - pt;
+                long delta = Math.abs(t - pt);
 
-                System.out.println(delta);
+                if (delta > maxTimeGap) {
+
+                    maxTimeGap = delta;
+                    maxTimeGapFirst = previous;
+                    maxTimeGapSecond = te;
+
+                    System.out.println(maxTimeGap + " ms, lines " + maxTimeGapFirst.getLineNumber() + ", " + maxTimeGapSecond.getLineNumber());
+                }
             }
 
             previous = te;
