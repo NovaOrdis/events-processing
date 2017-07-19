@@ -81,20 +81,23 @@ public class TimeGaps extends ProcedureBase {
 
         Long t = te.getTime();
 
+        if (t == null) {
 
-        if (previous != null) {
-
-            Long pt = previous.getTime();
-
-            long delta = t - pt;
-
-            System.out.println(delta);
+            log.warn("null timestamp time event: " + te);
         }
+        else {
 
+            if (previous != null) {
 
+                Long pt = previous.getTime();
 
+                long delta = t - pt;
 
+                System.out.println(delta);
+            }
 
+            previous = te;
+        }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
