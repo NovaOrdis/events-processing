@@ -111,6 +111,10 @@ public class TimeGaps extends ProcedureBase {
                     maxTimeGapSecond = te;
 
                     System.out.println(maxTimeGap + " ms, lines " + maxTimeGapFirst.getLineNumber() + ", " + maxTimeGapSecond.getLineNumber());
+                    System.out.println("line " + maxTimeGapFirst.getLineNumber() + ":");
+                    System.out.println(maxTimeGapFirst);
+                    System.out.println("line " + maxTimeGapSecond.getLineNumber() + ":");
+                    System.out.println(maxTimeGapSecond);
                 }
             }
 
