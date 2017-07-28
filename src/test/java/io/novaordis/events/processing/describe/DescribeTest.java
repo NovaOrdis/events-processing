@@ -83,7 +83,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Test
     public void commandLineLabel() throws Exception {
 
-        Describe d = getOutputProcedureToTest();
+        Describe d = getTextOutputProcedureToTest(true);
 
         List<String> cll = d.getCommandLineLabels();
 
@@ -92,7 +92,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     }
 
     @Test
-    public void initializedInstance() throws Exception {
+    public void nonInitializedInstance() throws Exception {
 
         Describe d = new Describe();
 
@@ -105,7 +105,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
             String msg = e.getMessage();
 
-            assertTrue(msg.contains("incorrectly initialized"));
+            assertTrue(msg.contains("was not initialized"));
             assertTrue(msg.contains("no output stream"));
         }
     }
@@ -113,7 +113,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Test
     public void happyPath() throws Exception {
 
-        Describe d = getOutputProcedureToTest();
+        Describe d = getTextOutputProcedureToTest(true);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -331,10 +331,15 @@ public class DescribeTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Describe getOutputProcedureToTest() throws Exception {
+    protected Describe getTextOutputProcedureToTest(boolean initialized) throws Exception {
 
         Describe d = new Describe();
-        d.setOutputStream(System.out);
+
+        if (initialized) {
+
+            d.setOutputStream(System.out);
+        }
+
         return d;
     }
 

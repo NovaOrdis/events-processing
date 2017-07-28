@@ -23,10 +23,6 @@ import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,14 +42,10 @@ public class TimeGaps extends TextOutputProcedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private OutputStream os;
-    private BufferedWriter bw;
-
     private TimedEvent previous;
     private long maxTimeGap;
     private TimedEvent maxTimeGapFirst;
     private TimedEvent maxTimeGapSecond;
-
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -72,11 +64,6 @@ public class TimeGaps extends TextOutputProcedure {
     public void process(Event in) throws EventProcessingException {
 
         invocationCount ++;
-
-        if (bw == null) {
-
-            throw new IllegalStateException("incorrectly initialized instance: no output stream");
-        }
 
         if (!(in instanceof TimedEvent)) {
 
@@ -112,11 +99,19 @@ public class TimeGaps extends TextOutputProcedure {
                     maxTimeGapFirst = previous;
                     maxTimeGapSecond = te;
 
-                    System.out.println(maxTimeGap + " ms, lines " + maxTimeGapFirst.getLineNumber() + ", " + maxTimeGapSecond.getLineNumber());
-                    System.out.println("line " + maxTimeGapFirst.getLineNumber() + ":");
-                    System.out.println(maxTimeGapFirst);
-                    System.out.println("line " + maxTimeGapSecond.getLineNumber() + ":");
-                    System.out.println(maxTimeGapSecond);
+                    try {
+
+                        println(maxTimeGap + " ms, lines " + maxTimeGapFirst.getLineNumber() + ", " + maxTimeGapSecond.getLineNumber());
+                        println("line " + maxTimeGapFirst.getLineNumber() + ":");
+                        println(maxTimeGapFirst);
+                        println("line " + maxTimeGapSecond.getLineNumber() + ":");
+                        println(maxTimeGapSecond);
+
+                    }
+                    catch(Exception e) {
+
+                        log.warn("failed to write output", e);
+                    }
                 }
             }
 
@@ -125,53 +120,6 @@ public class TimeGaps extends TextOutputProcedure {
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
-
-    public void setOutputStream(OutputStream os) {
-
-        if (os == null) {
-
-            throw new IllegalArgumentException("null output stream");
-        }
-
-        if (this.os != null) {
-
-            try {
-
-                this.os.close();
-            }
-            catch(IOException e) {
-
-                String msg = "failed to close the current writer";
-                log.warn(msg);
-                log.debug(msg, e);
-            }
-        }
-
-        if (bw != null) {
-
-            try {
-
-                bw.close();
-            }
-            catch(IOException e) {
-
-                String msg = "failed to close the current writer";
-                log.warn(msg);
-                log.debug(msg, e);
-            }
-        }
-
-        this.os = os;
-        this.bw = new BufferedWriter(new OutputStreamWriter(os));
-    }
-
-    /**
-     * May return null.
-     */
-    public OutputStream getOutputStream() {
-
-        return os;
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

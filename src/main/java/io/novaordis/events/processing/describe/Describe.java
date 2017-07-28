@@ -22,13 +22,8 @@ import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,8 +42,6 @@ import java.util.Set;
 public class Describe extends TextOutputProcedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(Describe.class);
 
     public static final String COMMAND_LINE_LABEL = "describe";
 
@@ -139,9 +132,6 @@ public class Describe extends TextOutputProcedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private OutputStream os;
-    private BufferedWriter bw;
-
     private Set<String> signatures;
 
     // Constructors ----------------------------------------------------------------------------------------------------
@@ -164,11 +154,6 @@ public class Describe extends TextOutputProcedure {
 
         invocationCount ++;
 
-        if (bw == null) {
-
-            throw new IllegalStateException("incorrectly initialized Describe instance: no output stream");
-        }
-
         String signature = getSignature(in, YAML_INLINE);
 
         if (!signatures.contains(signature)) {
@@ -179,9 +164,7 @@ public class Describe extends TextOutputProcedure {
 
             try {
 
-                bw.write(yamlSignature);
-                bw.newLine();
-                bw.flush();
+                println(yamlSignature);
 
             }
             catch(IOException e) {
@@ -192,53 +175,6 @@ public class Describe extends TextOutputProcedure {
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
-
-    public void setOutputStream(OutputStream os) {
-
-        if (os == null) {
-
-            throw new IllegalArgumentException("null output stream");
-        }
-
-        if (this.os != null) {
-
-            try {
-
-                this.os.close();
-            }
-            catch(IOException e) {
-
-                String msg = "failed to close the current writer";
-                log.warn(msg);
-                log.debug(msg, e);
-            }
-        }
-
-        if (bw != null) {
-
-            try {
-
-                bw.close();
-            }
-            catch(IOException e) {
-
-                String msg = "failed to close the current writer";
-                log.warn(msg);
-                log.debug(msg, e);
-            }
-        }
-
-        this.os = os;
-        this.bw = new BufferedWriter(new OutputStreamWriter(os));
-    }
-
-    /**
-     * May return null.
-     */
-    public OutputStream getOutputStream() {
-
-        return os;
-    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
