@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +65,7 @@ public class DescribeTest extends ProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        Describe d = (Describe)ProcedureFactory.find(Describe.COMMAND_LINE_LABEL);
+        Describe d = (Describe)ProcedureFactory.find(Describe.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(d);
 
         //

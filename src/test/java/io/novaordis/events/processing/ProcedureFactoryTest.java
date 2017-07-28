@@ -18,6 +18,8 @@ package io.novaordis.events.processing;
 
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static org.junit.Assert.assertNull;
 
 /**
@@ -41,7 +43,7 @@ public class ProcedureFactoryTest {
     @Test
     public void noSuchProcedure() throws Exception {
 
-        Procedure p = ProcedureFactory.find("I-am-pretty-sure-there-is-no-such-procedure");
+        Procedure p = ProcedureFactory.find("I-am-pretty-sure-there-is-no-such-procedure", 0, Collections.emptyList());
         assertNull(p);
     }
 

@@ -21,6 +21,8 @@ import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -37,9 +39,19 @@ public class ProcedureFactory {
      * Instantiates the procedure with the given command line label. The instance must come with default configuration
      * that should allow it to work correctly (albeit in the simplest possible case)
      *
+     * @param commandLineLabel the command line label for the candidate procedure. Note that it can be the normal
+     *                         label or the abbreviated label.
+     *
+     * @param index the index of the first argument  in the following argument list that can be interpreted as
+     *              procedure argument. Note that the arguments that are recognized as procedure arguments are
+     *              removed from the argument list.
+     *
+     * @param arguments the list - which must be mutable - of the possible arguments for the procedure. The arguments
+     *                  that are recognized as procedure arguments are removed from the list.
+     *
      * @return null if no such procedure is found in classpath.
      */
-    public static Procedure find(String commandLineLabel) {
+    public static Procedure find(String commandLineLabel, int index, List<String> arguments) {
 
         //
         // TODO: we currently only return the procedures we know of, but this is a hack, use an annotation and
