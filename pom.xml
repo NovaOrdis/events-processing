@@ -8,7 +8,7 @@
     <artifactId>novaordis-events-processing</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.0.1-SNAPSHOT-1</version>
+    <version>1.0.1-SNAPSHOT-2</version>
 
     <properties>
 

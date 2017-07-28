@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.processing;
+package io.novaordis.events.processing.count;
 
+import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.ProcedureFactory;
+import io.novaordis.events.processing.ProcedureTest;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -30,9 +34,11 @@ import static org.junit.Assert.assertTrue;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public abstract class ProcedureTest {
+public class CountTest extends ProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(CountTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -42,54 +48,65 @@ public abstract class ProcedureTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    // Overrides -------------------------------------------------------------------------------------------------------
+
+    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
+
+    @Test
+    @Override
+    public void procedureFactoryFind() throws Exception {
+
+        Count p = (Count)ProcedureFactory.find(Count.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        assertNotNull(p);
+
+        Count p2 = (Count)ProcedureFactory.find(Count.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        assertNotNull(p2);
+
+        log.debug("procedureFactoryFind()");
+    }
+
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
-    public abstract void procedureFactoryFind() throws Exception;
+    public void commandLineLabels() throws Exception {
 
-    @Test
-    public void atLeastOneNonNullCommandLineLabel() throws Exception {
+        Count d = getProcedureToTest();
 
-        Procedure p = getProcedureToTest();
-        List<String> commandLineLabels = p.getCommandLineLabels();
-        assertTrue(commandLineLabels.size() >= 1);
-        //noinspection Convert2streamapi
-        for(String s: commandLineLabels) {
-            assertNotNull(s);
-        }
+        List<String> commandLineLabels = d.getCommandLineLabels();
+        assertEquals(2, commandLineLabels.size());
+        assertTrue(commandLineLabels.contains(Count.COMMAND_LINE_LABEL));
+        assertTrue(commandLineLabels.contains(Count.ABBREVIATED_COMMAND_LINE_LABEL));
     }
 
     @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
+    public void count() throws Exception {
 
-        Procedure p = getProcedureToTest();
+        Count d = getProcedureToTest();
 
-        // public no-argument constructor
-        Constructor c = p.getClass().getConstructor();
-
-        assertNotNull(c);
-    }
-
-    @Test
-    public void processListOfEvents() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        assertEquals(0, p.getInvocationCount());
+        assertEquals(0L, d.getCount());
 
         MockEvent me = new MockEvent();
+
+        d.process(me);
+
+        assertEquals(1L, d.getCount());
+
         MockEvent me2 = new MockEvent();
 
-        p.process(Arrays.asList(me, me2));
+        d.process(me2);
 
-        assertEquals(2, p.getInvocationCount());
+        assertEquals(2L, d.getCount());
     }
-
+    
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected abstract Procedure getProcedureToTest() throws Exception;
+    @Override
+    protected Count getProcedureToTest() throws Exception {
+
+        return new Count();
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

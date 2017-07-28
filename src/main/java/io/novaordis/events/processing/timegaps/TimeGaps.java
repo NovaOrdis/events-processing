@@ -27,6 +27,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -61,9 +63,9 @@ public class TimeGaps extends ProcedureBase {
     // Procedure implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public String getCommandLineLabel() {
+    public List<String> getCommandLineLabels() {
 
-        return COMMAND_LINE_LABEL;
+        return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
     @Override

@@ -154,9 +154,9 @@ public class Describe extends ProcedureBase {
     // Procedure implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public String getCommandLineLabel() {
+    public List<String> getCommandLineLabels() {
 
-        return COMMAND_LINE_LABEL;
+        return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
     @Override

@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -84,9 +85,10 @@ public class DescribeTest extends ProcedureTest {
 
         Describe d = getProcedureToTest();
 
-        String cll = d.getCommandLineLabel();
+        List<String> cll = d.getCommandLineLabels();
 
-        assertEquals(Describe.COMMAND_LINE_LABEL, cll);
+        assertEquals(1, cll.size());
+        assertEquals(Describe.COMMAND_LINE_LABEL, cll.get(0));
     }
 
     @Test

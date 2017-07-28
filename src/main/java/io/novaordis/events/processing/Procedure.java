@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * The implementations must have a public no-argument constructor, as they will be instantiated via reflection.
  *
- * @see ProcedureFactory#find(String)
+ * @see ProcedureFactory#find(String, int, List<String>)
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -37,10 +37,11 @@ public interface Procedure {
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
-     * @return the label that should be used on "events" components command line to invoke this procedure. It is
-     * case sensitive.
+     * @return the list of equivalent labels that should be used on "events" components command line to invoke this
+     * procedure. The labels are case sensitive, and the list must have at least one non-null element. The list
+     * may specify long labels ("count") or abbreviated labels ("-c")
      */
-    String getCommandLineLabel();
+    List<String> getCommandLineLabels();
 
     /**
      * Process an incoming event. If corresponding output events are produced, they will be offered for consumption

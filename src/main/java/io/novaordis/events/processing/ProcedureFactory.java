@@ -16,6 +16,7 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.events.processing.count.Count;
 import io.novaordis.events.processing.describe.Describe;
 import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
@@ -79,6 +80,11 @@ public class ProcedureFactory {
 
             t.setOutputStream(System.out);
             return t;
+        }
+        else if (Count.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
+                Count.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            return new Count();
         }
         else {
 
