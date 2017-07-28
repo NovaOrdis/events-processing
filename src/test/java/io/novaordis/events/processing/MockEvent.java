@@ -31,6 +31,8 @@ public class MockEvent extends GenericTimedEvent {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private String rawRepresentation;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public MockEvent() {
@@ -43,7 +45,20 @@ public class MockEvent extends GenericTimedEvent {
         super(timestamp);
     }
 
+    // GenericTimeEvent overrides --------------------------------------------------------------------------------------
+
+    @Override
+    public String getRawRepresentation() {
+
+        return rawRepresentation;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
+
+    public void setRawRepresentation(String s) {
+
+        this.rawRepresentation = s;
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

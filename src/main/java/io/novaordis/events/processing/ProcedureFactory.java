@@ -18,6 +18,7 @@ package io.novaordis.events.processing;
 
 import io.novaordis.events.processing.count.Count;
 import io.novaordis.events.processing.describe.Describe;
+import io.novaordis.events.processing.exclude.Exclude;
 import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +86,18 @@ public class ProcedureFactory {
                 Count.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
             return new Count();
+        }
+        else if (Exclude.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
+                Exclude.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            Exclude e = new Exclude();
+
+            //
+            // unless configured otherwise, write to System.out
+            //
+
+            e.setOutputStream(System.out);
+            return e;
         }
         else {
 
