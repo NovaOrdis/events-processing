@@ -105,6 +105,11 @@ public class Exclude extends TextOutputProcedure {
         this.query = query;
     }
 
+    public Query getQuery() {
+
+        return query;
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------

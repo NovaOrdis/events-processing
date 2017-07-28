@@ -30,6 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -138,6 +139,8 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         Exclude e = getTextOutputProcedureToTest(false);
 
+        assertNull(e.getQuery());
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         e.setOutputStream(baos);
@@ -148,8 +151,9 @@ public class ExcludeTest extends TextOutputProcedureTest {
         MockEvent wontMatch = new MockEvent();
         wontMatch.setRawRepresentation("something");
 
-
         e.setQuery(event -> event == willMatch);
+
+        assertNotNull(e.getQuery());
 
         e.process(willMatch);
 
