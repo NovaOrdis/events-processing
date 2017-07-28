@@ -20,8 +20,8 @@ import io.novaordis.events.api.event.IntegerProperty;
 import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.processing.ProcedureFactory;
-import io.novaordis.events.processing.ProcedureTest;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import static org.junit.Assert.fail;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class DescribeTest extends ProcedureTest {
+public class DescribeTest extends TextOutputProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ public class DescribeTest extends ProcedureTest {
     @Test
     public void commandLineLabel() throws Exception {
 
-        Describe d = getProcedureToTest();
+        Describe d = getOutputProcedureToTest();
 
         List<String> cll = d.getCommandLineLabels();
 
@@ -113,7 +113,7 @@ public class DescribeTest extends ProcedureTest {
     @Test
     public void happyPath() throws Exception {
 
-        Describe d = getProcedureToTest();
+        Describe d = getOutputProcedureToTest();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -331,7 +331,7 @@ public class DescribeTest extends ProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Describe getProcedureToTest() throws Exception {
+    protected Describe getOutputProcedureToTest() throws Exception {
 
         Describe d = new Describe();
         d.setOutputStream(System.out);

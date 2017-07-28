@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.processing.timegaps;
-
-import io.novaordis.events.processing.TextOutputProcedureTest;
-import io.novaordis.events.processing.ProcedureFactory;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.OutputStream;
-import java.util.Collections;
-
-import static org.junit.Assert.assertNotNull;
+package io.novaordis.events.processing;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 7/28/17
  */
-public class TimeGapsTest extends TextOutputProcedureTest {
+public abstract class TextOutputProcedureTest extends ProcedureTest {
+
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(TimeGapsTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -45,28 +33,6 @@ public class TimeGapsTest extends TextOutputProcedureTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Overrides -------------------------------------------------------------------------------------------------------
-
-    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
-
-    @Test
-    @Override
-    public void procedureFactoryFind() throws Exception {
-
-        TimeGaps d = (TimeGaps)ProcedureFactory.find(TimeGaps.COMMAND_LINE_LABEL, 0, Collections.emptyList());
-        assertNotNull(d);
-
-        //
-        // the instance must come with default configuration that should allow it to work correctly (albeit in a
-        // simplest possible case)
-        //
-
-        OutputStream os = d.getOutputStream();
-        assertNotNull(os);
-
-        log.debug("procedureFactoryFind()");
-    }
-
     // Tests -----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -74,12 +40,12 @@ public class TimeGapsTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected TimeGaps getOutputProcedureToTest() throws Exception {
+    protected Procedure getProcedureToTest() throws Exception {
 
-        TimeGaps p = new TimeGaps();
-        p.setOutputStream(System.out);
-        return p;
+        return getOutputProcedureToTest();
     }
+
+    protected abstract TextOutputProcedure getOutputProcedureToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

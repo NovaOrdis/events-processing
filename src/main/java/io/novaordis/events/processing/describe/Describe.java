@@ -21,7 +21,7 @@ import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.Property;
 import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.ProcedureBase;
+import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ import java.util.Set;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class Describe extends ProcedureBase {
+public class Describe extends TextOutputProcedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
 

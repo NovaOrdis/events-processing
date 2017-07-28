@@ -19,7 +19,7 @@ package io.novaordis.events.processing.timegaps;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.ProcedureBase;
+import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ import java.util.List;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class TimeGaps extends ProcedureBase {
+public class TimeGaps extends TextOutputProcedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
