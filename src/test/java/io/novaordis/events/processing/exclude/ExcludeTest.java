@@ -16,13 +16,11 @@
 
 package io.novaordis.events.processing.exclude;
 
-import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.MockEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.query.MatchNone;
 import io.novaordis.events.query.NullQuery;
-import io.novaordis.events.query.Query;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -146,7 +144,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         MockEvent willMatch = new MockEvent();
         willMatch.setRawRepresentation("we will never see this");
-        
+
         MockEvent wontMatch = new MockEvent();
         wontMatch.setRawRepresentation("something");
 

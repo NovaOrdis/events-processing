@@ -55,6 +55,27 @@ public abstract class ProcedureBase implements Procedure {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    @Override
+    public String toString() {
+
+        String s;
+
+        List<String> labels = getCommandLineLabels();
+
+        if (labels.isEmpty()) {
+
+            s = getClass().getSimpleName() + " procedure";
+        }
+        else {
+
+            return labels.get(0) + " procedure";
+        }
+
+        s += " " + Integer.toHexString(System.identityHashCode(this));
+
+        return s;
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
