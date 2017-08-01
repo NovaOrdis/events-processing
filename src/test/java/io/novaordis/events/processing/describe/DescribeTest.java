@@ -19,7 +19,7 @@ package io.novaordis.events.processing.describe;
 import io.novaordis.events.api.event.IntegerProperty;
 import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.utilities.time.TimestampImpl;
@@ -97,7 +97,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         try {
 
-            d.process(new MockEvent());
+            d.process(new MockTimedEvent());
             fail("should have thrown exception");
         }
         catch(IllegalStateException e) {
@@ -118,7 +118,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         d.setOutputStream(baos);
 
-        MockEvent me = new MockEvent();
+        MockTimedEvent me = new MockTimedEvent();
 
         d.process(me);
 
@@ -127,13 +127,13 @@ public class DescribeTest extends TextOutputProcedureTest {
         assertTrue(firstReading.length > 0);
 
         String s = new String(firstReading);
-        assertTrue(s.contains("MockEvent"));
+        assertTrue(s.contains("MockTimedEvent"));
 
         //
         // process an event with the same signature, it should not produce extra output
         //
 
-        MockEvent me2 = new MockEvent();
+        MockTimedEvent me2 = new MockTimedEvent();
 
         d.process(me2);
 
@@ -145,7 +145,7 @@ public class DescribeTest extends TextOutputProcedureTest {
         // process an event with a different signature
         //
 
-        MockEvent me3 = new MockEvent();
+        MockTimedEvent me3 = new MockTimedEvent();
         me3.setStringProperty("mock-property", "something");
 
         d.process(me3);
@@ -159,7 +159,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s2 = new String(lastEvent);
 
-        assertTrue(s2.contains("MockEvent"));
+        assertTrue(s2.contains("MockTimedEvent"));
         assertTrue(s2.contains("mock-property"));
         assertFalse(s2.contains("something"));
 
@@ -170,7 +170,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Test
     public void getSignature_String_Yaml() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         e.setProperty(new StringProperty("name1", "value1"));
 
@@ -178,13 +178,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent\n  timestamp\n  name1(String)\n", s);
+        assertEquals("MockTimedEvent\n  timestamp\n  name1(String)\n", s);
     }
 
     @Test
     public void getSignature_String_YamlInline() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         e.setProperty(new StringProperty("name1", "value1"));
 
@@ -192,13 +192,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent[timestamp, name1(String)]", s);
+        assertEquals("MockTimedEvent[timestamp, name1(String)]", s);
     }
 
     @Test
     public void getSignature_String_Integer_Yaml() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         e.setProperty(new StringProperty("name1", "value1"));
         e.setProperty(new IntegerProperty("name2", 2));
@@ -207,13 +207,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent\n  timestamp\n  name1(String)\n  name2(Integer)\n", s);
+        assertEquals("MockTimedEvent\n  timestamp\n  name1(String)\n  name2(Integer)\n", s);
     }
 
     @Test
     public void getSignature_String_Integer_YamlInline() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         e.setProperty(new StringProperty("name1", "value1"));
         e.setProperty(new IntegerProperty("name2", 2));
@@ -222,13 +222,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent[timestamp, name1(String), name2(Integer)]", s);
+        assertEquals("MockTimedEvent[timestamp, name1(String), name2(Integer)]", s);
     }
 
     @Test
     public void getSignature_Map_NoElements_Yaml() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         //noinspection unchecked
         e.setProperty(new MapProperty("name1", new HashMap()));
@@ -237,13 +237,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent\n  timestamp\n  name1(Map)\n    <empty>\n", s);
+        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    <empty>\n", s);
     }
 
     @Test
     public void getSignature_Map_NoElements_YamlInline() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         //noinspection unchecked
         e.setProperty(new MapProperty("name1", new HashMap()));
@@ -252,13 +252,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent[timestamp, name1(Map){}]", s);
+        assertEquals("MockTimedEvent[timestamp, name1(Map){}]", s);
     }
 
     @Test
     public void getSignature_Map_HasElements_Yaml() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("x", "val-x");
@@ -269,13 +269,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent\n  timestamp\n  name1(Map)\n    a\n    x\n", s);
+        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    a\n    x\n", s);
     }
 
     @Test
     public void getSignature_Map_HasElements_YamlInline() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("x", "val-x");
@@ -286,13 +286,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent[timestamp, name1(Map){a, x}]", s);
+        assertEquals("MockTimedEvent[timestamp, name1(Map){a, x}]", s);
     }
 
     @Test
     public void getSignature_Map_HasElements_PropertyFollows_Yaml() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("x", "val-x");
@@ -304,13 +304,13 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent\n  timestamp\n  name1(Map)\n    a\n    x\n  name2(String)\n", s);
+        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    a\n    x\n  name2(String)\n", s);
     }
 
     @Test
     public void getSignature_Map_HasElements_PropertyFollows_YamlInline() throws Exception {
 
-        MockEvent e = new MockEvent(new TimestampImpl(1));
+        MockTimedEvent e = new MockTimedEvent(new TimestampImpl(1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("x", "val-x");
@@ -322,7 +322,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         log.info(s);
 
-        assertEquals("MockEvent[timestamp, name1(Map){a, x}, name2(String)]", s);
+        assertEquals("MockTimedEvent[timestamp, name1(Map){a, x}, name2(String)]", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

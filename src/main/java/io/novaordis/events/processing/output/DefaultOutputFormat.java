@@ -17,6 +17,9 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.TimedEvent;
+
+import java.text.SimpleDateFormat;
 
 /**
  * A very generic OutputFormat, that is a fall back if nothing more specific is installed. It displays the raw
@@ -31,6 +34,8 @@ public class DefaultOutputFormat implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
+    public static final SimpleDateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -42,7 +47,34 @@ public class DefaultOutputFormat implements OutputFormat {
     @Override
     public String format(Event e) {
 
-        throw new RuntimeException("format() NOT YET IMPLEMENTED");
+        if (e == null) {
+
+            return "null";
+        }
+
+        String s = e.getRawRepresentation();
+
+        if (s != null) {
+
+            return s;
+        }
+
+        if (e instanceof TimedEvent) {
+
+            long time = ((TimedEvent)e).getTime();
+            s = DEFAULT_TIMESTAMP_FORMAT.format(time);
+        }
+
+        String type = e.getClass().getSimpleName();
+
+        if (s == null) {
+
+            return type;
+        }
+        else {
+
+            return s + " " + type;
+        }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

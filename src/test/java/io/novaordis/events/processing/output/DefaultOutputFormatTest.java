@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.processing;
+package io.novaordis.events.processing.output;
 
+import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.MockTimedEvent;
+import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 8/1/17
  */
-public abstract class ProcedureTest {
+public class DefaultOutputFormatTest extends OutputFormatTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -44,61 +42,63 @@ public abstract class ProcedureTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Each implementation must make sure it is built by ProcedureFactory.find().
-     */
-    @Test
-    public abstract void procedureFactoryFind() throws Exception;
-
-    /**
-     * Each implementation must test its command line label(s).
-     */
-    @Test
-    public abstract void commandLineLabel() throws Exception;
+    // format() --------------------------------------------------------------------------------------------------------
 
     @Test
-    public void atLeastOneNonNullCommandLineLabel() throws Exception {
+    public void format_Null() throws Exception {
 
-        Procedure p = getProcedureToTest();
-        List<String> commandLineLabels = p.getCommandLineLabels();
-        assertTrue(commandLineLabels.size() >= 1);
-        //noinspection Convert2streamapi
-        for(String s: commandLineLabels) {
-            assertNotNull(s);
-        }
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        String s = f.format(null);
+        assertEquals("null", s);
     }
 
     @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
+    public void format_RawRepresentationPresent() throws Exception {
 
-        Procedure p = getProcedureToTest();
+        DefaultOutputFormat f = getOutputFormatToTest();
 
-        // public no-argument constructor
-        Constructor c = p.getClass().getConstructor();
+        MockEvent me = new MockEvent();
+        me.setRawRepresentation("something");
 
-        assertNotNull(c);
+        String s = f.format(me);
+        assertEquals("something", s);
     }
 
     @Test
-    public void processListOfEvents() throws Exception {
+    public void format_RawRepresentationNotPresent_NonTimedEvent() throws Exception {
 
-        Procedure p = getProcedureToTest();
+        DefaultOutputFormat f = getOutputFormatToTest();
 
-        assertEquals(0, p.getInvocationCount());
+        MockEvent me = new MockEvent();
+        assertNull(me.getRawRepresentation());
 
-        MockTimedEvent me = new MockTimedEvent();
-        MockTimedEvent me2 = new MockTimedEvent();
+        String s = f.format(me);
+        assertEquals("MockEvent", s);
+    }
 
-        p.process(Arrays.asList(me, me2));
+    @Test
+    public void format_RawRepresentationNotPresent_TimedEvent() throws Exception {
 
-        assertEquals(2, p.getInvocationCount());
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockTimedEvent me = new MockTimedEvent(new TimestampImpl(10L));
+        assertNull(me.getRawRepresentation());
+
+        String s = f.format(me);
+
+        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L) + " MockTimedEvent", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected abstract Procedure getProcedureToTest() throws Exception;
+    @Override
+    protected DefaultOutputFormat getOutputFormatToTest() throws Exception {
+
+        return new DefaultOutputFormat();
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

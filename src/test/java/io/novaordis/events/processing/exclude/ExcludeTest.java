@@ -16,7 +16,7 @@
 
 package io.novaordis.events.processing.exclude;
 
-import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.query.MatchNone;
@@ -102,7 +102,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         try {
 
-            p.process(new MockEvent());
+            p.process(new MockTimedEvent());
             fail("should have thrown exception");
         }
         catch(IllegalStateException e) {
@@ -121,7 +121,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         try {
 
-            p.process(new MockEvent());
+            p.process(new MockTimedEvent());
             fail("should have thrown exception");
         }
         catch(IllegalStateException e) {
@@ -144,10 +144,10 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         e.setOutputStream(baos);
 
-        MockEvent willMatch = new MockEvent();
+        MockTimedEvent willMatch = new MockTimedEvent();
         willMatch.setRawRepresentation("we will never see this");
 
-        MockEvent wontMatch = new MockEvent();
+        MockTimedEvent wontMatch = new MockTimedEvent();
         wontMatch.setRawRepresentation("something");
 
         e.setQuery(event -> event == willMatch);

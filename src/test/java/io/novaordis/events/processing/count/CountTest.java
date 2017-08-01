@@ -16,7 +16,7 @@
 
 package io.novaordis.events.processing.count;
 
-import io.novaordis.events.processing.MockEvent;
+import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.ProcedureTest;
 import org.junit.Test;
@@ -78,13 +78,13 @@ public class CountTest extends ProcedureTest {
 
         assertEquals(0L, d.getCount());
 
-        MockEvent me = new MockEvent();
+        MockTimedEvent me = new MockTimedEvent();
 
         d.process(me);
 
         assertEquals(1L, d.getCount());
 
-        MockEvent me2 = new MockEvent();
+        MockTimedEvent me2 = new MockTimedEvent();
 
         d.process(me2);
 

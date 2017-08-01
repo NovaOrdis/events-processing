@@ -16,13 +16,14 @@
 
 package io.novaordis.events.processing;
 
-import io.novaordis.events.api.event.GenericEvent;
+import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.utilities.time.Timestamp;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class MockEvent extends GenericEvent {
+public class MockTimedEvent extends GenericTimedEvent {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,9 +35,14 @@ public class MockEvent extends GenericEvent {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public MockEvent() {
+    public MockTimedEvent() {
 
         super();
+    }
+
+    public MockTimedEvent(Timestamp timestamp) {
+
+        super(timestamp);
     }
 
     // GenericTimeEvent overrides --------------------------------------------------------------------------------------
