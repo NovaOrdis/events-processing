@@ -106,7 +106,6 @@ public class OutputTest extends TextOutputProcedureTest {
         assertNotNull(o.getFormat());
     }
 
-
     // getSignature() --------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------

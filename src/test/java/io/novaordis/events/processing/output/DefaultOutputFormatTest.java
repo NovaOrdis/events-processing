@@ -92,7 +92,6 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(0L) + " MockTimedEvent", s);
     }
 
-
     @Test
     public void format_RawRepresentationNotPresent_TimedEvent() throws Exception {
 
