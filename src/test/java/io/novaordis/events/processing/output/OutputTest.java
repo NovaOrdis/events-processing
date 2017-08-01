@@ -16,18 +16,23 @@
 
 package io.novaordis.events.processing.output;
 
+import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -106,7 +111,82 @@ public class OutputTest extends TextOutputProcedureTest {
         assertNotNull(o.getFormat());
     }
 
-    // getSignature() --------------------------------------------------------------------------------------------------
+    // configureFromCommandLine ----------------------------------------------------------------------------------------
+
+    @Test
+    public void configureFromCommandLine_NoArguments() throws Exception {
+
+        Output o = new Output();
+
+        o.configureFromCommandLine(Collections.emptyList());
+
+        assertTrue(o.getFormat() instanceof DefaultOutputFormat);
+    }
+
+    @Test
+    public void configureFromCommandLine_UnknownArguments() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "green"));
+
+        o.configureFromCommandLine(args);
+
+        assertTrue(o.getFormat() instanceof DefaultOutputFormat);
+
+        assertEquals(3, args.size());
+        assertEquals("blue", args.get(0));
+        assertEquals("red", args.get(1));
+        assertEquals("green", args.get(2));
+    }
+
+    @Test
+    public void configureFromCommandLine_PartiallyKnownArguments() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "-o", "green", "yellow"));
+
+        o.configureFromCommandLine(args);
+
+        assertEquals(2, args.size());
+        assertEquals("blue", args.get(0));
+        assertEquals("red", args.get(1));
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+
+        String formatted = f.format(e);
+        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_OnlyKnownArguments() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "green", "yellow"));
+
+        o.configureFromCommandLine(args);
+
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+
+        String formatted = f.format(e);
+        assertEquals("box, cat", formatted);
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

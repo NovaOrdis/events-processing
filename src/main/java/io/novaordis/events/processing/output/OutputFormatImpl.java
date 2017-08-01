@@ -17,30 +17,37 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.event.TimedEvent;
+import io.novaordis.events.api.event.Property;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * A very generic OutputFormat, that is a fall back if nothing more specific is installed. It displays the raw
- * representation of the event, if available, and if not, the timestamp if the event is a timed event, and the event
- * type, as reflected by its class. This is most likely useless in most of the cases, so Output users should replace
- * it with something more useful.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
  */
-public class DefaultOutputFormat implements OutputFormat {
+public class OutputFormatImpl implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    public static final SimpleDateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+    public static final char DEFAULT_SEPARATOR = ',';
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private String separator;
+
+    private List<String> propertyNames;
+
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    public OutputFormatImpl() {
+
+        this.propertyNames = new ArrayList<>();
+        this.separator = "" + DEFAULT_SEPARATOR;
+    }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
@@ -52,38 +59,54 @@ public class DefaultOutputFormat implements OutputFormat {
             throw new IllegalArgumentException("null event");
         }
 
-        String s = e.getRawRepresentation();
+        int i = 0;
+        String s = null;
 
-        if (s != null) {
+        for(Iterator<String> si = propertyNames.iterator(); si.hasNext(); i ++) {
 
-            return s;
-        }
+            String propertyName = si.next();
 
-        if (e instanceof TimedEvent) {
+            Property p = e.getProperty(propertyName);
+            Object v = p == null ? null : p.getValue();
 
-            Long time = ((TimedEvent)e).getTime();
+            if (v != null) {
 
-            if (time == null) {
+                if (s == null) {
 
-                time = 0L;
+                    //
+                    // add all previous commas and placeholders
+                    //
+
+                    s = "";
+
+                    while(i-- > 0) {
+
+                        s += ", ";
+                    }
+
+                    s += v.toString();
+                }
+                else {
+
+                    s += " " + v;
+                }
             }
 
-            s = DEFAULT_TIMESTAMP_FORMAT.format(time);
+            if (s != null && si.hasNext()) {
+
+                s += ",";
+            }
         }
 
-        String type = e.getClass().getSimpleName();
-
-        if (s == null) {
-
-            return type;
-        }
-        else {
-
-            return s + " " + type;
-        }
+        return s;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    public void addPropertyName(String s) {
+
+        propertyNames.add(s);
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

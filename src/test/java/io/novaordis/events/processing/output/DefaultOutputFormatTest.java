@@ -45,15 +45,6 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
     // format() --------------------------------------------------------------------------------------------------------
 
     @Test
-    public void format_Null() throws Exception {
-
-        DefaultOutputFormat f = getOutputFormatToTest();
-
-        String s = f.format(null);
-        assertEquals("null", s);
-    }
-
-    @Test
     public void format_RawRepresentationPresent() throws Exception {
 
         DefaultOutputFormat f = getOutputFormatToTest();

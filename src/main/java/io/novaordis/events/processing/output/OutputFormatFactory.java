@@ -16,20 +16,54 @@
 
 package io.novaordis.events.processing.output;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
  */
-public abstract class OutputFormatTest {
+public class OutputFormatFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    /**
+     * The factory method consumes all relevant arguments and removes them from the list.
+     *
+     * No arguments means DefaultOutputFormat.
+     *
+     * @exception IllegalArgumentException if the argument list is null.
+     *
+     */
+    public static OutputFormat fromArguments(List<String> mutableCommandLineArguments) {
+
+        if (mutableCommandLineArguments == null) {
+
+            throw new IllegalArgumentException("null argument list");
+        }
+
+        if (mutableCommandLineArguments.isEmpty()) {
+
+            return new DefaultOutputFormat();
+        }
+
+        //
+        // we interpret the unqualified arguments as property names
+        //
+
+        OutputFormatImpl outputFormat = new OutputFormatImpl();
+
+        for(Iterator<String> i = mutableCommandLineArguments.iterator(); i.hasNext(); ) {
+
+            String propertyName = i.next();
+            i.remove();
+            outputFormat.addPropertyName(propertyName);
+        }
+
+        return outputFormat;
+    }
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
@@ -37,33 +71,9 @@ public abstract class OutputFormatTest {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    // format() --------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void format_NullEvent() throws Exception {
-
-        OutputFormat f = getOutputFormatToTest();
-
-        try {
-
-            f.format(null);
-            fail("should have thrown exception");
-        }
-        catch(IllegalArgumentException e) {
-
-            String msg = e.getMessage();
-            assertTrue(msg.contains("null event"));
-        }
-
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract OutputFormat getOutputFormatToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

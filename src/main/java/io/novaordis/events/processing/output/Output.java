@@ -21,7 +21,9 @@ import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ public class Output extends TextOutputProcedure {
 
     public static final String COMMAND_LINE_LABEL = "output";
 
-    // public static final SimpleDateFormat TIMESTAMP_OUTPUT_FORMAT = new SimpleDateFormat("MM/dd/YY HH:mm:ss,SSS");
+    public static final String OUTPUT_FORMAT_OPTION = "-o";
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -59,12 +61,17 @@ public class Output extends TextOutputProcedure {
 
     public Output(OutputStream os) {
 
+        this(os, Collections.emptyList());
+    }
+
+    public Output(OutputStream os, List<String> commandlineArguments) {
+
         if (os != null) {
 
             setOutputStream(os);
         }
 
-        format = new DefaultOutputFormat();
+        configureFromCommandLine(commandlineArguments);
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -91,8 +98,6 @@ public class Output extends TextOutputProcedure {
         }
     }
 
-    // TextOutputProcedure overrides -----------------------------------------------------------------------------------
-
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
@@ -104,6 +109,41 @@ public class Output extends TextOutputProcedure {
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
+
+    /**
+     * Process the command line argument list and remove arguments if recognized as our own.
+     */
+    void configureFromCommandLine(List<String> mutableCommandLineArgumentsList) {
+
+        List<String> outputFormatArgs = new ArrayList<>();
+
+        //
+        // scan the argument list until we find the output format command line option
+        //
+
+        boolean collect = false;
+
+        for(Iterator<String> i = mutableCommandLineArgumentsList.iterator(); i.hasNext(); ) {
+
+            String arg = i.next();
+
+            if (collect) {
+
+                outputFormatArgs.add(arg);
+                i.remove();
+                continue;
+            }
+
+            if (OUTPUT_FORMAT_OPTION.equals(arg)) {
+
+                i.remove();
+                collect = true;
+
+            }
+        }
+
+        this.format = OutputFormatFactory.fromArguments(outputFormatArgs);
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

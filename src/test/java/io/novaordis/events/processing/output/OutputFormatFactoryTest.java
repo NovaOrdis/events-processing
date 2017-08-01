@@ -16,8 +16,16 @@
 
 package io.novaordis.events.processing.output;
 
+import io.novaordis.events.api.event.GenericEvent;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -25,7 +33,7 @@ import static org.junit.Assert.fail;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
  */
-public abstract class OutputFormatTest {
+public class OutputFormatFactoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -39,31 +47,51 @@ public abstract class OutputFormatTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    // format() --------------------------------------------------------------------------------------------------------
-
     @Test
-    public void format_NullEvent() throws Exception {
-
-        OutputFormat f = getOutputFormatToTest();
+    public void fromArguments_NullArguments() throws Exception {
 
         try {
 
-            f.format(null);
+            OutputFormatFactory.fromArguments(null);
             fail("should have thrown exception");
         }
         catch(IllegalArgumentException e) {
 
             String msg = e.getMessage();
-            assertTrue(msg.contains("null event"));
+            assertTrue(msg.contains("null argument list"));
         }
+    }
 
+    @Test
+    public void fromArguments_NoArguments() throws Exception {
+
+        DefaultOutputFormat f = (DefaultOutputFormat)OutputFormatFactory.fromArguments(Collections.emptyList());
+        assertNotNull(f);
+    }
+
+    @Test
+    public void fromArguments_PropertyNames() throws Exception {
+
+        List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "green"));
+
+        OutputFormatImpl f = (OutputFormatImpl)OutputFormatFactory.fromArguments(args);
+
+        assertNotNull(f);
+
+        assertTrue(args.isEmpty());
+
+        GenericEvent ge = new GenericEvent();
+        ge.setStringProperty("blue", "sky");
+        ge.setStringProperty("red", "apple");
+        ge.setStringProperty("green", "bean");
+
+        String s = f.format(ge);
+        assertEquals("sky, apple, bean", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    protected abstract OutputFormat getOutputFormatToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 
