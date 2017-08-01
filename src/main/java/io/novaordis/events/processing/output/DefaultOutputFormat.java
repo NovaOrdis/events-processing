@@ -61,7 +61,13 @@ public class DefaultOutputFormat implements OutputFormat {
 
         if (e instanceof TimedEvent) {
 
-            long time = ((TimedEvent)e).getTime();
+            Long time = ((TimedEvent)e).getTime();
+
+            if (time == null) {
+
+                time = 0L;
+            }
+
             s = DEFAULT_TIMESTAMP_FORMAT.format(time);
         }
 

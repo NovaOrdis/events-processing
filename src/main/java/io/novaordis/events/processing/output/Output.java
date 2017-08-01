@@ -82,13 +82,16 @@ public class Output extends TextOutputProcedure {
 
         try {
 
-            println(in);
+            String s = format.format(in);
+            println(s);
         }
         catch(Exception e) {
 
             throw new EventProcessingException(e);
         }
     }
+
+    // TextOutputProcedure overrides -----------------------------------------------------------------------------------
 
     // Public ----------------------------------------------------------------------------------------------------------
 

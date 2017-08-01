@@ -78,6 +78,22 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
     }
 
     @Test
+    public void format_RawRepresentationNotPresent_TimedEvent_NullTimestamp() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockTimedEvent me = new MockTimedEvent(null);
+        assertNull(me.getTime());
+        assertNull(me.getTimestamp());
+        assertNull(me.getRawRepresentation());
+
+        String s = f.format(me);
+
+        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(0L) + " MockTimedEvent", s);
+    }
+
+
+    @Test
     public void format_RawRepresentationNotPresent_TimedEvent() throws Exception {
 
         DefaultOutputFormat f = getOutputFormatToTest();
