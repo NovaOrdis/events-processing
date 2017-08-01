@@ -16,11 +16,13 @@
 
 package io.novaordis.events.processing.exclude;
 
+import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.query.MatchNone;
 import io.novaordis.events.query.NullQuery;
+import io.novaordis.events.query.Query;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -150,7 +152,18 @@ public class ExcludeTest extends TextOutputProcedureTest {
         MockTimedEvent wontMatch = new MockTimedEvent();
         wontMatch.setRawRepresentation("something");
 
-        e.setQuery(event -> event == willMatch);
+        e.setQuery(new Query() {
+            @Override
+            public boolean selects(Event e) {
+
+                return e == willMatch;
+            }
+
+            @Override
+            public List<Event> filter(List<Event> events) {
+                throw new RuntimeException("filter() NOT YET IMPLEMENTED");
+            }
+        });
 
         assertNotNull(e.getQuery());
 
