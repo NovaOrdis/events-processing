@@ -20,6 +20,7 @@ import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +44,17 @@ public class Output extends TextOutputProcedure {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    /**
+     * Uninitialized output.
+     */
+    public Output() {
+    }
+
+    public Output(OutputStream os) {
+
+        setOutputStream(os);
+    }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
 

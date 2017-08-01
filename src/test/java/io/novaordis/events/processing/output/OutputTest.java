@@ -18,20 +18,16 @@ package io.novaordis.events.processing.output;
 
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
-import io.novaordis.events.processing.describe.Describe;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -40,8 +36,6 @@ import static org.junit.Assert.fail;
 public class OutputTest extends TextOutputProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(OutputTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -84,6 +78,25 @@ public class OutputTest extends TextOutputProcedureTest {
     }
 
     // Tests -----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void constructor_UninitializedOutput() throws Exception {
+
+        Output o = new Output();
+        assertNull(o.getOutputStream());
+
+    }
+
+    @Test
+    public void constructor_InitializedOutput() throws Exception {
+
+        OutputStream os = new ByteArrayOutputStream();
+
+        Output o = new Output(os);
+
+        assertEquals(os, o.getOutputStream());
+    }
+
 
 //    @Test
 //    public void nonInitializedInstance() throws Exception {
