@@ -16,7 +16,9 @@
 
 package io.novaordis.events.processing.output;
 
+import io.novaordis.events.api.event.GenericEvent;
 import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import org.junit.Test;
@@ -84,6 +86,29 @@ public class OutputTest extends TextOutputProcedureTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    // extra procedureFactoryFind() tests ------------------------------------------------------------------------------
+
+    @Test
+    public void procedureFactoryFind_ExtraArguments() throws Exception {
+
+        List<String> args = new ArrayList<>(Arrays.asList("output", "-o", "something"));
+
+        Output p = (Output)ProcedureFactory.find("output", 1, args);
+        assertNotNull(p);
+
+        assertEquals(1, args.size());
+        assertEquals("output", args.get(0));
+
+        OutputFormat f = p.getFormat();
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        String s = f.format(new GenericEvent(Collections.singletonList(new StringProperty("something", "else"))));
+
+        assertTrue(s.contains("else"));
+    }
+
+    // constructor -----------------------------------------------------------------------------------------------------
+
     @Test
     public void constructor_UninitializedOutput() throws Exception {
 
@@ -118,7 +143,7 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = new Output();
 
-        o.configureFromCommandLine(Collections.emptyList());
+        o.configureFromCommandLine(0, Collections.emptyList());
 
         assertTrue(o.getFormat() instanceof DefaultOutputFormat);
     }
@@ -130,7 +155,24 @@ public class OutputTest extends TextOutputProcedureTest {
 
         List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "green"));
 
-        o.configureFromCommandLine(args);
+        o.configureFromCommandLine(0, args);
+
+        assertTrue(o.getFormat() instanceof DefaultOutputFormat);
+
+        assertEquals(3, args.size());
+        assertEquals("blue", args.get(0));
+        assertEquals("red", args.get(1));
+        assertEquals("green", args.get(2));
+    }
+
+    @Test
+    public void configureFromCommandLine_UnknownArguments_From() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "green"));
+
+        o.configureFromCommandLine(1, args);
 
         assertTrue(o.getFormat() instanceof DefaultOutputFormat);
 
@@ -147,7 +189,32 @@ public class OutputTest extends TextOutputProcedureTest {
 
         List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "-o", "green", "yellow"));
 
-        o.configureFromCommandLine(args);
+        o.configureFromCommandLine(0, args);
+
+        assertEquals(2, args.size());
+        assertEquals("blue", args.get(0));
+        assertEquals("red", args.get(1));
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+
+        String formatted = f.format(e);
+        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_PartiallyKnownArguments_From() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("blue", "red", "-o", "green", "yellow"));
+
+        o.configureFromCommandLine(1, args);
 
         assertEquals(2, args.size());
         assertEquals("blue", args.get(0));
@@ -172,7 +239,7 @@ public class OutputTest extends TextOutputProcedureTest {
 
         List<String> args = new ArrayList<>(Arrays.asList("-o", "green", "yellow"));
 
-        o.configureFromCommandLine(args);
+        o.configureFromCommandLine(0, args);
 
         assertTrue(args.isEmpty());
 

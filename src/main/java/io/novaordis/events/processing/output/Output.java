@@ -66,13 +66,19 @@ public class Output extends TextOutputProcedure {
 
     public Output(OutputStream os, List<String> commandlineArguments) {
 
+        this(os, 0, commandlineArguments);
+    }
+
+    public Output(OutputStream os, int from, List<String> commandlineArguments) {
+
         if (os != null) {
 
             setOutputStream(os);
         }
 
-        configureFromCommandLine(commandlineArguments);
+        configureFromCommandLine(from, commandlineArguments);
     }
+
 
     // Procedure implementation ----------------------------------------------------------------------------------------
 
@@ -113,7 +119,7 @@ public class Output extends TextOutputProcedure {
     /**
      * Process the command line argument list and remove arguments if recognized as our own.
      */
-    void configureFromCommandLine(List<String> mutableCommandLineArgumentsList) {
+    void configureFromCommandLine(int from, List<String> mutableCommandLineArgumentsList) {
 
         List<String> outputFormatArgs = new ArrayList<>();
 
@@ -122,21 +128,31 @@ public class Output extends TextOutputProcedure {
         //
 
         boolean collect = false;
+        int i = 0;
 
-        for(Iterator<String> i = mutableCommandLineArgumentsList.iterator(); i.hasNext(); ) {
+        for(Iterator<String> si = mutableCommandLineArgumentsList.iterator(); si.hasNext(); i ++) {
 
-            String arg = i.next();
+            String arg = si.next();
+
+            if (i < from) {
+
+                //
+                // skip
+                //
+
+                continue;
+            }
 
             if (collect) {
 
                 outputFormatArgs.add(arg);
-                i.remove();
+                si.remove();
                 continue;
             }
 
             if (OUTPUT_FORMAT_OPTION.equals(arg)) {
 
-                i.remove();
+                si.remove();
                 collect = true;
 
             }

@@ -45,7 +45,7 @@ public class ProcedureFactory {
      * @param commandLineLabel the command line label for the candidate procedure. Note that it can be the normal
      *                         label or the abbreviated label.
      *
-     * @param index the index of the first argument  in the following argument list that can be interpreted as
+     * @param from the index of the first argument  in the following argument list that can be interpreted as
      *              procedure argument. Note that the arguments that are recognized as procedure arguments are
      *              removed from the argument list.
      *
@@ -54,7 +54,7 @@ public class ProcedureFactory {
      *
      * @return null if no such procedure is found in classpath.
      */
-    public static Procedure find(String commandLineLabel, int index, List<String> arguments) {
+    public static Procedure find(String commandLineLabel, int from, List<String> arguments) {
 
         //
         // TODO: we currently only return the procedures we know of, but this is a hack, use an annotation and
@@ -102,14 +102,11 @@ public class ProcedureFactory {
         }
         else if (Output.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
-            Output p = new Output();
-
             //
             // unless configured otherwise, write to System.out
             //
 
-            p.setOutputStream(System.out);
-            return p;
+            return new Output(System.out, from, arguments);
         }
         else {
 
