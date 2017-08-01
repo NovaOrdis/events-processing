@@ -19,6 +19,7 @@ package io.novaordis.events.processing;
 import io.novaordis.events.processing.count.Count;
 import io.novaordis.events.processing.describe.Describe;
 import io.novaordis.events.processing.exclude.Exclude;
+import io.novaordis.events.processing.output.Output;
 import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +99,17 @@ public class ProcedureFactory {
 
             e.setOutputStream(System.out);
             return e;
+        }
+        else if (Output.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            Output p = new Output();
+
+            //
+            // unless configured otherwise, write to System.out
+            //
+
+            p.setOutputStream(System.out);
+            return p;
         }
         else {
 

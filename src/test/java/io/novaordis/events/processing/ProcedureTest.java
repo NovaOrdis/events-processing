@@ -44,8 +44,17 @@ public abstract class ProcedureTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Each implementation must make sure it is built by ProcedureFactory.find().
+     */
     @Test
     public abstract void procedureFactoryFind() throws Exception;
+
+    /**
+     * Each implementation must test its command line label(s).
+     */
+    @Test
+    public abstract void commandLineLabel() throws Exception;
 
     @Test
     public void atLeastOneNonNullCommandLineLabel() throws Exception {

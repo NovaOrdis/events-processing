@@ -52,8 +52,6 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
-    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
-
     @Test
     @Override
     public void procedureFactoryFind() throws Exception {
@@ -81,19 +79,20 @@ public class ExcludeTest extends TextOutputProcedureTest {
         assertNotNull(os2);
     }
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
     @Test
+    @Override
     public void commandLineLabel() throws Exception {
 
         Exclude e = getTextOutputProcedureToTest(true);
 
-        List<String> clls = e.getCommandLineLabels();
+        List<String> commandLineLabels = e.getCommandLineLabels();
 
-        assertEquals(2, clls.size());
-        assertTrue(clls.contains(Exclude.COMMAND_LINE_LABEL));
-        assertTrue(clls.contains(Exclude.ABBREVIATED_COMMAND_LINE_LABEL));
+        assertEquals(2, commandLineLabels.size());
+        assertTrue(commandLineLabels.contains(Exclude.COMMAND_LINE_LABEL));
+        assertTrue(commandLineLabels.contains(Exclude.ABBREVIATED_COMMAND_LINE_LABEL));
     }
+
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
     public void nonInitializedInstance_NoOutputStream() throws Exception {

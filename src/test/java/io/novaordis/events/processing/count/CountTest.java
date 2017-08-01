@@ -20,8 +20,6 @@ import io.novaordis.events.processing.MockEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.ProcedureTest;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +36,6 @@ public class CountTest extends ProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    private static final Logger log = LoggerFactory.getLogger(CountTest.class);
-
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -50,8 +46,6 @@ public class CountTest extends ProcedureTest {
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
-    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
-
     @Test
     @Override
     public void procedureFactoryFind() throws Exception {
@@ -61,14 +55,11 @@ public class CountTest extends ProcedureTest {
 
         Count p2 = (Count)ProcedureFactory.find(Count.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p2);
-
-        log.debug("procedureFactoryFind()");
     }
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
     @Test
-    public void commandLineLabels() throws Exception {
+    @Override
+    public void commandLineLabel() throws Exception {
 
         Count d = getProcedureToTest();
 
@@ -77,6 +68,8 @@ public class CountTest extends ProcedureTest {
         assertTrue(commandLineLabels.contains(Count.COMMAND_LINE_LABEL));
         assertTrue(commandLineLabels.contains(Count.ABBREVIATED_COMMAND_LINE_LABEL));
     }
+
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
     public void count() throws Exception {

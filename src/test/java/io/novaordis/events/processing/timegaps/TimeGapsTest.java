@@ -16,6 +16,7 @@
 
 package io.novaordis.events.processing.timegaps;
 
+import io.novaordis.events.processing.Procedure;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.processing.ProcedureFactory;
 import org.junit.Test;
@@ -24,8 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -47,8 +51,6 @@ public class TimeGapsTest extends TextOutputProcedureTest {
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
-    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
-
     @Test
     @Override
     public void procedureFactoryFind() throws Exception {
@@ -65,6 +67,17 @@ public class TimeGapsTest extends TextOutputProcedureTest {
         assertNotNull(os);
 
         log.debug("procedureFactoryFind()");
+    }
+
+    @Test
+    @Override
+    public void commandLineLabel() throws Exception {
+
+        Procedure p = getTextOutputProcedureToTest();
+
+        List<String> commandLineLabels = p.getCommandLineLabels();
+        assertEquals(1, commandLineLabels.size());
+        assertTrue(commandLineLabels.contains(TimeGaps.COMMAND_LINE_LABEL));
     }
 
     // Tests -----------------------------------------------------------------------------------------------------------

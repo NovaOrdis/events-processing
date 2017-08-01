@@ -60,8 +60,6 @@ public class DescribeTest extends TextOutputProcedureTest {
 
     // Overrides -------------------------------------------------------------------------------------------------------
 
-    // ProcedureFactory.find() -----------------------------------------------------------------------------------------
-
     @Test
     @Override
     public void procedureFactoryFind() throws Exception {
@@ -78,18 +76,19 @@ public class DescribeTest extends TextOutputProcedureTest {
         assertNotNull(os);
     }
 
-    // Tests -----------------------------------------------------------------------------------------------------------
-
     @Test
+    @Override
     public void commandLineLabel() throws Exception {
 
         Describe d = getTextOutputProcedureToTest(true);
 
-        List<String> cll = d.getCommandLineLabels();
+        List<String> commandLineLabels = d.getCommandLineLabels();
 
-        assertEquals(1, cll.size());
-        assertEquals(Describe.COMMAND_LINE_LABEL, cll.get(0));
+        assertEquals(1, commandLineLabels.size());
+        assertEquals(Describe.COMMAND_LINE_LABEL, commandLineLabels.get(0));
     }
+
+    // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
     public void nonInitializedInstance() throws Exception {
