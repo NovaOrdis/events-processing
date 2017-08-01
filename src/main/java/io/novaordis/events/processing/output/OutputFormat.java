@@ -17,94 +17,30 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.TextOutputProcedure;
-
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * The default procedure to handle event streams: the procedure inspects the events and sends their string
- * representation to the configured output stream.
- *
- * More details: https://kb.novaordis.com/index.php/Event-processing_output
+ * Encapsulates the output format specification and formats events according to the specification.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 8/1/17
  */
-public class Output extends TextOutputProcedure {
+public interface OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final String COMMAND_LINE_LABEL = "output";
-
-    // public static final SimpleDateFormat TIMESTAMP_OUTPUT_FORMAT = new SimpleDateFormat("MM/dd/YY HH:mm:ss,SSS");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private OutputFormat format;
-
     // Constructors ----------------------------------------------------------------------------------------------------
-
-    /**
-     * Uninitialized output.
-     */
-    public Output() {
-
-        this(null);
-    }
-
-    public Output(OutputStream os) {
-
-        if (os != null) {
-
-            setOutputStream(os);
-        }
-
-        format = new DefaultOutputFormat();
-    }
-
-    // Procedure implementation ----------------------------------------------------------------------------------------
-
-    @Override
-    public List<String> getCommandLineLabels() {
-
-        return Collections.singletonList(COMMAND_LINE_LABEL);
-    }
-
-    @Override
-    public void process(Event in) throws EventProcessingException {
-
-        invocationCount ++;
-
-        try {
-
-            println(in);
-        }
-        catch(Exception e) {
-
-            throw new EventProcessingException(e);
-        }
-    }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Never returns null.
-     */
-    public OutputFormat getFormat() {
-
-        return format;
-    }
+    String format(Event e);
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    // Static Protected ------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
 

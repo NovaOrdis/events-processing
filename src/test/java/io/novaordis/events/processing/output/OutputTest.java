@@ -97,82 +97,16 @@ public class OutputTest extends TextOutputProcedureTest {
         assertEquals(os, o.getOutputStream());
     }
 
+    // output format ---------------------------------------------------------------------------------------------------
 
-//    @Test
-//    public void nonInitializedInstance() throws Exception {
-//
-//        Describe d = new Describe();
-//
-//        try {
-//
-//            d.process(new MockEvent());
-//            fail("should have thrown exception");
-//        }
-//        catch(IllegalStateException e) {
-//
-//            String msg = e.getMessage();
-//
-//            assertTrue(msg.contains("was not initialized"));
-//            assertTrue(msg.contains("no output stream"));
-//        }
-//    }
-//
-//    @Test
-//    public void happyPath() throws Exception {
-//
-//        Describe d = getTextOutputProcedureToTest(true);
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//
-//        d.setOutputStream(baos);
-//
-//        MockEvent me = new MockEvent();
-//
-//        d.process(me);
-//
-//        byte[] firstReading = baos.toByteArray();
-//
-//        assertTrue(firstReading.length > 0);
-//
-//        String s = new String(firstReading);
-//        assertTrue(s.contains("MockEvent"));
-//
-//        //
-//        // process an event with the same signature, it should not produce extra output
-//        //
-//
-//        MockEvent me2 = new MockEvent();
-//
-//        d.process(me2);
-//
-//        byte[] secondReading = baos.toByteArray();
-//
-//        assertEquals(firstReading.length, secondReading.length);
-//
-//        //
-//        // process an event with a different signature
-//        //
-//
-//        MockEvent me3 = new MockEvent();
-//        me3.setStringProperty("mock-property", "something");
-//
-//        d.process(me3);
-//
-//        byte[] thirdReading = baos.toByteArray();
-//
-//        assertTrue(thirdReading.length > secondReading.length);
-//
-//        byte[] lastEvent = new byte[thirdReading.length - secondReading.length];
-//        System.arraycopy(thirdReading, secondReading.length, lastEvent, 0, lastEvent.length);
-//
-//        String s2 = new String(lastEvent);
-//
-//        assertTrue(s2.contains("MockEvent"));
-//        assertTrue(s2.contains("mock-property"));
-//        assertFalse(s2.contains("something"));
-//
-//    }
-    
+    @Test
+    public void nonNullOutputFormat() throws Exception {
+
+        Output o = new Output();
+        assertNotNull(o.getFormat());
+    }
+
+
     // getSignature() --------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------

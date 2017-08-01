@@ -17,94 +17,39 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.TextOutputProcedure;
-
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * The default procedure to handle event streams: the procedure inspects the events and sends their string
- * representation to the configured output stream.
- *
- * More details: https://kb.novaordis.com/index.php/Event-processing_output
+ * A very generic OutputFormat, that is a fall back if nothing more specific is installed. It displays the raw
+ * representation of the event, if available, and if not, the timestamp if the event is a timed event, and the event
+ * type, as reflected by its class. This is most likely useless in most of the cases, so Output users should replace
+ * it with something more useful.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 8/1/17
  */
-public class Output extends TextOutputProcedure {
+public class DefaultOutputFormat implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final String COMMAND_LINE_LABEL = "output";
-
-    // public static final SimpleDateFormat TIMESTAMP_OUTPUT_FORMAT = new SimpleDateFormat("MM/dd/YY HH:mm:ss,SSS");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private OutputFormat format;
-
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    /**
-     * Uninitialized output.
-     */
-    public Output() {
-
-        this(null);
-    }
-
-    public Output(OutputStream os) {
-
-        if (os != null) {
-
-            setOutputStream(os);
-        }
-
-        format = new DefaultOutputFormat();
-    }
-
-    // Procedure implementation ----------------------------------------------------------------------------------------
+    // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
-    public List<String> getCommandLineLabels() {
+    public String format(Event e) {
 
-        return Collections.singletonList(COMMAND_LINE_LABEL);
-    }
-
-    @Override
-    public void process(Event in) throws EventProcessingException {
-
-        invocationCount ++;
-
-        try {
-
-            println(in);
-        }
-        catch(Exception e) {
-
-            throw new EventProcessingException(e);
-        }
+        throw new RuntimeException("format() NOT YET IMPLEMENTED");
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * Never returns null.
-     */
-    public OutputFormat getFormat() {
-
-        return format;
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    // Static Protected ------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
 
