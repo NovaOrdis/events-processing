@@ -19,6 +19,8 @@ package io.novaordis.events.processing.output;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class Output extends TextOutputProcedure {
     public static final String COMMAND_LINE_LABEL = "output";
 
     public static final String OUTPUT_FORMAT_OPTION = "-o";
+
+    private static final Logger log = LoggerFactory.getLogger(Output.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -92,6 +96,8 @@ public class Output extends TextOutputProcedure {
     public void process(Event in) throws EventProcessingException {
 
         invocationCount ++;
+
+        if (log.isDebugEnabled()) { log.debug(this + " got " + in); }
 
         try {
 
