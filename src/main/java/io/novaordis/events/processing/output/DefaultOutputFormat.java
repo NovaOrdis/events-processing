@@ -17,7 +17,6 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.event.TimedEvent;
 
 import java.text.SimpleDateFormat;
 
@@ -70,28 +69,11 @@ public class DefaultOutputFormat implements OutputFormat {
             return s;
         }
 
-        if (e instanceof TimedEvent) {
+        //
+        // do not display timestamp, Output does that by default
+        //
 
-            Long time = ((TimedEvent)e).getTime();
-
-            if (time == null) {
-
-                time = 0L;
-            }
-
-            s = DEFAULT_TIMESTAMP_FORMAT.format(time);
-        }
-
-        String type = e.getClass().getSimpleName();
-
-        if (s == null) {
-
-            return type;
-        }
-        else {
-
-            return s + getSeparator() + type;
-        }
+        return e.getClass().getSimpleName();
     }
 
     @Override

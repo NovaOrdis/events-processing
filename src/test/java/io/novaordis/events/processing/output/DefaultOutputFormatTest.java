@@ -94,7 +94,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
 
         String s = f.format(me);
 
-        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(0L) + " MockTimedEvent", s);
+        assertEquals("MockTimedEvent", s);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
 
         String s = f.format(me);
 
-        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L) + " MockTimedEvent", s);
+        assertEquals("MockTimedEvent", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
