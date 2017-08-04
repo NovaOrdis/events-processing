@@ -34,7 +34,7 @@ public class DefaultOutputFormat implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    public static final SimpleDateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss,SSS");
+    public static final SimpleDateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss.SSS");
 
     // Static ----------------------------------------------------------------------------------------------------------
 
