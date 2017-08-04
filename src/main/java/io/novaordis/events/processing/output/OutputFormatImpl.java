@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * By default, a header is displayed when the first event that matches the format is encountered.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
  */

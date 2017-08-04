@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -377,6 +378,36 @@ public class OutputTest extends TextOutputProcedureTest {
         //
 
         assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L) + " mock-value", result.trim());
+    }
+
+    @Test
+    public void process_GapInEventFlow_SomeEventsDoNotMatchTheOutputFilter() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Output o = getTextOutputProcedureToTest(baos);
+
+        OutputFormatImpl of = new OutputFormatImpl("test-property");
+        o.setOutputFormat(of);
+        o.setTimestampFormat(new SimpleDateFormat("s"));
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("test-property", "A");
+        e.setTimestamp(new TimestampImpl(1000L));
+
+        GenericTimedEvent e2 = new GenericTimedEvent();
+        // missing 'test-property'
+        e2.setTimestamp(new TimestampImpl(2000L));
+
+        GenericTimedEvent e3 = new GenericTimedEvent();
+        e3.setStringProperty("test-property", "C");
+        e3.setTimestamp(new TimestampImpl(3000L));
+
+        o.process(Arrays.asList(e, e2, e3));
+
+        String result = new String(baos.toByteArray());
+        assertEquals("1, A\n3, C\n", result);
+
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

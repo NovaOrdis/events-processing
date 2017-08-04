@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,7 +35,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * The default procedure to handle event streams: the procedure inspects the events and sends their string
  * representation to the configured output stream.
  *
- * More details: https://kb.novaordis.com/index.php/Events-processing_output
+ * More details: https://kb.novaordis.com/index.php/Events-processing_output#Overview
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -54,6 +55,8 @@ public class Output extends TextOutputProcedure {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private OutputFormat format;
+
+    private DateFormat timestampFormat;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -82,6 +85,7 @@ public class Output extends TextOutputProcedure {
             setOutputStream(os);
         }
 
+        setTimestampFormat(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT);
         configureFromCommandLine(from, commandlineArguments);
     }
 
@@ -128,7 +132,7 @@ public class Output extends TextOutputProcedure {
                 if (timestamp != null) {
 
                     String separator = format.getSeparator();
-                    s = DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(timestamp) + separator + s;
+                    s = timestampFormat.format(timestamp) + separator + s;
                 }
             }
 
@@ -201,6 +205,16 @@ public class Output extends TextOutputProcedure {
     void setOutputFormat(OutputFormat format) {
 
         this.format = format;
+    }
+
+    void setTimestampFormat(DateFormat df) {
+
+        if (df == null) {
+
+            throw new IllegalArgumentException("null timestamp format");
+        }
+
+        this.timestampFormat = df;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------
