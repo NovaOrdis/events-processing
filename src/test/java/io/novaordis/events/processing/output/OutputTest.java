@@ -19,6 +19,7 @@ package io.novaordis.events.processing.output;
 import io.novaordis.events.api.event.GenericEvent;
 import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.utilities.time.TimestampImpl;
@@ -493,6 +494,28 @@ public class OutputTest extends TextOutputProcedureTest {
 
         String result = new String(baos.toByteArray());
         assertEquals("1, A\n", result);
+    }
+
+    @Test
+    public void process_DefaultOutputFormat_PreferredRepresentationHeader() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Output o = getTextOutputProcedureToTest(baos);
+        o.setTimestampFormat(new SimpleDateFormat("s"));
+
+        assertTrue(o.isOutputHeader());
+
+        assertTrue(o.getFormat() instanceof DefaultOutputFormat);
+
+        MockTimedEvent mte = new MockTimedEvent();
+        mte.setPreferredRepresentation("blue");
+        mte.setPreferredRepresentationHeader("red");
+
+        o.process(mte);
+
+        String result = new String(baos.toByteArray());
+        assertEquals("# red\nblue\n", result);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

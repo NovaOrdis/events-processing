@@ -32,6 +32,8 @@ public class MockTimedEvent extends GenericTimedEvent {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private String rawRepresentation;
+    private String preferredRepresentation;
+    private String preferredRepresentationHeader;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -53,11 +55,33 @@ public class MockTimedEvent extends GenericTimedEvent {
         return rawRepresentation;
     }
 
+    @Override
+    public String getPreferredRepresentation(String fieldSeparator) {
+
+        return preferredRepresentation;
+    }
+
+    @Override
+    public String getPreferredRepresentationHeader(String fieldSeparator) {
+
+        return preferredRepresentationHeader;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     public void setRawRepresentation(String s) {
 
         this.rawRepresentation = s;
+    }
+
+    public void setPreferredRepresentation(String s) {
+
+        this.preferredRepresentation = s;
+    }
+
+    public void setPreferredRepresentationHeader(String s) {
+
+        this.preferredRepresentationHeader = s;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

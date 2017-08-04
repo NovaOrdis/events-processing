@@ -167,7 +167,7 @@ public class Output extends TextOutputProcedure {
 
                 if (header != null) {
 
-                    header = headerMarker + TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
+                    header = TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
                 }
 
                 String sTimestamp = " ";
@@ -181,6 +181,8 @@ public class Output extends TextOutputProcedure {
             }
 
             if (header != null) {
+
+                header = headerMarker + header;
 
                 println(header);
             }
