@@ -186,6 +186,36 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertFalse(f.isLeadingTimestamp());
     }
 
+    // header ----------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void getHeader_NoFields() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl();
+        String header = f.getHeader();
+        assertEquals("", header);
+    }
+
+    @Test
+    public void getHeader_OneField() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property");
+
+        String header = f.getHeader();
+
+        assertEquals("test-property", header);
+    }
+
+    @Test
+    public void getHeader_TwoFields() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
+
+        String header = f.getHeader();
+
+        assertEquals("test-property, test-property2", header);
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------

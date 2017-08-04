@@ -22,10 +22,8 @@ import io.novaordis.events.api.event.TimedEvent;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -40,17 +38,43 @@ public class MockOutputFormat implements OutputFormat {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private boolean leadingTimestamp;
-    private Set<String> matchingProperties;
+    // list because we need to preserve order
+    private List<String> matchingProperties;
     private DateFormat timestampFormat;
+    private boolean isProvidingHeader;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public MockOutputFormat() {
 
-        this.matchingProperties = new HashSet<>();
+        this.matchingProperties = new ArrayList<>();
+        this.isProvidingHeader = true;
     }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
+
+    @Override
+    public String getHeader() {
+
+        if (!isProvidingHeader) {
+
+            return null;
+        }
+
+        String s = "";
+
+        for(Iterator<String> pi = matchingProperties.iterator(); pi.hasNext(); ) {
+
+            s += pi.next();
+
+            if (pi.hasNext()) {
+
+                s += getSeparator();
+            }
+        }
+
+        return s;
+    }
 
     @Override
     public String format(Event e) {
@@ -115,6 +139,11 @@ public class MockOutputFormat implements OutputFormat {
     public void setTimestampFormat(DateFormat f) {
 
         this.timestampFormat = f;
+    }
+
+    public void setProvidingHeader(boolean b) {
+
+        this.isProvidingHeader = b;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

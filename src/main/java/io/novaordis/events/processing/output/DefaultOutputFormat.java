@@ -44,6 +44,12 @@ public class DefaultOutputFormat implements OutputFormat {
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
+    public String getHeader() {
+
+        return "# Default Event Representation";
+    }
+
+    @Override
     public String format(Event e) {
 
         if (e == null) {

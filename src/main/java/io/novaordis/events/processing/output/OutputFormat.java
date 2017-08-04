@@ -37,6 +37,14 @@ public interface OutputFormat {
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**
+     * @return a header line, with its distinct elements separated by the sequence of character given by getSeparator()
+     *
+     * The implementation has the choice of not providing a header, in which case this method will return null. The
+     * calling layer must take this into account and not display anything as header, if a header is not provided.
+     */
+    String getHeader();
+
+    /**
      * Format the event according to the specified format. If none of the format criteria match, the result is null,
      * which is an indication to the calling layer that the event does not match the format. It is up to the calling
      * layer to decide what to do - print noting, print empty line or whatever else it wants.

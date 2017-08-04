@@ -119,6 +119,19 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         assertTrue(new DefaultOutputFormat().isLeadingTimestamp());
     }
 
+    // getHeader() -----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void getHeader() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        String header = f.getHeader();
+
+        // this may change in the future
+        assertEquals("# Default Event Representation", header);
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------

@@ -264,6 +264,7 @@ public class OutputTest extends TextOutputProcedureTest {
             throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
+        o.setOutputHeader(false);
 
         OutputFormatImpl f = new OutputFormatImpl("mock-property");
 
@@ -318,6 +319,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
+        o.setOutputHeader(false);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(true);
@@ -350,6 +352,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatDoNOTStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
+        o.setOutputHeader(false);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(false);
@@ -386,6 +389,7 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
+        o.setOutputHeader(false);
 
         OutputFormatImpl of = new OutputFormatImpl("test-property");
         o.setOutputFormat(of);
@@ -408,6 +412,85 @@ public class OutputTest extends TextOutputProcedureTest {
         String result = new String(baos.toByteArray());
         assertEquals("1, A\n3, C\n", result);
 
+    }
+
+    // header tests ----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void process_FormatDoesNotProvideHeader() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Output o = getTextOutputProcedureToTest(baos);
+        o.setTimestampFormat(new SimpleDateFormat("s"));
+
+        assertTrue(o.isOutputHeader());
+
+        MockOutputFormat mof = new MockOutputFormat();
+        mof.addMatchingProperty("test-property");
+        mof.setProvidingHeader(false);
+        assertNull(mof.getHeader());
+        o.setOutputFormat(mof);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("test-property", "A");
+        e.setTimestamp(new TimestampImpl(1000L));
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+        assertEquals("1 A\n", result);
+    }
+
+    @Test
+    public void process_FormatDoesProvideHeader() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Output o = getTextOutputProcedureToTest(baos);
+        o.setTimestampFormat(new SimpleDateFormat("s"));
+
+        assertTrue(o.isOutputHeader());
+
+        OutputFormatImpl of = new OutputFormatImpl("test-property");
+        String header = of.getHeader();
+        assertEquals("test-property", header);
+        o.setOutputFormat(of);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("test-property", "A");
+        e.setTimestamp(new TimestampImpl(1000L));
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+        assertEquals("# timestamp, test-property\n1, A\n", result);
+    }
+
+    @Test
+    public void process_FormatDoesProvideHeader_OutputDoesNotPrintIt() throws Exception {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Output o = getTextOutputProcedureToTest(baos);
+        o.setTimestampFormat(new SimpleDateFormat("s"));
+        o.setOutputHeader(false);
+
+        assertFalse(o.isOutputHeader());
+
+        OutputFormatImpl of = new OutputFormatImpl("test-property");
+        String header = of.getHeader();
+        assertEquals("test-property", header);
+        o.setOutputFormat(of);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("test-property", "A");
+        e.setTimestamp(new TimestampImpl(1000L));
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+        assertEquals("1, A\n", result);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

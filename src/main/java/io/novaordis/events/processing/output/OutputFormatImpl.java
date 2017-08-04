@@ -41,6 +41,7 @@ public class OutputFormatImpl implements OutputFormat {
 
     private String separator;
 
+    // List will preserve order, we need it for the header
     private List<String> propertyNames;
 
     // Constructors ----------------------------------------------------------------------------------------------------
@@ -66,6 +67,24 @@ public class OutputFormatImpl implements OutputFormat {
     }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
+
+    @Override
+    public String getHeader() {
+
+        String s = "";
+
+        for(Iterator<String> i = propertyNames.iterator(); i.hasNext(); ) {
+
+            s += i.next();
+
+            if (i.hasNext()) {
+
+                s += getSeparator();
+            }
+        }
+
+        return s;
+    }
 
     @Override
     public String format(Event e) {

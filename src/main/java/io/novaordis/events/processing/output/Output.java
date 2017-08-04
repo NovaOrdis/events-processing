@@ -16,6 +16,7 @@
 
 package io.novaordis.events.processing.output;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
@@ -58,6 +59,10 @@ public class Output extends TextOutputProcedure {
 
     private DateFormat timestampFormat;
 
+    private boolean outputHeader;
+
+    private String headerMarker;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     /**
@@ -87,6 +92,14 @@ public class Output extends TextOutputProcedure {
 
         setTimestampFormat(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT);
         configureFromCommandLine(from, commandlineArguments);
+
+        //
+        // we do output headers, by default
+        //
+
+        this.outputHeader = true;
+        this.headerMarker = "# ";
+
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -107,7 +120,19 @@ public class Output extends TextOutputProcedure {
 
         if (log.isDebugEnabled()) { log.debug(this + " got " + in); }
 
+        if (in instanceof EndOfStreamEvent) {
+
+            //
+            // we don't do anything special on EndOfStream
+            //
+
+            if (log.isDebugEnabled()) { log.debug(this + " got EndOfStreamEvent"); }
+            return;
+        }
+
         try {
+
+            String header = null;
 
             String s = format.format(in);
 
@@ -121,6 +146,17 @@ public class Output extends TextOutputProcedure {
                 return;
             }
 
+
+            if (outputHeader) {
+
+                header = format.getHeader();
+
+                //
+                // turn off header request, so the next events will be displayed without header lines
+                //
+                outputHeader = false;
+            }
+
             //
             // unless the format already added a timestamp at the beginning of the line, start the line with a timestamp
             //
@@ -129,11 +165,24 @@ public class Output extends TextOutputProcedure {
 
                 Long timestamp = ((TimedEvent)in).getTime();
 
+                if (header != null) {
+
+                    header = headerMarker + TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
+                }
+
+                String sTimestamp = " ";
+
                 if (timestamp != null) {
 
-                    String separator = format.getSeparator();
-                    s = timestampFormat.format(timestamp) + separator + s;
+                    sTimestamp = timestampFormat.format(timestamp);
                 }
+
+                s = sTimestamp + format.getSeparator() + s;
+            }
+
+            if (header != null) {
+
+                println(header);
             }
 
             println(s);
@@ -152,6 +201,14 @@ public class Output extends TextOutputProcedure {
     public OutputFormat getFormat() {
 
         return format;
+    }
+
+    /**
+     * @return true if the next line to be sent to the output stream is a header line, false otherwise.
+     */
+    public boolean isOutputHeader() {
+
+        return outputHeader;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -215,6 +272,15 @@ public class Output extends TextOutputProcedure {
         }
 
         this.timestampFormat = df;
+    }
+
+    /**
+     * If set to true, the instance will output a header on first event that matches the format, then reset the flag.
+     * The flag can then be set again, to get a new header.
+     */
+    void setOutputHeader(boolean b) {
+
+        this.outputHeader = b;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------
