@@ -19,6 +19,8 @@ package io.novaordis.events.processing.output;
 import io.novaordis.events.api.event.GenericEvent;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +42,19 @@ public class OutputFormatImplTest extends OutputFormatTest {
     // Public ----------------------------------------------------------------------------------------------------------
 
     // Tests -----------------------------------------------------------------------------------------------------------
+
+    // constructor -----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void constructor_Arguments() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl("test-name");
+
+        List<String> names = f.getPropertyNames();
+
+        assertEquals(1, names.size());
+        assertEquals("test-name", names.get(0));
+    }
 
     // format() --------------------------------------------------------------------------------------------------------
 
@@ -133,7 +148,6 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals(", leaf", s);
     }
 
-
     @Test
     public void format_TwoProperties_EventHasBoth() throws Exception {
 
@@ -147,6 +161,15 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         String s = f.format(e);
         assertEquals("coffee, leaf", s);
+    }
+
+    // separator -------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void separator() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl();
+        assertEquals("" + OutputFormatImpl.DEFAULT_SEPARATOR, f.getSeparator());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

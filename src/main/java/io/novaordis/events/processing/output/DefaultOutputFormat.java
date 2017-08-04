@@ -90,8 +90,14 @@ public class DefaultOutputFormat implements OutputFormat {
         }
         else {
 
-            return s + " " + type;
+            return s + getSeparator() + type;
         }
+    }
+
+    @Override
+    public String getSeparator() {
+
+        return " ";
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

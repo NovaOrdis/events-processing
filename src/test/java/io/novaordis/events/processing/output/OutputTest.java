@@ -21,6 +21,7 @@ import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.StringProperty;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
+import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -253,6 +254,67 @@ public class OutputTest extends TextOutputProcedureTest {
 
         String formatted = f.format(e);
         assertEquals("box, cat", formatted);
+    }
+
+    // process() -------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void process_RepresentationMustAlwaysStartWitTimestampWhenFormatPresent_FormattingMatches()
+            throws Exception {
+
+        Output o = getTextOutputProcedureToTest(false);
+
+        OutputFormatImpl f = new OutputFormatImpl("mock-property");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        o.setOutputStream(baos);
+        o.setOutputFormat(f);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("mock-property", "mock-value");
+
+        e.setTimestamp(new TimestampImpl(10L));
+
+        //
+        // the mock output format send something else than timestamp to output
+        //
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+
+        assertTrue(result.startsWith(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L)));
+        assertTrue(result.contains("mock-value"));
+    }
+
+    @Test
+    public void process_FormattingDoesNotMatch() throws Exception {
+
+        Output o = getTextOutputProcedureToTest(false);
+
+        OutputFormatImpl f = new OutputFormatImpl("some-property");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        o.setOutputStream(baos);
+        o.setOutputFormat(f);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("some-other-property", "mock-value");
+
+        e.setTimestamp(new TimestampImpl(10L));
+
+        //
+        // the output format does not match
+        //
+
+        o.process(e);
+
+        //
+        // no output
+        //
+        assertTrue(baos.toByteArray().length == 0);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -18,6 +18,7 @@ package io.novaordis.events.processing.output;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -56,7 +57,15 @@ public abstract class OutputFormatTest {
             String msg = e.getMessage();
             assertTrue(msg.contains("null event"));
         }
+    }
 
+    // separator() -----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void separator_NotNull() throws Exception {
+
+        OutputFormat f = getOutputFormatToTest();
+        assertNotNull(f.getSeparator());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

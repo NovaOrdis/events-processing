@@ -17,6 +17,7 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ import java.util.List;
  * The default procedure to handle event streams: the procedure inspects the events and sends their string
  * representation to the configured output stream.
  *
- * More details: https://kb.novaordis.com/index.php/Event-processing_output
+ * More details: https://kb.novaordis.com/index.php/Events-processing_output
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -83,7 +84,6 @@ public class Output extends TextOutputProcedure {
         configureFromCommandLine(from, commandlineArguments);
     }
 
-
     // Procedure implementation ----------------------------------------------------------------------------------------
 
     @Override
@@ -92,6 +92,9 @@ public class Output extends TextOutputProcedure {
         return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
+    /**
+     * https://kb.novaordis.com/index.php/Events-processing_output#Overview
+     */
     @Override
     public void process(Event in) throws EventProcessingException {
 
@@ -102,6 +105,32 @@ public class Output extends TextOutputProcedure {
         try {
 
             String s = format.format(in);
+
+            if (s == null) {
+
+                if (log.isDebugEnabled()) {
+
+                    log.debug(this + "'s output format did not match the event, ignoring ...");
+                }
+
+                return;
+            }
+
+            //
+            // lead the line with a timestamp if the default format
+            //
+
+            if (in instanceof TimedEvent) {
+
+                Long timestamp = ((TimedEvent)in).getTime();
+
+                if (timestamp != null) {
+
+                    String separator = format.getSeparator();
+                    s = DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(timestamp) + separator + " " + s;
+                }
+            }
+
             println(s);
         }
         catch(Exception e) {
@@ -164,7 +193,13 @@ public class Output extends TextOutputProcedure {
             }
         }
 
-        this.format = OutputFormatFactory.fromArguments(outputFormatArgs);
+        OutputFormat f = OutputFormatFactory.fromArguments(outputFormatArgs);
+        setOutputFormat(f);
+    }
+
+    void setOutputFormat(OutputFormat format) {
+
+        this.format = format;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

@@ -45,8 +45,22 @@ public class OutputFormatImpl implements OutputFormat {
 
     public OutputFormatImpl() {
 
+        //noinspection NullArgumentToVariableArgMethod
+        this(null);
+    }
+
+    public OutputFormatImpl(String ... propertyNames) {
+
         this.propertyNames = new ArrayList<>();
         this.separator = "" + DEFAULT_SEPARATOR;
+
+        if (propertyNames != null && propertyNames.length > 0) {
+
+            for(String n: propertyNames) {
+
+                addPropertyName(n);
+            }
+        }
     }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
@@ -101,6 +115,12 @@ public class OutputFormatImpl implements OutputFormat {
         return s;
     }
 
+    @Override
+    public String getSeparator() {
+
+        return separator;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     public void addPropertyName(String s) {
@@ -109,6 +129,14 @@ public class OutputFormatImpl implements OutputFormat {
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
+
+    /**
+     * @return the internal storage.
+     */
+    List<String> getPropertyNames() {
+
+        return propertyNames;
+    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 

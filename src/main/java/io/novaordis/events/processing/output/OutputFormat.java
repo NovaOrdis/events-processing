@@ -41,9 +41,17 @@ public interface OutputFormat {
      * which is an indication to the calling layer that the event does not match the format. It is up to the calling
      * layer to decide what to do - print noting, print empty line, etc.
      *
+     * The result does NOT automatically start with a timestamp, it only contains what the format was configured to
+     * return.
+     *
      * @exception IllegalArgumentException if the event is null.
      */
     String format(Event e);
+
+    /**
+     * The field separator.
+     */
+    String getSeparator();
 
     // Package protected -----------------------------------------------------------------------------------------------
 
