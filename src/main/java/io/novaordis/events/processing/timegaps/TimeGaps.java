@@ -23,8 +23,10 @@ import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -50,6 +52,13 @@ public class TimeGaps extends TextOutputProcedure {
     // Constructors ----------------------------------------------------------------------------------------------------
 
     public TimeGaps() {
+
+        this(null);
+    }
+
+    public TimeGaps(OutputStream os) {
+
+        super(os);
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -60,10 +69,10 @@ public class TimeGaps extends TextOutputProcedure {
         return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
-    @Override
-    public void process(Event in) throws EventProcessingException {
+    // ProcedureBase implementation ------------------------------------------------------------------------------------
 
-        invocationCount ++;
+    @Override
+    public void process(AtomicLong invocationCount, Event in) throws EventProcessingException {
 
         if (!(in instanceof TimedEvent)) {
 

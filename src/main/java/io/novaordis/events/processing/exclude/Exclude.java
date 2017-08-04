@@ -24,8 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A procedure that looks at a stream of incoming events, and writes to the given OutputStream the raw represenation
@@ -51,6 +53,16 @@ public class Exclude extends TextOutputProcedure {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public Exclude() {
+
+        this(null);
+    }
+
+    public Exclude(OutputStream os) {
+
+        super(os);
+    }
+
     // Procedure implementation ----------------------------------------------------------------------------------------
 
     @Override
@@ -59,10 +71,10 @@ public class Exclude extends TextOutputProcedure {
         return Arrays.asList(COMMAND_LINE_LABEL, ABBREVIATED_COMMAND_LINE_LABEL);
     }
 
-    @Override
-    public void process(Event in) throws EventProcessingException {
+    // ProcedureBase implementation ------------------------------------------------------------------------------------
 
-        invocationCount ++;
+    @Override
+    public void process(AtomicLong invocationCount, Event in) throws EventProcessingException {
 
         try {
 

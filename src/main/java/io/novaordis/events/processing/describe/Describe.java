@@ -24,6 +24,7 @@ import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A procedure that looks at a stream of incoming events, and writes to the given OutputStream a description of distinct
@@ -129,7 +131,6 @@ public class Describe extends TextOutputProcedure {
         return signature;
     }
 
-
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private Set<String> signatures;
@@ -138,6 +139,12 @@ public class Describe extends TextOutputProcedure {
 
     public Describe() {
 
+        this(null);
+    }
+
+    public Describe(OutputStream os) {
+
+        super(os);
         this.signatures = new HashSet<>();
     }
 
@@ -149,10 +156,10 @@ public class Describe extends TextOutputProcedure {
         return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
-    @Override
-    public void process(Event in) throws EventProcessingException {
+    // ProcedureBase implementation ------------------------------------------------------------------------------------
 
-        invocationCount ++;
+    @Override
+    public void process(AtomicLong invocationCount, Event in) throws EventProcessingException {
 
         String signature = getSignature(in, YAML_INLINE);
 

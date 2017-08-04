@@ -87,16 +87,9 @@ public class TimeGapsTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected TimeGaps getTextOutputProcedureToTest(boolean initialized) throws Exception {
+    protected TimeGaps getTextOutputProcedureToTest(OutputStream os) throws Exception {
 
-        TimeGaps p = new TimeGaps();
-
-        if (initialized) {
-
-            p.setOutputStream(System.out);
-        }
-
-        return p;
+        return new TimeGaps(os);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

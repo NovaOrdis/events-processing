@@ -80,7 +80,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Override
     public void commandLineLabel() throws Exception {
 
-        Describe d = getTextOutputProcedureToTest(true);
+        Describe d = getTextOutputProcedureToTest(System.out);
 
         List<String> commandLineLabels = d.getCommandLineLabels();
 
@@ -112,7 +112,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Test
     public void happyPath() throws Exception {
 
-        Describe d = getTextOutputProcedureToTest(true);
+        Describe d = getTextOutputProcedureToTest(System.out);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -330,16 +330,9 @@ public class DescribeTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Describe getTextOutputProcedureToTest(boolean initialized) throws Exception {
+    protected Describe getTextOutputProcedureToTest(OutputStream os) throws Exception {
 
-        Describe d = new Describe();
-
-        if (initialized) {
-
-            d.setOutputStream(System.out);
-        }
-
-        return d;
+        return new Describe(os);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

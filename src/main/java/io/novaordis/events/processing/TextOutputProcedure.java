@@ -47,6 +47,25 @@ public abstract class TextOutputProcedure extends ProcedureBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Builds an uninitialized procedure.
+     */
+    protected TextOutputProcedure() {
+
+        this(null);
+    }
+
+    /**
+     * @param os may be null, in which case the instance is not initialized.
+     */
+    protected TextOutputProcedure(OutputStream os) {
+
+        if (os != null) {
+
+            setOutputStream(os);
+        }
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     /**

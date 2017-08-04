@@ -92,7 +92,7 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
     @Test
     public void println_InstanceNotInitialized() throws Exception {
 
-        TextOutputProcedure p = getTextOutputProcedureToTest(false);
+        TextOutputProcedure p = getTextOutputProcedureToTest(null);
 
         assertNull(p.getOutputStream());
 
@@ -173,13 +173,13 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
      */
     protected TextOutputProcedure getTextOutputProcedureToTest() throws Exception {
 
-        return getTextOutputProcedureToTest(true);
+        return getTextOutputProcedureToTest(System.out);
     }
 
     /**
-     * @param initialized whether the instance should be initialized with an OutputStream or not.
+     * @param os if not null, the procedure will be initialized with the given OutputStream.
      */
-    protected abstract TextOutputProcedure getTextOutputProcedureToTest(boolean initialized) throws Exception;
+    protected abstract TextOutputProcedure getTextOutputProcedureToTest(OutputStream os) throws Exception;
 
 
     // Private ---------------------------------------------------------------------------------------------------------

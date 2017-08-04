@@ -85,7 +85,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
     @Override
     public void commandLineLabel() throws Exception {
 
-        Exclude e = getTextOutputProcedureToTest(true);
+        Exclude e = getTextOutputProcedureToTest(System.out);
 
         List<String> commandLineLabels = e.getCommandLineLabels();
 
@@ -138,7 +138,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
     @Test
     public void process() throws Exception {
 
-        Exclude e = getTextOutputProcedureToTest(false);
+        Exclude e = getTextOutputProcedureToTest(null);
 
         assertNull(e.getQuery());
 
@@ -191,7 +191,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
     @Test
     public void setQuery_Null() throws Exception {
 
-        Exclude ex = getTextOutputProcedureToTest(true);
+        Exclude ex = getTextOutputProcedureToTest(System.out);
 
         try {
 
@@ -210,13 +210,16 @@ public class ExcludeTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Exclude getTextOutputProcedureToTest(boolean initialized) throws Exception {
+    protected Exclude getTextOutputProcedureToTest(OutputStream os) throws Exception {
 
-        Exclude p = new Exclude();
+        Exclude p = new Exclude(os);
 
-        if (initialized) {
+        if (os != null) {
 
-            p.setOutputStream(System.out);
+            //
+            // we interpret a non-null here as "we want it fully initialized"
+            //
+
             p.setQuery(new NullQuery());
         }
 

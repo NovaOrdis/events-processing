@@ -16,10 +16,13 @@
 
 package io.novaordis.events.processing.count;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.ProcedureBase;
+import io.novaordis.events.processing.TextOutputProcedure;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,10 +31,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * A procedure that looks at a stream of incoming events and counts events. The instance is thread safe, and the
  * getCount() invocation correctly returns the number of events counted up to the moment the method was invoked.
  *
+ * The EndOfStream event is NOT included in the returned count.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class Count extends ProcedureBase {
+public class Count extends TextOutputProcedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -46,8 +51,17 @@ public class Count extends ProcedureBase {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    /**
+     * Returns an instance that is not initialized with an OutputStream.
+     */
     public Count() {
 
+        this(null);
+    }
+
+    public Count(OutputStream os) {
+
+        super(os);
         this.count = new AtomicLong(0);
     }
 
@@ -59,11 +73,32 @@ public class Count extends ProcedureBase {
         return Arrays.asList(COMMAND_LINE_LABEL, ABBREVIATED_COMMAND_LINE_LABEL);
     }
 
-    @Override
-    public void process(Event in) throws EventProcessingException {
+    // ProcedureBase overrides -----------------------------------------------------------------------------------------
 
-        invocationCount ++;
-        count.incrementAndGet();
+    @Override
+    public void process(AtomicLong invocationCount, Event in) throws EventProcessingException {
+
+        if (in instanceof EndOfStreamEvent) {
+
+            //
+            // report and exit
+            //
+
+            long countValue = count.get();
+
+            try {
+
+                println(countValue);
+            }
+            catch(IOException e) {
+
+                throw new EventProcessingException(e);
+            }
+        }
+        else {
+
+            count.incrementAndGet();
+        }
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

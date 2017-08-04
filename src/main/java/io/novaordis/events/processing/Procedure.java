@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * The implementations must have a public no-argument constructor, as they will be instantiated via reflection.
  *
- * @see ProcedureFactory#find(String, int, List<String>)
+ * @see ProcedureFactory#find(String, int, List)
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -47,13 +47,22 @@ public interface Procedure {
      * Process an incoming event. If corresponding output events are produced, they will be offered for consumption
      * though means particular to a specific implementation.
      *
-     * Implementations are advised to increment the invocation count counter upon each invocation, otherwise the
-     * counter returned with getInvocationCount() will not be accurate.
+     * The implementation should be prepared to handle special events such as EndOfStreamEvent, etc.
+     *
+     * @exception EventProcessingException if processing of an individual event fail, but the procedure is able to
+     * continue processing events.
+     * @exception IllegalStateException if the procedure is not able to process events anymore, as it is the case
+     * when receives an event after EndOfStreamEvent was processed.
      */
     void process(Event in) throws EventProcessingException;
 
     /**
      * Convenience method, has the same semantics as process(Event), just that it processes events in batches.
+     *
+     * @exception EventProcessingException if processing of an individual event fail, but the procedure is able to
+     * continue processing events.
+     * @exception IllegalStateException if the procedure is not able to process events anymore, as it is the case
+     * when receives an event after EndOfStreamEvent was processed.
      */
     void process(List<Event> in) throws EventProcessingException;
 

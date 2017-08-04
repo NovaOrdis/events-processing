@@ -16,11 +16,14 @@
 
 package io.novaordis.events.processing.count;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
-import io.novaordis.events.processing.ProcedureTest;
+import io.novaordis.events.processing.TextOutputProcedureTest;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +35,7 @@ import static org.junit.Assert.assertTrue;
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class CountTest extends ProcedureTest {
+public class CountTest extends TextOutputProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -61,7 +64,7 @@ public class CountTest extends ProcedureTest {
     @Override
     public void commandLineLabel() throws Exception {
 
-        Count d = getProcedureToTest();
+        Count d = getTextOutputProcedureToTest(null);
 
         List<String> commandLineLabels = d.getCommandLineLabels();
         assertEquals(2, commandLineLabels.size());
@@ -74,9 +77,13 @@ public class CountTest extends ProcedureTest {
     @Test
     public void count() throws Exception {
 
-        Count d = getProcedureToTest();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Count d = getTextOutputProcedureToTest(baos);
 
         assertEquals(0L, d.getCount());
+
+        assertTrue(baos.toByteArray().length == 0);
 
         MockTimedEvent me = new MockTimedEvent();
 
@@ -84,11 +91,27 @@ public class CountTest extends ProcedureTest {
 
         assertEquals(1L, d.getCount());
 
+        assertTrue(baos.toByteArray().length == 0);
+
         MockTimedEvent me2 = new MockTimedEvent();
 
         d.process(me2);
 
         assertEquals(2L, d.getCount());
+
+        assertTrue(baos.toByteArray().length == 0);
+
+        //
+        // EndOfStream
+        //
+
+        d.process(new EndOfStreamEvent());
+
+        assertEquals(2L, d.getCount());
+
+        String expected = "2\n";
+
+        assertEquals(expected, new String(baos.toByteArray()));
     }
     
     // Package protected -----------------------------------------------------------------------------------------------
@@ -96,9 +119,9 @@ public class CountTest extends ProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Count getProcedureToTest() throws Exception {
+    protected Count getTextOutputProcedureToTest(OutputStream os) throws Exception {
 
-        return new Count();
+        return new Count(os);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * The default procedure to handle event streams: the procedure inspects the events and sends their string
@@ -92,13 +93,13 @@ public class Output extends TextOutputProcedure {
         return Collections.singletonList(COMMAND_LINE_LABEL);
     }
 
+    // ProcedureBase implementation ------------------------------------------------------------------------------------
+
     /**
      * https://kb.novaordis.com/index.php/Events-processing_output#Overview
      */
     @Override
-    public void process(Event in) throws EventProcessingException {
-
-        invocationCount ++;
+    public void process(AtomicLong invocationCount, Event in) throws EventProcessingException {
 
         if (log.isDebugEnabled()) { log.debug(this + " got " + in); }
 

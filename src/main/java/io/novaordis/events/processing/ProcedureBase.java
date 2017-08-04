@@ -16,9 +16,11 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -32,9 +34,15 @@ public abstract class ProcedureBase implements Procedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    protected volatile long invocationCount;
+    protected final AtomicLong invocationCount;
+    protected volatile boolean endOfStream;
 
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    protected ProcedureBase() {
+
+        this.invocationCount = new AtomicLong(0L);
+    }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
 
@@ -47,10 +55,31 @@ public abstract class ProcedureBase implements Procedure {
         }
     }
 
+    /**
+     * Override that does EOS accounting, etc.
+     */
+    @Override
+    public void process(Event e) throws EventProcessingException {
+
+        invocationCount.incrementAndGet();
+
+        if (endOfStream) {
+
+            throw new IllegalStateException("event beyond EndOfStream");
+        }
+
+        if (e instanceof EndOfStreamEvent) {
+
+            endOfStream = true;
+        }
+
+        process(invocationCount, e);
+    }
+
     @Override
     public long getInvocationCount() {
 
-        return invocationCount;
+        return invocationCount.get();
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
@@ -79,6 +108,8 @@ public abstract class ProcedureBase implements Procedure {
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    protected abstract void process(AtomicLong invocationCount, Event e) throws EventProcessingException;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

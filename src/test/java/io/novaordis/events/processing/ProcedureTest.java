@@ -16,6 +16,8 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.events.api.event.EndOfStreamEvent;
+import io.novaordis.events.api.event.Event;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
@@ -25,6 +27,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -56,28 +59,7 @@ public abstract class ProcedureTest {
     @Test
     public abstract void commandLineLabel() throws Exception;
 
-    @Test
-    public void atLeastOneNonNullCommandLineLabel() throws Exception {
-
-        Procedure p = getProcedureToTest();
-        List<String> commandLineLabels = p.getCommandLineLabels();
-        assertTrue(commandLineLabels.size() >= 1);
-        //noinspection Convert2streamapi
-        for(String s: commandLineLabels) {
-            assertNotNull(s);
-        }
-    }
-
-    @Test
-    public void implementationHasANoArgumentConstructor() throws Exception {
-
-        Procedure p = getProcedureToTest();
-
-        // public no-argument constructor
-        Constructor c = p.getClass().getConstructor();
-
-        assertNotNull(c);
-    }
+    // process() -------------------------------------------------------------------------------------------------------
 
     @Test
     public void processListOfEvents() throws Exception {
@@ -92,6 +74,85 @@ public abstract class ProcedureTest {
         p.process(Arrays.asList(me, me2));
 
         assertEquals(2, p.getInvocationCount());
+    }
+
+    @Test
+    public void process_EndOfStreamEvent() throws Exception {
+
+        Procedure p = getProcedureToTest();
+
+        assertEquals(0, p.getInvocationCount());
+
+        EndOfStreamEvent eos = new EndOfStreamEvent();
+
+        p.process(eos);
+
+        //
+        // an attempt to process an event after EOS was processed should thrown IllegalStateException
+        //
+
+        try {
+
+            p.process(new MockTimedEvent());
+            fail("should throw exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("event beyond EndOfStream"));
+        }
+    }
+
+    @Test
+    public void process_EndOfStreamEventInList() throws Exception {
+
+        Procedure p = getProcedureToTest();
+
+        assertEquals(0, p.getInvocationCount());
+
+        List<Event> events = Arrays.asList(new EndOfStreamEvent(), new MockTimedEvent());
+
+        //
+        // an attempt to process an event after EOS was processed should thrown IllegalStateException
+        //
+
+        try {
+
+            p.process(events);
+            fail("should throw exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("event beyond EndOfStream"));
+        }
+    }
+
+
+    // miscellaneous ---------------------------------------------------------------------------------------------------
+
+    @Test
+    public void implementationHasANoArgumentConstructor() throws Exception {
+
+        Procedure p = getProcedureToTest();
+
+        // public no-argument constructor
+        Constructor c = p.getClass().getConstructor();
+
+        assertNotNull(c);
+    }
+
+
+    @Test
+    public void atLeastOneNonNullCommandLineLabel() throws Exception {
+
+        Procedure p = getProcedureToTest();
+        List<String> commandLineLabels = p.getCommandLineLabels();
+        assertTrue(commandLineLabels.size() >= 1);
+        //noinspection Convert2streamapi
+        for(String s: commandLineLabels) {
+            assertNotNull(s);
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ public class OutputTest extends TextOutputProcedureTest {
     @Override
     public void commandLineLabel() throws Exception {
 
-        Output p = getTextOutputProcedureToTest(true);
+        Output p = getTextOutputProcedureToTest(System.out);
 
         List<String> commandLineLabels = p.getCommandLineLabels();
 
@@ -262,7 +262,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_RepresentationMustAlwaysStartWitTimestampWhenFormatPresent_FormattingMatches()
             throws Exception {
 
-        Output o = getTextOutputProcedureToTest(false);
+        Output o = getTextOutputProcedureToTest(null);
 
         OutputFormatImpl f = new OutputFormatImpl("mock-property");
 
@@ -287,7 +287,7 @@ public class OutputTest extends TextOutputProcedureTest {
     @Test
     public void process_FormattingDoesNotMatch() throws Exception {
 
-        Output o = getTextOutputProcedureToTest(false);
+        Output o = getTextOutputProcedureToTest(null);
 
         OutputFormatImpl f = new OutputFormatImpl("some-property");
 
@@ -316,7 +316,7 @@ public class OutputTest extends TextOutputProcedureTest {
     @Test
     public void process_FormatManufacturesLinesThatStartWithALeadingTimestamp() throws Exception {
 
-        Output o = getTextOutputProcedureToTest(false);
+        Output o = getTextOutputProcedureToTest(null);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(true);
@@ -348,7 +348,7 @@ public class OutputTest extends TextOutputProcedureTest {
     @Test
     public void process_FormatManufacturesLinesThatDoNOTStartWithALeadingTimestamp() throws Exception {
 
-        Output o = getTextOutputProcedureToTest(false);
+        Output o = getTextOutputProcedureToTest(null);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(false);
@@ -384,16 +384,9 @@ public class OutputTest extends TextOutputProcedureTest {
     // Protected -------------------------------------------------------------------------------------------------------
 
     @Override
-    protected Output getTextOutputProcedureToTest(boolean initialized) throws Exception {
+    protected Output getTextOutputProcedureToTest(OutputStream os) throws Exception {
 
-        Output p = new Output();
-
-        if (initialized) {
-
-            p.setOutputStream(System.out);
-        }
-
-        return p;
+        return new Output(os);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------
