@@ -31,7 +31,7 @@ public class OutputFormatImpl implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    public static final char DEFAULT_SEPARATOR = ',';
+    public static final String DEFAULT_SEPARATOR = ", ";
 
     // Static ----------------------------------------------------------------------------------------------------------
 
