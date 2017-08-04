@@ -31,6 +31,7 @@ public class MockEvent extends GenericEvent {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private String rawRepresentation;
+    private String preferredRepresentation;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -39,7 +40,13 @@ public class MockEvent extends GenericEvent {
         super();
     }
 
-    // GenericTimeEvent overrides --------------------------------------------------------------------------------------
+    // GenericEvent overrides ------------------------------------------------------------------------------------------
+
+    @Override
+    public String getPreferredRepresentation() {
+
+        return preferredRepresentation;
+    }
 
     @Override
     public String getRawRepresentation() {
@@ -52,6 +59,11 @@ public class MockEvent extends GenericEvent {
     public void setRawRepresentation(String s) {
 
         this.rawRepresentation = s;
+    }
+
+    public void setPreferredRepresentation(String s) {
+
+        this.preferredRepresentation = s;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

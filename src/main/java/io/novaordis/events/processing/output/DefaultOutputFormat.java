@@ -52,7 +52,18 @@ public class DefaultOutputFormat implements OutputFormat {
             throw new IllegalArgumentException("null event");
         }
 
-        String s = e.getRawRepresentation();
+        //
+        // start with preferred implementation
+        //
+
+        String s = e.getPreferredRepresentation();
+
+        if (s != null) {
+
+            return s;
+        }
+
+        s = e.getRawRepresentation();
 
         if (s != null) {
 

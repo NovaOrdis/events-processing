@@ -22,6 +22,7 @@ import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -45,11 +46,25 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
     // format() --------------------------------------------------------------------------------------------------------
 
     @Test
+    public void format_PreferredRepresentationPresent() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockEvent me = new MockEvent();
+        me.setPreferredRepresentation("A");
+        me.setRawRepresentation("B");
+
+        String s = f.format(me);
+        assertEquals("A", s);
+    }
+
+    @Test
     public void format_RawRepresentationPresent() throws Exception {
 
         DefaultOutputFormat f = getOutputFormatToTest();
 
         MockEvent me = new MockEvent();
+        assertNull(me.getPreferredRepresentation());
         me.setRawRepresentation("something");
 
         String s = f.format(me);
