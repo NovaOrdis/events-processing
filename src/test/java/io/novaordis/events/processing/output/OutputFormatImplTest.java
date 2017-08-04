@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -170,6 +171,19 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = new OutputFormatImpl();
         assertEquals("" + OutputFormatImpl.DEFAULT_SEPARATOR, f.getSeparator());
+    }
+
+    // isLeadingTimestamp() --------------------------------------------------------------------------------------------
+
+    @Test
+    public void isLeadingTimestamp() throws Exception {
+
+        //
+        // we don't lead with timestamp by default
+        //
+
+        OutputFormatImpl f = new OutputFormatImpl();
+        assertFalse(f.isLeadingTimestamp());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

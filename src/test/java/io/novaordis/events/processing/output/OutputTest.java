@@ -276,10 +276,6 @@ public class OutputTest extends TextOutputProcedureTest {
 
         e.setTimestamp(new TimestampImpl(10L));
 
-        //
-        // the mock output format send something else than timestamp to output
-        //
-
         o.process(e);
 
         String result = new String(baos.toByteArray());
@@ -315,6 +311,72 @@ public class OutputTest extends TextOutputProcedureTest {
         // no output
         //
         assertTrue(baos.toByteArray().length == 0);
+    }
+
+    @Test
+    public void process_FormatManufacturesLinesThatStartWithALeadingTimestamp() throws Exception {
+
+        Output o = getTextOutputProcedureToTest(false);
+
+        MockOutputFormat mof = new MockOutputFormat();
+        mof.setLeadingTimestamp(true);
+        mof.addMatchingProperty("mock-property");
+        mof.setTimestampFormat(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        o.setOutputStream(baos);
+        o.setOutputFormat(mof);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("mock-property", "mock-value");
+        e.setTimestamp(new TimestampImpl(10L));
+
+        //
+        // the mock output will start the line with a timestamp and will also include the value of the property that
+        // matches
+        //
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+
+        assertTrue(result.startsWith(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L)));
+        assertTrue(result.contains("mock-value"));
+    }
+
+    @Test
+    public void process_FormatManufacturesLinesThatDoNOTStartWithALeadingTimestamp() throws Exception {
+
+        Output o = getTextOutputProcedureToTest(false);
+
+        MockOutputFormat mof = new MockOutputFormat();
+        mof.setLeadingTimestamp(false);
+        mof.addMatchingProperty("mock-property");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        o.setOutputStream(baos);
+        o.setOutputFormat(mof);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("mock-property", "mock-value");
+        e.setTimestamp(new TimestampImpl(10L));
+
+        //
+        // the mock output will NOT start the line with a timestamp but will include the value of the property that
+        // matches
+        //
+
+        o.process(e);
+
+        String result = new String(baos.toByteArray());
+
+        //
+        // the mock format does NOT add a timestamp but Output does:
+        //
+
+        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L) + " mock-value", result.trim());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

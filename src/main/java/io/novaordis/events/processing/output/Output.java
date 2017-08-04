@@ -117,17 +117,17 @@ public class Output extends TextOutputProcedure {
             }
 
             //
-            // lead the line with a timestamp if the default format
+            // unless the format already added a timestamp at the beginning of the line, start the line with a timestamp
             //
 
-            if (in instanceof TimedEvent) {
+            if (!format.isLeadingTimestamp() && in instanceof TimedEvent) {
 
                 Long timestamp = ((TimedEvent)in).getTime();
 
                 if (timestamp != null) {
 
                     String separator = format.getSeparator();
-                    s = DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(timestamp) + separator + " " + s;
+                    s = DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(timestamp) + separator + s;
                 }
             }
 

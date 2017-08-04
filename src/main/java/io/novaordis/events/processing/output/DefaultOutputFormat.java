@@ -77,6 +77,12 @@ public class DefaultOutputFormat implements OutputFormat {
     }
 
     @Override
+    public boolean isLeadingTimestamp() {
+
+        return false;
+    }
+
+    @Override
     public String getSeparator() {
 
         return " ";

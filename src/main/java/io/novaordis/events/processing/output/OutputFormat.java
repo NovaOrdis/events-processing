@@ -39,14 +39,21 @@ public interface OutputFormat {
     /**
      * Format the event according to the specified format. If none of the format criteria match, the result is null,
      * which is an indication to the calling layer that the event does not match the format. It is up to the calling
-     * layer to decide what to do - print noting, print empty line, etc.
+     * layer to decide what to do - print noting, print empty line or whatever else it wants.
      *
-     * The result does NOT automatically start with a timestamp, it only contains what the format was configured to
-     * return.
+     * The result may or may not start with a timestamp, depending on the underlying implementation and/or format.
+     * The instance must indicate whether the representation starts or not with a timestamp via method.
      *
      * @exception IllegalArgumentException if the event is null.
+     *
+     * @see OutputFormat#isLeadingTimestamp()
      */
     String format(Event e);
+
+    /**
+     * @return true if the representation returned by format contains a leading timestamp.
+     */
+    boolean isLeadingTimestamp();
 
     /**
      * The field separator.

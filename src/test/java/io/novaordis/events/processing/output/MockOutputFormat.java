@@ -18,49 +18,36 @@ package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 8/1/17
+ * @since 8/3/17
  */
-public class OutputFormatImpl implements OutputFormat {
+public class MockOutputFormat implements OutputFormat {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    public static final char DEFAULT_SEPARATOR = ',';
 
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private String separator;
-
-    private List<String> propertyNames;
+    private boolean leadingTimestamp;
+    private Set<String> matchingProperties;
+    private DateFormat timestampFormat;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    public OutputFormatImpl() {
+    public MockOutputFormat() {
 
-        //noinspection NullArgumentToVariableArgMethod
-        this(null);
-    }
-
-    public OutputFormatImpl(String ... propertyNames) {
-
-        this.propertyNames = new ArrayList<>();
-        this.separator = "" + DEFAULT_SEPARATOR;
-
-        if (propertyNames != null && propertyNames.length > 0) {
-
-            for(String n: propertyNames) {
-
-                addPropertyName(n);
-            }
-        }
+        this.matchingProperties = new HashSet<>();
     }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
@@ -68,47 +55,33 @@ public class OutputFormatImpl implements OutputFormat {
     @Override
     public String format(Event e) {
 
-        if (e == null) {
+        String s = "";
 
-            throw new IllegalArgumentException("null event");
+        if (leadingTimestamp && e instanceof TimedEvent) {
+
+            Long t = ((TimedEvent)e).getTime();
+            s += timestampFormat.format(t);
         }
 
-        int i = 0;
-        String s = null;
+        List<Object> values = new ArrayList<>();
 
-        for(Iterator<String> si = propertyNames.iterator(); si.hasNext(); i ++) {
-
-            String propertyName = si.next();
+        for(String propertyName: matchingProperties) {
 
             Property p = e.getProperty(propertyName);
-            Object v = p == null ? null : p.getValue();
 
-            if (v != null) {
+            if (p != null) {
 
-                if (s == null) {
-
-                    //
-                    // add all previous commas and placeholders
-                    //
-
-                    s = "";
-
-                    while(i-- > 0) {
-
-                        s += ", ";
-                    }
-
-                    s += v.toString();
-                }
-                else {
-
-                    s += " " + v;
-                }
+                values.add(p.getValue());
             }
+        }
 
-            if (s != null && si.hasNext()) {
+        for(Iterator<Object> i = values.iterator(); i.hasNext(); ) {
 
-                s += ",";
+            s += i.next();
+
+            if (i.hasNext()) {
+
+                s += getSeparator();
             }
         }
 
@@ -118,31 +91,33 @@ public class OutputFormatImpl implements OutputFormat {
     @Override
     public boolean isLeadingTimestamp() {
 
-        return false;
+        return leadingTimestamp;
     }
 
     @Override
     public String getSeparator() {
 
-        return separator;
+        return " ";
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public void addPropertyName(String s) {
+    public void setLeadingTimestamp(boolean b) {
 
-        propertyNames.add(s);
+        this.leadingTimestamp = b;
+    }
+
+    public void addMatchingProperty(String propertyName) {
+
+        matchingProperties.add(propertyName);
+    }
+
+    public void setTimestampFormat(DateFormat f) {
+
+        this.timestampFormat = f;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
-
-    /**
-     * @return the internal storage.
-     */
-    List<String> getPropertyNames() {
-
-        return propertyNames;
-    }
 
     // Protected -------------------------------------------------------------------------------------------------------
 
