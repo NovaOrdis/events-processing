@@ -68,8 +68,12 @@ public class OutputFormatImpl implements OutputFormat {
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
+    /**
+     * We return *all* property names, irrespective of the event, because different events may carry different
+     * subsets of properties, and we want the union of those.
+     */
     @Override
-    public String getHeader() {
+    public String getHeader(Event e) {
 
         String s = "";
 

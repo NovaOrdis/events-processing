@@ -17,6 +17,7 @@
 package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.GenericEvent;
+import io.novaordis.events.api.event.GenericTimedEvent;
 import org.junit.Test;
 
 import java.util.List;
@@ -191,27 +192,55 @@ public class OutputFormatImplTest extends OutputFormatTest {
     @Test
     public void getHeader_NoFields() throws Exception {
 
+        GenericTimedEvent e = new GenericTimedEvent(1000L);
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
+
         OutputFormatImpl f = new OutputFormatImpl();
-        String header = f.getHeader();
+        String header = f.getHeader(e);
         assertEquals("", header);
     }
 
     @Test
     public void getHeader_OneField() throws Exception {
 
+        GenericTimedEvent e = new GenericTimedEvent(1000L);
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
+
         OutputFormatImpl f = new OutputFormatImpl("test-property");
 
-        String header = f.getHeader();
+        String header = f.getHeader(e);
 
         assertEquals("test-property", header);
     }
 
     @Test
-    public void getHeader_TwoFields() throws Exception {
+    public void getHeader_TwoFields_EventContainsMoreProperties() throws Exception {
+
+        GenericTimedEvent e = new GenericTimedEvent(1000L);
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
 
         OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
 
-        String header = f.getHeader();
+        String header = f.getHeader(e);
+
+        assertEquals("test-property, test-property2", header);
+    }
+
+    @Test
+    public void getHeader_TwoFields_EventContainsFewerProperties() throws Exception {
+
+        GenericTimedEvent e = new GenericTimedEvent(1000L);
+        e.setStringProperty("test-property", "test-property value");
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
+
+        String header = f.getHeader(e);
 
         assertEquals("test-property, test-property2", header);
     }

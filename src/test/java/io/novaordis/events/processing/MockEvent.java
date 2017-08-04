@@ -32,6 +32,7 @@ public class MockEvent extends GenericEvent {
 
     private String rawRepresentation;
     private String preferredRepresentation;
+    private String preferredRepresentationHeader;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -43,9 +44,15 @@ public class MockEvent extends GenericEvent {
     // GenericEvent overrides ------------------------------------------------------------------------------------------
 
     @Override
-    public String getPreferredRepresentation() {
+    public String getPreferredRepresentation(String fieldSeparator) {
 
         return preferredRepresentation;
+    }
+
+    @Override
+    public String getPreferredRepresentationHeader(String fieldSeparator) {
+
+        return preferredRepresentationHeader;
     }
 
     @Override
@@ -64,6 +71,11 @@ public class MockEvent extends GenericEvent {
     public void setPreferredRepresentation(String s) {
 
         this.preferredRepresentation = s;
+    }
+
+    public void setPreferredRepresentationHeader(String s) {
+
+        this.preferredRepresentationHeader = s;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

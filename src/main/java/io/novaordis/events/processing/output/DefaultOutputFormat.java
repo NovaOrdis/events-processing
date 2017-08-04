@@ -35,6 +35,8 @@ public class DefaultOutputFormat implements OutputFormat {
 
     public static final SimpleDateFormat DEFAULT_TIMESTAMP_FORMAT = new SimpleDateFormat("MM/dd/yy HH:mm:ss.SSS");
 
+    public static final String DEFAULT_FIELD_SEPARATOR = ", ";
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -44,9 +46,39 @@ public class DefaultOutputFormat implements OutputFormat {
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
-    public String getHeader() {
+    public String getHeader(Event e) {
 
-        return "# Default Event Representation";
+        if (e == null) {
+
+            throw new IllegalArgumentException("null event");
+        }
+
+        //
+        // start with preferred implementation
+        //
+
+        String s = e.getPreferredRepresentation(DEFAULT_FIELD_SEPARATOR);
+
+        if (s != null) {
+
+            return e.getPreferredRepresentationHeader(DEFAULT_FIELD_SEPARATOR);
+        }
+
+        s = e.getRawRepresentation();
+
+        if (s != null) {
+
+            //
+            // if we are using the raw representation, there was no parsing and there are no field headers
+            //
+            return null;
+        }
+
+        //
+        // do not display timestamp, Output does that by default
+        //
+
+        return "event type";
     }
 
     @Override
@@ -61,7 +93,7 @@ public class DefaultOutputFormat implements OutputFormat {
         // start with preferred implementation
         //
 
-        String s = e.getPreferredRepresentation();
+        String s = e.getPreferredRepresentation(DEFAULT_FIELD_SEPARATOR);
 
         if (s != null) {
 
@@ -91,7 +123,7 @@ public class DefaultOutputFormat implements OutputFormat {
     @Override
     public String getSeparator() {
 
-        return " ";
+        return DEFAULT_FIELD_SEPARATOR;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

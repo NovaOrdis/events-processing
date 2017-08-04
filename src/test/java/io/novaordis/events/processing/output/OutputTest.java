@@ -426,15 +426,15 @@ public class OutputTest extends TextOutputProcedureTest {
 
         assertTrue(o.isOutputHeader());
 
-        MockOutputFormat mof = new MockOutputFormat();
-        mof.addMatchingProperty("test-property");
-        mof.setProvidingHeader(false);
-        assertNull(mof.getHeader());
-        o.setOutputFormat(mof);
-
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
         e.setTimestamp(new TimestampImpl(1000L));
+
+        MockOutputFormat mof = new MockOutputFormat();
+        mof.addMatchingProperty("test-property");
+        mof.setProvidingHeader(false);
+        assertNull(mof.getHeader(e));
+        o.setOutputFormat(mof);
 
         o.process(e);
 
@@ -452,14 +452,16 @@ public class OutputTest extends TextOutputProcedureTest {
 
         assertTrue(o.isOutputHeader());
 
-        OutputFormatImpl of = new OutputFormatImpl("test-property");
-        String header = of.getHeader();
-        assertEquals("test-property", header);
-        o.setOutputFormat(of);
-
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
         e.setTimestamp(new TimestampImpl(1000L));
+
+        OutputFormatImpl of = new OutputFormatImpl("test-property");
+
+        String header = of.getHeader(e);
+
+        assertEquals("test-property", header);
+        o.setOutputFormat(of);
 
         o.process(e);
 
@@ -478,14 +480,14 @@ public class OutputTest extends TextOutputProcedureTest {
 
         assertFalse(o.isOutputHeader());
 
-        OutputFormatImpl of = new OutputFormatImpl("test-property");
-        String header = of.getHeader();
-        assertEquals("test-property", header);
-        o.setOutputFormat(of);
-
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
         e.setTimestamp(new TimestampImpl(1000L));
+
+        OutputFormatImpl of = new OutputFormatImpl("test-property");
+        String header = of.getHeader(e);
+        assertEquals("test-property", header);
+        o.setOutputFormat(of);
 
         o.process(e);
 

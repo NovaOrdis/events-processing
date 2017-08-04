@@ -24,6 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -64,7 +65,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         DefaultOutputFormat f = getOutputFormatToTest();
 
         MockEvent me = new MockEvent();
-        assertNull(me.getPreferredRepresentation());
+        assertNull(me.getPreferredRepresentation("does not matter"));
         me.setRawRepresentation("something");
 
         String s = f.format(me);
@@ -122,14 +123,80 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
     // getHeader() -----------------------------------------------------------------------------------------------------
 
     @Test
-    public void getHeader() throws Exception {
+    public void getHeader_NullEvent() throws Exception {
 
         DefaultOutputFormat f = getOutputFormatToTest();
 
-        String header = f.getHeader();
+        try {
 
-        // this may change in the future
-        assertEquals("# Default Event Representation", header);
+            f.getHeader(null);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("null event"));
+        }
+    }
+
+    @Test
+    public void getHeader_EventHasPreferredRepresentation_HasPreferredRepresentationHeader() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockEvent me = new MockEvent();
+
+        me.setPreferredRepresentation("blue");
+        me.setPreferredRepresentationHeader("red");
+
+        String header = f.getHeader(me);
+
+        assertEquals("red", header);
+    }
+
+    @Test
+    public void getHeader_EventHasPreferredRepresentation_DoesNotHavePreferredRepresentationHeader() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockEvent me = new MockEvent();
+
+        me.setPreferredRepresentation("blue");
+        me.setPreferredRepresentationHeader(null);
+
+        String header = f.getHeader(me);
+
+        assertNull(header);
+    }
+
+    @Test
+    public void getHeader_EventHasRawRepresentation() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockEvent me = new MockEvent();
+
+        me.setPreferredRepresentation(null);
+        me.setRawRepresentation("blue");
+
+        String header = f.getHeader(me);
+
+        assertNull(header);
+    }
+
+    @Test
+    public void getHeader_EventDoesNotHaveAnything() throws Exception {
+
+        DefaultOutputFormat f = getOutputFormatToTest();
+
+        MockEvent me = new MockEvent();
+
+        me.setPreferredRepresentation(null);
+        me.setRawRepresentation(null);
+
+        String header = f.getHeader(me);
+
+        assertEquals("event type", header);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

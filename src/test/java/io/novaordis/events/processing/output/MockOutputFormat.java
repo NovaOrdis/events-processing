@@ -54,7 +54,7 @@ public class MockOutputFormat implements OutputFormat {
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
-    public String getHeader() {
+    public String getHeader(Event e) {
 
         if (!isProvidingHeader) {
 

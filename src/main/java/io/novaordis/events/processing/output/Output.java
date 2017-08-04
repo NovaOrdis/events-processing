@@ -149,7 +149,7 @@ public class Output extends TextOutputProcedure {
 
             if (outputHeader) {
 
-                header = format.getHeader();
+                header = format.getHeader(in);
 
                 //
                 // turn off header request, so the next events will be displayed without header lines
