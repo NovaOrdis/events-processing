@@ -56,8 +56,21 @@ public class CountTest extends TextOutputProcedureTest {
         Count p = (Count)ProcedureFactory.find(Count.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p);
 
+        //
+        // make sure the instance is correctly initialized
+        //
+
+        assertTrue(System.out.equals(p.getOutputStream()));
+
         Count p2 = (Count)ProcedureFactory.find(Count.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p2);
+
+        //
+        // make sure the instance is correctly initialized
+        //
+
+        assertTrue(System.out.equals(p2.getOutputStream()));
+
     }
 
     @Test

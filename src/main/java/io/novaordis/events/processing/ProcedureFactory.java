@@ -63,42 +63,37 @@ public class ProcedureFactory {
 
         if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
-            Describe d = new Describe();
-
             //
             // unless configured otherwise, write to System.out
             //
 
-            d.setOutputStream(System.out);
-            return d;
+            return new Describe(System.out);
         }
         else if (TimeGaps.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
-            TimeGaps t = new TimeGaps();
-
             //
             // unless configured otherwise, write to System.out
             //
 
-            t.setOutputStream(System.out);
-            return t;
+            return new TimeGaps(System.out);
         }
         else if (Count.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
                 Count.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
-            return new Count();
+            //
+            // unless configured otherwise, write to System.out
+            //
+
+            return new Count(System.out);
         }
         else if (Exclude.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
                 Exclude.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            Exclude e = new Exclude();
 
             //
             // unless configured otherwise, write to System.out
             //
 
-            e.setOutputStream(System.out);
-            return e;
+            return new Exclude(System.out);
         }
         else if (Output.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
