@@ -79,7 +79,7 @@ public class DefaultOutputFormat implements OutputFormat {
     @Override
     public boolean isLeadingTimestamp() {
 
-        return false;
+        return true;
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -108,6 +109,14 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         String s = f.format(me);
 
         assertEquals("MockTimedEvent", s);
+    }
+
+    // isLeadingTimestamp() --------------------------------------------------------------------------------------------
+
+    @Test
+    public void weAssumeTheUnderlyingRepresentationProducersLeadWithTimestamp() throws Exception {
+
+        assertTrue(new DefaultOutputFormat().isLeadingTimestamp());
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
