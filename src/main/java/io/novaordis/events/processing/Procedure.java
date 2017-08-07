@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * The implementations must have a public no-argument constructor, as they will be instantiated via reflection.
  *
- * @see ProcedureFactory#find(String, int, List)
+ * @see DefaultProcedureFactory#find(String, int, List)
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17

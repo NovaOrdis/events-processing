@@ -17,6 +17,7 @@
 package io.novaordis.events.processing.count;
 
 import io.novaordis.events.api.event.EndOfStreamEvent;
+import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
@@ -53,7 +54,9 @@ public class CountTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        Count p = (Count)ProcedureFactory.find(Count.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        Count p = (Count) f.find(Count.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p);
 
         //
@@ -62,7 +65,7 @@ public class CountTest extends TextOutputProcedureTest {
 
         assertTrue(System.out.equals(p.getOutputStream()));
 
-        Count p2 = (Count)ProcedureFactory.find(Count.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        Count p2 = (Count) f.find(Count.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p2);
 
         //

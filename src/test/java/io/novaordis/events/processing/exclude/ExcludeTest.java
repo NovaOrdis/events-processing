@@ -17,6 +17,7 @@
 package io.novaordis.events.processing.exclude;
 
 import io.novaordis.events.api.event.Event;
+import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
@@ -58,7 +59,9 @@ public class ExcludeTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        Exclude e = (Exclude)ProcedureFactory.find(Exclude.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        Exclude e = (Exclude) f.find(Exclude.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(e);
 
         //
@@ -69,7 +72,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
         OutputStream os = e.getOutputStream();
         assertNotNull(os);
 
-        Exclude e2 = (Exclude)ProcedureFactory.find(Exclude.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        Exclude e2 = (Exclude) f.find(Exclude.ABBREVIATED_COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(e2);
 
         //

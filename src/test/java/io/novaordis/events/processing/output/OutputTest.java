@@ -19,6 +19,7 @@ package io.novaordis.events.processing.output;
 import io.novaordis.events.api.event.GenericEvent;
 import io.novaordis.events.api.event.GenericTimedEvent;
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
@@ -63,7 +64,9 @@ public class OutputTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        Output p = (Output)ProcedureFactory.find(Output.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        Output p = (Output) f.find(Output.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p);
 
         //
@@ -96,16 +99,19 @@ public class OutputTest extends TextOutputProcedureTest {
 
         List<String> args = new ArrayList<>(Arrays.asList("output", "-o", "something"));
 
-        Output p = (Output)ProcedureFactory.find("output", 1, args);
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        Output p = (Output) f.find("output", 1, args);
         assertNotNull(p);
 
         assertEquals(1, args.size());
         assertEquals("output", args.get(0));
 
-        OutputFormat f = p.getFormat();
-        assertFalse(f instanceof DefaultOutputFormat);
+        OutputFormat outputFormat = p.getFormat();
+        assertFalse(outputFormat instanceof DefaultOutputFormat);
 
-        String s = f.format(new GenericEvent(Collections.singletonList(new StringProperty("something", "else"))));
+        String s = outputFormat.format(
+                new GenericEvent(Collections.singletonList(new StringProperty("something", "else"))));
 
         assertTrue(s.contains("else"));
     }

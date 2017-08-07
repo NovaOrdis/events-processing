@@ -16,31 +16,23 @@
 
 package io.novaordis.events.processing;
 
-import io.novaordis.events.processing.count.Count;
-import io.novaordis.events.processing.describe.Describe;
-import io.novaordis.events.processing.exclude.Exclude;
-import io.novaordis.events.processing.output.Output;
-import io.novaordis.events.processing.timegaps.TimeGaps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 8/7/17
  */
-public class ProcedureFactory {
+public interface ProcedureFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
-    private static final Logger log = LoggerFactory.getLogger(ProcedureFactory.class);
-
     // Static ----------------------------------------------------------------------------------------------------------
 
+    // Public ----------------------------------------------------------------------------------------------------------
+
     /**
-     * Instantiates the procedure with the given command line label. The instance must come with default configuration
-     * that should allow it to work correctly (albeit in the simplest possible case)
+     * Instantiates the procedure with the given command line label. The instance must be delivered after it was
+     * internally configured so it would work correctly without additional configuration (albeit in the simplest cases).
      *
      * @param commandLineLabel the command line label for the candidate procedure. Note that it can be the normal
      *                         label or the abbreviated label.
@@ -54,75 +46,7 @@ public class ProcedureFactory {
      *
      * @return null if no such procedure is found in classpath.
      */
-    public static Procedure find(String commandLineLabel, int from, List<String> arguments) {
+    Procedure find(String commandLineLabel, int from, List<String> arguments);
 
-        //
-        // TODO: we currently only return the procedures we know of, but this is a hack, use an annotation and
-        // annotation scanning instead.
-        //
-
-        if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            //
-            // unless configured otherwise, write to System.out
-            //
-
-            return new Describe(System.out);
-        }
-        else if (TimeGaps.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            //
-            // unless configured otherwise, write to System.out
-            //
-
-            return new TimeGaps(System.out);
-        }
-        else if (Count.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
-                Count.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            //
-            // unless configured otherwise, write to System.out
-            //
-
-            return new Count(System.out);
-        }
-        else if (Exclude.ABBREVIATED_COMMAND_LINE_LABEL.equals(commandLineLabel) ||
-                Exclude.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            //
-            // unless configured otherwise, write to System.out
-            //
-
-            return new Exclude(System.out);
-        }
-        else if (Output.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
-
-            //
-            // unless configured otherwise, write to System.out
-            //
-
-            return new Output(System.out, from, arguments);
-        }
-        else {
-
-            log.debug("unknown command line label: \"" + commandLineLabel + "\"");
-        }
-
-        return null;
-    }
-
-    // Attributes ------------------------------------------------------------------------------------------------------
-
-    // Constructors ----------------------------------------------------------------------------------------------------
-
-    // Public ----------------------------------------------------------------------------------------------------------
-
-    // Package protected -----------------------------------------------------------------------------------------------
-
-    // Protected -------------------------------------------------------------------------------------------------------
-
-    // Private ---------------------------------------------------------------------------------------------------------
-
-    // Inner classes ---------------------------------------------------------------------------------------------------
 
 }

@@ -24,9 +24,9 @@ import static org.junit.Assert.assertNull;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 8/7/17
+ * @since 7/19/17
  */
-public abstract class ProcedureFactoryTest {
+public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -40,20 +40,15 @@ public abstract class ProcedureFactoryTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
-    @Test
-    public void noSuchProcedure() throws Exception {
-
-        ProcedureFactory f = getProcedureFactoryToTest();
-
-        Procedure p = f.find("I-am-pretty-sure-there-is-no-such-procedure", 0, Collections.emptyList());
-        assertNull(p);
-    }
-
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    protected abstract ProcedureFactory getProcedureFactoryToTest() throws Exception;
+    @Override
+    protected DefaultProcedureFactory getProcedureFactoryToTest() throws Exception {
+
+        return new DefaultProcedureFactory();
+    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

@@ -19,9 +19,10 @@ package io.novaordis.events.processing.describe;
 import io.novaordis.events.api.event.IntegerProperty;
 import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
-import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.processing.ProcedureFactory;
+import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -64,7 +65,9 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        Describe d = (Describe)ProcedureFactory.find(Describe.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        Describe d = (Describe) f.find(Describe.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(d);
 
         //

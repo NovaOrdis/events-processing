@@ -17,8 +17,9 @@
 package io.novaordis.events.processing.timegaps;
 
 import io.novaordis.events.processing.Procedure;
-import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.processing.ProcedureFactory;
+import io.novaordis.events.processing.TextOutputProcedureTest;
+import io.novaordis.events.processing.DefaultProcedureFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,9 @@ public class TimeGapsTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        TimeGaps d = (TimeGaps)ProcedureFactory.find(TimeGaps.COMMAND_LINE_LABEL, 0, Collections.emptyList());
+        ProcedureFactory f = new DefaultProcedureFactory();
+
+        TimeGaps d = (TimeGaps) f.find(TimeGaps.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(d);
 
         //
