@@ -30,6 +30,11 @@ public class EventProcessingException extends Exception {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
+    public EventProcessingException(String msg) {
+
+        super(msg);
+    }
+
     public EventProcessingException(Throwable cause) {
 
         super(cause);
