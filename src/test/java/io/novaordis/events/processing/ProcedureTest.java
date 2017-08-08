@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -74,6 +75,8 @@ public abstract class ProcedureTest {
         p.process(Arrays.asList(me, me2));
 
         assertEquals(2, p.getInvocationCount());
+
+        assertFalse(p.isExitLoop());
     }
 
     @Test
@@ -86,6 +89,8 @@ public abstract class ProcedureTest {
         EndOfStreamEvent eos = new EndOfStreamEvent();
 
         p.process(eos);
+
+        assertTrue(p.isExitLoop());
 
         //
         // an attempt to process an event after EOS was processed should thrown IllegalStateException
@@ -101,6 +106,8 @@ public abstract class ProcedureTest {
             String msg = e.getMessage();
             assertTrue(msg.contains("event beyond EndOfStream"));
         }
+
+        assertTrue(p.isExitLoop());
     }
 
     @Test
@@ -126,8 +133,18 @@ public abstract class ProcedureTest {
             String msg = e.getMessage();
             assertTrue(msg.contains("event beyond EndOfStream"));
         }
+
+        assertTrue(p.isExitLoop());
     }
 
+    // isExitLoop() ----------------------------------------------------------------------------------------------------
+
+    @Test
+    public void isExitLoop() throws Exception {
+
+        Procedure p = getProcedureToTest();
+        assertFalse(p.isExitLoop());
+    }
 
     // miscellaneous ---------------------------------------------------------------------------------------------------
 
@@ -141,7 +158,6 @@ public abstract class ProcedureTest {
 
         assertNotNull(c);
     }
-
 
     @Test
     public void atLeastOneNonNullCommandLineLabel() throws Exception {

@@ -71,5 +71,12 @@ public interface Procedure {
      */
     long getInvocationCount();
 
+    /**
+     * @return true if the procedure signals to the enclosing loop it wants to exit the loop and avoid receiving
+     * more events for processing. The event loop may ignore this result and keep sending events to the procedure,
+     * which will most likely be ignored.
+     */
+    boolean isExitLoop();
+
 
 }

@@ -82,6 +82,17 @@ public abstract class ProcedureBase implements Procedure {
         return invocationCount.get();
     }
 
+    @Override
+    public boolean isExitLoop() {
+
+        //
+        // all implementations indicate they want to keep receiving events by default. Subclasses may override if
+        // they want a different behavior.
+        //
+
+        return endOfStream;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     @Override
