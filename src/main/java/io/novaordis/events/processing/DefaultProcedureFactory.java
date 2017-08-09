@@ -19,11 +19,13 @@ package io.novaordis.events.processing;
 import io.novaordis.events.processing.count.Count;
 import io.novaordis.events.processing.describe.Describe;
 import io.novaordis.events.processing.exclude.Exclude;
+import io.novaordis.events.processing.experimental.MessageProcessing;
 import io.novaordis.events.processing.output.Output;
 import io.novaordis.events.processing.timegaps.TimeGaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,6 +97,10 @@ public class DefaultProcedureFactory implements ProcedureFactory {
             //
 
             return new Output(System.out, from, arguments);
+        }
+        else if ("message-processing".equals(commandLineLabel)) {
+
+            return new MessageProcessing(System.out, 0, Collections.emptyList());
         }
         else {
 
