@@ -73,7 +73,7 @@ public class Describe extends TextOutputProcedure {
             signature += (yamlStandard ? "\n" + indentation(level) : "") + "timestamp";
         }
 
-        Set<Property> properties = event.getProperties();
+        List<Property> properties = event.getProperties();
 
         if (!properties.isEmpty()) {
 
