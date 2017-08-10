@@ -16,17 +16,20 @@
 
 package io.novaordis.events.processing;
 
-import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * We introduced this to insure EndOfStream propagates to ProcedureBase subclasses.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 8/10/17
  */
-public abstract class ProcedureBase implements Procedure {
+public class TestProcedure extends ProcedureBase {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -34,96 +37,39 @@ public abstract class ProcedureBase implements Procedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    protected final AtomicLong invocationCount;
-    protected volatile boolean endOfStream;
+    private List<Event> received;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    protected ProcedureBase() {
+    public TestProcedure() {
 
-        this.invocationCount = new AtomicLong(0L);
+        this.received = new ArrayList<>();
     }
 
-    // Procedure implementation ----------------------------------------------------------------------------------------
+    // ProcedureBase overrides -----------------------------------------------------------------------------------------
 
     @Override
-    public void process(List<Event> events) throws EventProcessingException {
+    protected void process(AtomicLong invocationCount, Event e) throws EventProcessingException {
 
-        for(Event e: events) {
-
-            process(e);
-        }
-    }
-
-    /**
-     * Override that does EOS accounting, etc.
-     */
-    @Override
-    public void process(Event e) throws EventProcessingException {
-
-        invocationCount.incrementAndGet();
-
-        if (endOfStream) {
-
-            throw new IllegalStateException("event beyond EndOfStream");
-        }
-
-        if (e instanceof EndOfStreamEvent) {
-
-            endOfStream = true;
-        }
-
-        process(invocationCount, e);
+        received.add(e);
     }
 
     @Override
-    public long getInvocationCount() {
+    public List<String> getCommandLineLabels() {
 
-        return invocationCount.get();
-    }
-
-    @Override
-    public boolean isExitLoop() {
-
-        //
-        // all implementations indicate they want to keep receiving events by default. Subclasses may override if
-        // they want a different behavior.
-        //
-
-        return endOfStream;
+        return Collections.singletonList("test");
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString() {
+    public List<Event> getReceived() {
 
-        String s;
-
-        List<String> labels = getCommandLineLabels();
-
-        if (labels.isEmpty()) {
-
-            s = getClass().getSimpleName() + " procedure";
-        }
-        else {
-
-            return labels.get(0) + " procedure";
-        }
-
-        s += " " + Integer.toHexString(System.identityHashCode(this));
-
-        return s;
+        return received;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    /**
-     * EndOfStream will be sent to subclasses, they may need to know when the stream ends.
-     */
-    protected abstract void process(AtomicLong invocationCount, Event e) throws EventProcessingException;
 
     // Private ---------------------------------------------------------------------------------------------------------
 
