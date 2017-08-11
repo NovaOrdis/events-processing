@@ -8,7 +8,7 @@
     <artifactId>events-processing</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.1.1-SNAPSHOT-28</version>
+    <version>1.1.1-SNAPSHOT-29</version>
 
     <properties>
 
@@ -18,7 +18,7 @@
 
         <slf4j.version>1.7.12</slf4j.version>
         <junit.version>4.12</junit.version>
-        <novaordis.events.api.version>1.2.2-SNAPSHOT-13</novaordis.events.api.version>
+        <novaordis.events.api.version>1.2.2-SNAPSHOT-14</novaordis.events.api.version>
 
         <!---
                End of Dependency Versions
