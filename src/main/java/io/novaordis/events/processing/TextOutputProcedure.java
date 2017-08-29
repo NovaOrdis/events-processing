@@ -120,10 +120,7 @@ public abstract class TextOutputProcedure extends ProcedureBase {
      */
     protected void println(Object o) throws IOException {
 
-        if (pw == null) {
-
-            throw new IllegalStateException(this + " was not initialized: no output stream");
-        }
+        insureInitialized();
 
         String s = o == null ? NULL : o.toString();
 
@@ -143,19 +140,21 @@ public abstract class TextOutputProcedure extends ProcedureBase {
      */
     protected void printf(String format, Object o) throws IOException {
 
-        if (pw == null) {
-
-            throw new IllegalStateException(this + " was not initialized: no output stream");
-        }
-
-        PrintWriter pw = null;
+        insureInitialized();
 
         pw.printf(format, o);
         pw.flush();
     }
 
-
     // Private ---------------------------------------------------------------------------------------------------------
+
+    private void insureInitialized() {
+
+        if (pw == null) {
+
+            throw new IllegalStateException(this + " was not initialized: no output stream");
+        }
+    }
 
     // Inner classes ---------------------------------------------------------------------------------------------------
 

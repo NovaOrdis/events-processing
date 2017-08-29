@@ -49,6 +49,25 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
     // println() -------------------------------------------------------------------------------------------------------
 
     @Test
+    public void println_InstanceNotInitialized() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest(null);
+
+        assertNull(p.getOutputStream());
+
+        try {
+
+            p.println("something");
+            fail("should have thrown exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("was not initialized: no output stream"));
+        }
+    }
+
+    @Test
     public void println() throws Exception {
 
         TextOutputProcedure p = getTextOutputProcedureToTest();
@@ -89,8 +108,10 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
         assertEquals("null\n", new String(baos.toByteArray()));
     }
 
+    // printf() --------------------------------------------------------------------------------------------------------
+
     @Test
-    public void println_InstanceNotInitialized() throws Exception {
+    public void printf_InstanceNotInitialized() throws Exception {
 
         TextOutputProcedure p = getTextOutputProcedureToTest(null);
 
@@ -98,15 +119,36 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
 
         try {
 
-            p.println("something");
+            p.printf("%s", "something");
             fail("should have thrown exception");
         }
         catch(IllegalStateException e) {
 
             String msg = e.getMessage();
             assertTrue(msg.contains("was not initialized: no output stream"));
-
         }
+    }
+
+    @Test
+    public void printf() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        p.setOutputStream(baos);
+
+        p.printf("%10s", 1);
+
+        //
+        // this should also flush
+        //
+
+        assertEquals("         1", new String(baos.toByteArray()));
+
+        p.printf("%1s", 2);
+
+        assertEquals("         12", new String(baos.toByteArray()));
     }
 
     // setOutputStream() -----------------------------------------------------------------------------------------------
