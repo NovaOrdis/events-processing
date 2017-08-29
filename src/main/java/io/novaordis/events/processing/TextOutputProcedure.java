@@ -19,10 +19,10 @@ package io.novaordis.events.processing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 /**
  * A procedure that looks at a stream of events as they arrive and text at a configurable output stream.
@@ -43,7 +43,7 @@ public abstract class TextOutputProcedure extends ProcedureBase {
     // Attributes ------------------------------------------------------------------------------------------------------
 
     private OutputStream os;
-    private BufferedWriter bw;
+    private PrintWriter pw;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -97,22 +97,13 @@ public abstract class TextOutputProcedure extends ProcedureBase {
             }
         }
 
-        if (bw != null) {
+        if (pw != null) {
 
-            try {
-
-                bw.close();
-            }
-            catch(IOException e) {
-
-                String msg = "failed to close the current writer";
-                log.warn(msg);
-                log.debug(msg, e);
-            }
+            pw.close();
         }
 
         this.os = os;
-        this.bw = new BufferedWriter(new OutputStreamWriter(os));
+        this.pw = new PrintWriter(new OutputStreamWriter(os));
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -129,17 +120,40 @@ public abstract class TextOutputProcedure extends ProcedureBase {
      */
     protected void println(Object o) throws IOException {
 
-        if (bw == null) {
+        if (pw == null) {
 
             throw new IllegalStateException(this + " was not initialized: no output stream");
         }
 
         String s = o == null ? NULL : o.toString();
 
-        bw.write(s);
-        bw.newLine();
-        bw.flush();
+        pw.println(s);
+        pw.flush();
     }
+
+    /**
+     * API for subclasses to use when they need to output text. Offers printf() semantics for sending ouptut to
+     * the underlying output stream.
+     *
+     * https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax
+     *
+     * Sends the given argument to the underlying stream via printf() and flushes the stream after that.
+     *
+     * @exception IllegalStateException if an OutputStream was not installed.
+     */
+    protected void printf(String format, Object o) throws IOException {
+
+        if (pw == null) {
+
+            throw new IllegalStateException(this + " was not initialized: no output stream");
+        }
+
+        PrintWriter pw = null;
+
+        pw.printf(format, o);
+        pw.flush();
+    }
+
 
     // Private ---------------------------------------------------------------------------------------------------------
 
