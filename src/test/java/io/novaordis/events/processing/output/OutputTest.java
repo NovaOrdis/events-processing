@@ -264,6 +264,123 @@ public class OutputTest extends TextOutputProcedureTest {
         assertEquals("box, cat", formatted);
     }
 
+    @Test
+    public void configureFromCommandLine_FieldIndices_SpaceSeparated() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", "1"));
+
+        o.configureFromCommandLine(0, args);
+
+//        assertTrue(args.isEmpty());
+//
+//        OutputFormat f = o.getFormat();
+//
+//        assertFalse(f instanceof DefaultOutputFormat);
+//
+//        GenericTimedEvent e = new GenericTimedEvent();
+//        e.setStringProperty("green", "box");
+//        e.setStringProperty("yellow", "cat");
+//
+//        String formatted = f.format(e);
+//        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_FieldIndices_CommaSeparated() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "0,", "1"));
+
+        o.configureFromCommandLine(0, args);
+
+//        assertTrue(args.isEmpty());
+//
+//        OutputFormat f = o.getFormat();
+//
+//        assertFalse(f instanceof DefaultOutputFormat);
+//
+//        GenericTimedEvent e = new GenericTimedEvent();
+//        e.setStringProperty("green", "box");
+//        e.setStringProperty("yellow", "cat");
+//
+//        String formatted = f.format(e);
+//        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_FieldIndices_CommaSeparated2() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", ",", "1"));
+
+        o.configureFromCommandLine(0, args);
+
+//        assertTrue(args.isEmpty());
+//
+//        OutputFormat f = o.getFormat();
+//
+//        assertFalse(f instanceof DefaultOutputFormat);
+//
+//        GenericTimedEvent e = new GenericTimedEvent();
+//        e.setStringProperty("green", "box");
+//        e.setStringProperty("yellow", "cat");
+//
+//        String formatted = f.format(e);
+//        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_FieldIndices_CommaSeparated_TrailingComma() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", ","));
+
+        o.configureFromCommandLine(0, args);
+
+//        assertTrue(args.isEmpty());
+//
+//        OutputFormat f = o.getFormat();
+//
+//        assertFalse(f instanceof DefaultOutputFormat);
+//
+//        GenericTimedEvent e = new GenericTimedEvent();
+//        e.setStringProperty("green", "box");
+//        e.setStringProperty("yellow", "cat");
+//
+//        String formatted = f.format(e);
+//        assertEquals("box, cat", formatted);
+    }
+
+
+    @Test
+    public void configureFromCommandLine_FieldIndices_CommaSeparated_TrailingComma2() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "0,"));
+
+        o.configureFromCommandLine(0, args);
+
+//        assertTrue(args.isEmpty());
+//
+//        OutputFormat f = o.getFormat();
+//
+//        assertFalse(f instanceof DefaultOutputFormat);
+//
+//        GenericTimedEvent e = new GenericTimedEvent();
+//        e.setStringProperty("green", "box");
+//        e.setStringProperty("yellow", "cat");
+//
+//        String formatted = f.format(e);
+//        assertEquals("box, cat", formatted);
+    }
+
+
     // process() -------------------------------------------------------------------------------------------------------
 
     @Test

@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -50,12 +51,47 @@ public class OutputFormatImplTest extends OutputFormatTest {
     @Test
     public void constructor_Arguments() throws Exception {
 
-        OutputFormatImpl f = new OutputFormatImpl("test-name");
+        OutputFormatImpl f = new OutputFormatImpl("test-name", 3, "something-else");
 
-        List<String> names = f.getPropertyNames();
+        List<Object> identifiers = f.getPropertyIdentifiers();
 
-        assertEquals(1, names.size());
-        assertEquals("test-name", names.get(0));
+        assertEquals(3, identifiers.size());
+        assertEquals("test-name", identifiers.get(0));
+        assertEquals(3, identifiers.get(1));
+        assertEquals("something-else", identifiers.get(2));
+    }
+
+    @Test
+    public void constructor_InvalidPropertyIdentifierType() throws Exception {
+
+        try {
+
+            new OutputFormatImpl("test-name", 7L, "something-else");
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid property identifier"));
+            assertTrue(msg.contains("7"));
+            assertTrue(msg.contains("(java.lang.Long)"));
+        }
+    }
+
+    @Test
+    public void constructor_InvalidPropertyIndex() throws Exception {
+
+        try {
+
+            new OutputFormatImpl("test-name", -3, "something-else");
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid property index"));
+            assertTrue(msg.contains("-3"));
+        }
     }
 
     // format() --------------------------------------------------------------------------------------------------------
@@ -243,6 +279,71 @@ public class OutputFormatImplTest extends OutputFormatTest {
         String header = f.getHeader(e);
 
         assertEquals("test-property, test-property2", header);
+    }
+
+    // addPropertyName()/addPropertyIndex() ----------------------------------------------------------------------------
+
+    @Test
+    public void addPropertyIndex_NegativeIndex() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+
+        try {
+
+            f.addPropertyIndex(-1);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid property index"));
+            assertTrue(msg.contains("-1"));
+        }
+    }
+
+    @Test
+    public void addPropertyIndex() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+    }
+
+    @Test
+    public void addPropertyName() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+    }
+
+    @Test
+    public void addPropertyName_combinedWith_addPropertyIndex() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+
+        f.addPropertyIndex(0);
+        f.addPropertyName("something");
+        f.addPropertyIndex(5);
+        f.addPropertyName("something else");
+    }
+
+    @Test
+    public void useAddPropertyNameToAddAnInteger() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+
+        try {
+
+            // this usually indicates a programming error, or the fact that the programmer did not understand
+            // the naming scheme
+            f.addPropertyName("0");
+            fail("should throw exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("invalid attempt to add a property index as property name"));
+            assertTrue(msg.contains("consider using addPropertyIndex()"));
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

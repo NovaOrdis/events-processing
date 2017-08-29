@@ -26,6 +26,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -87,6 +88,69 @@ public class OutputFormatFactoryTest {
 
         String s = f.format(ge);
         assertEquals("sky, apple, bean", s);
+    }
+
+    @Test
+    public void fromArguments_PropertyIndices() throws Exception {
+
+        List<String> args = new ArrayList<>(Arrays.asList("0", "2", "5"));
+
+        OutputFormatImpl f = (OutputFormatImpl)OutputFormatFactory.fromArguments(args);
+
+        assertNotNull(f);
+
+        assertTrue(args.isEmpty());
+
+        GenericEvent ge = new GenericEvent();
+        ge.setStringProperty("blue", "sky");
+        ge.setStringProperty("red", "apple");
+        ge.setStringProperty("green", "bean");
+
+        String s = f.format(ge);
+
+        // a property with an index of 5 does not exist, hence the trailing comma
+
+        assertEquals("sky, bean,", s);
+    }
+
+    @Test
+    public void fromArguments_CombinationOfPropertyNamesAndIndices() throws Exception {
+
+        List<String> args = new ArrayList<>(Arrays.asList("0", "blue", "7", "green", "1"));
+
+        OutputFormatImpl f = (OutputFormatImpl)OutputFormatFactory.fromArguments(args);
+
+        assertNotNull(f);
+
+        assertTrue(args.isEmpty());
+
+        GenericEvent ge = new GenericEvent();
+        ge.setStringProperty("blue", "sky");
+        ge.setStringProperty("red", "apple");
+        ge.setStringProperty("green", "bean");
+
+        String s = f.format(ge);
+        assertEquals("sky, sky,, bean, apple", s);
+    }
+
+    @Test
+    public void fromArguments_NoneOfNamesOrIndicesExist() throws Exception {
+
+        List<String> args = new ArrayList<>(Arrays.asList("777", "i-am-sure-there-is-no-such-property"));
+
+        OutputFormatImpl f = (OutputFormatImpl)OutputFormatFactory.fromArguments(args);
+
+        assertNotNull(f);
+
+        assertTrue(args.isEmpty());
+
+        GenericEvent ge = new GenericEvent();
+        ge.setStringProperty("blue", "sky");
+        ge.setStringProperty("red", "apple");
+        ge.setStringProperty("green", "bean");
+
+        String s = f.format(ge);
+        assertNull(s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

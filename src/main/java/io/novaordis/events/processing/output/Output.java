@@ -220,7 +220,10 @@ public class Output extends TextOutputProcedure {
      */
     void configureFromCommandLine(int from, List<String> mutableCommandLineArgumentsList) {
 
-        List<String> outputFormatArgs = new ArrayList<>();
+        //
+        // tokenized output format arguments, with separators removed
+        //
+        List<String> outputFormatArgsWithSeparatorsRemoved = new ArrayList<>();
 
         //
         // scan the argument list until we find the output format command line option
@@ -244,7 +247,7 @@ public class Output extends TextOutputProcedure {
 
             if (collect) {
 
-                outputFormatArgs.add(arg);
+                outputFormatArgsWithSeparatorsRemoved.add(arg);
                 si.remove();
                 continue;
             }
@@ -257,7 +260,7 @@ public class Output extends TextOutputProcedure {
             }
         }
 
-        OutputFormat f = OutputFormatFactory.fromArguments(outputFormatArgs);
+        OutputFormat f = OutputFormatFactory.fromArguments(outputFormatArgsWithSeparatorsRemoved);
         setOutputFormat(f);
     }
 

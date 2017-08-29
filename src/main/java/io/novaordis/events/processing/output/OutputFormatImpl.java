@@ -41,8 +41,9 @@ public class OutputFormatImpl implements OutputFormat {
 
     private String separator;
 
-    // List will preserve order, we need it for the header
-    private List<String> propertyNames;
+    // Property identifiers - can only be Strings or valid Integers. List will preserve order, we need it for the header
+
+    private List<Object> propertyIdentifiers;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -52,16 +53,35 @@ public class OutputFormatImpl implements OutputFormat {
         this(null);
     }
 
-    public OutputFormatImpl(String ... propertyNames) {
+    /**
+     * @param propertyIdentifiers may be Strings, representing property names, or Integers, representing property
+     *                            indices. Anything else will trigger an IllegalArgumentException.
+     *
+     * @exception IllegalArgumentException if an identifier instance is anything else but a String or a valid Integer
+     * property index.
+     */
+    public OutputFormatImpl(Object ... propertyIdentifiers) throws IllegalArgumentException {
 
-        this.propertyNames = new ArrayList<>();
+        this.propertyIdentifiers = new ArrayList<>();
         this.separator = "" + DEFAULT_SEPARATOR;
 
-        if (propertyNames != null && propertyNames.length > 0) {
+        if (propertyIdentifiers != null && propertyIdentifiers.length > 0) {
 
-            for(String n: propertyNames) {
+            for(Object i: propertyIdentifiers) {
 
-                addPropertyName(n);
+                if (i instanceof String) {
+
+                    addPropertyName((String)i);
+                }
+                else if (i instanceof Integer) {
+
+                    addPropertyIndex((Integer) i);
+                }
+                else {
+
+                    throw new IllegalArgumentException(
+                            "invalid property identifier " + i + (i == null ? "" : "(" + i.getClass().getName() + ")"));
+                }
             }
         }
     }
@@ -69,15 +89,15 @@ public class OutputFormatImpl implements OutputFormat {
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     /**
-     * We return *all* property names, irrespective of the event, because different events may carry different
-     * subsets of properties, and we want the union of those.
+     * We return *all* property names, irrespective of the event, because different events may carry different subsets
+     * of properties, and we want the union of those.
      */
     @Override
     public String getHeader(Event e) {
 
         String s = "";
 
-        for(Iterator<String> i = propertyNames.iterator(); i.hasNext(); ) {
+        for(Iterator<Object> i = propertyIdentifiers.iterator(); i.hasNext(); ) {
 
             s += i.next();
 
@@ -101,11 +121,27 @@ public class OutputFormatImpl implements OutputFormat {
         int i = 0;
         String s = null;
 
-        for(Iterator<String> si = propertyNames.iterator(); si.hasNext(); i ++) {
+        for(Iterator<Object> si = propertyIdentifiers.iterator(); si.hasNext(); i ++) {
 
-            String propertyName = si.next();
+            Object propertyIdentifier = si.next();
 
-            Property p = e.getProperty(propertyName);
+            Property p;
+
+            if (propertyIdentifier instanceof String) {
+
+                p = e.getProperty((String)propertyIdentifier);
+            }
+            else if (propertyIdentifier instanceof Integer) {
+
+                p = e.getProperty((Integer)propertyIdentifier);
+            }
+            else {
+
+                throw new IllegalStateException(
+                        "invalid property identifier " + propertyIdentifier +
+                                (propertyIdentifier == null ? "" : "(" + propertyIdentifier.getClass().getName() + ")"));
+            }
+
             Object v = p == null ? null : p.getValue();
 
             if (v != null) {
@@ -154,19 +190,58 @@ public class OutputFormatImpl implements OutputFormat {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
+    /**
+     * Add the given property name to the list of properties that will be rendered by the format. The properties will be
+     * rendered in the order in which their corresponding addPropertyName()/addPropertyIndex() was invoked.
+     *
+     * @exception IllegalArgumentException if a string that can be converted to an int is provide - this usually
+     * means we should use addPropertyIndex()
+     */
     public void addPropertyName(String s) {
 
-        propertyNames.add(s);
+        try {
+
+            //noinspection ResultOfMethodCallIgnored
+            Integer.parseInt(s);
+            throw new IllegalArgumentException(
+                    "invalid attempt to add a property index as property name; consider using addPropertyIndex()");
+        }
+        catch(NumberFormatException e) {
+
+            //
+            // we're fine, no need to do anything
+            //
+        }
+
+        propertyIdentifiers.add(s);
+    }
+
+    /**
+     * Add the given property index to the list of properties that will be rendered by the format. The properties will
+     * be rendered in the order in which their corresponding addPropertyName()/addPropertyIndex() was invoked.
+     *
+     * Properties are indexed using a 0-based scheme.
+     *
+     * @exception IllegalArgumentException for negative indices.
+     */
+    public void addPropertyIndex(int index) {
+
+        if (index < 0) {
+
+            throw new IllegalArgumentException("invalid property index: "  + index);
+        }
+
+        propertyIdentifiers.add(index);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     /**
-     * @return the internal storage.
+     * @return the internal storage. The instances may only be Strings (property names) or Integers (property indexes).
      */
-    List<String> getPropertyNames() {
+    List<Object> getPropertyIdentifiers() {
 
-        return propertyNames;
+        return propertyIdentifiers;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

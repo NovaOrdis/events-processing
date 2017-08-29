@@ -34,8 +34,12 @@ public class OutputFormatFactory {
      *
      * No arguments means DefaultOutputFormat.
      *
-     * @exception IllegalArgumentException if the argument list is null.
+     * @param mutableCommandLineArguments the output format arguments as extracted from command line, but with
+     *                                    separators removed. At this level, we assume that the separators have been
+     *                                    cleaned by the upper layer. The arguments pertaining to the output format
+     *                                    may be property names, property indices, etc.
      *
+     * @exception IllegalArgumentException if the argument list is null.
      */
     public static OutputFormat fromArguments(List<String> mutableCommandLineArguments) {
 
@@ -57,9 +61,27 @@ public class OutputFormatFactory {
 
         for(Iterator<String> i = mutableCommandLineArguments.iterator(); i.hasNext(); ) {
 
-            String propertyName = i.next();
+            String propertyIdentifier = i.next(); // may be name, index, etc.
             i.remove();
-            outputFormat.addPropertyName(propertyName);
+
+            //
+            // if it can be converted to an int, it is an index
+            //
+
+            try {
+
+                int propertyIndex = Integer.parseInt(propertyIdentifier);
+                outputFormat.addPropertyIndex(propertyIndex);
+                continue; // conversion to index worked, process next ...
+            }
+            catch(Exception e) {
+
+                //
+                // that is fine, conversion to integer did not work, handle it as a property name
+                //
+            }
+
+            outputFormat.addPropertyName(propertyIdentifier);
         }
 
         return outputFormat;
