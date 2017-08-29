@@ -25,8 +25,6 @@ import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -48,8 +46,6 @@ import static org.junit.Assert.fail;
 public class DescribeTest extends TextOutputProcedureTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
-
-    private static final Logger log = LoggerFactory.getLogger(DescribeTest.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -179,9 +175,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent\n  timestamp\n  name1(String)\n", s);
+        assertEquals("MockTimedEvent\n  name1(String)\n  timestamp(Long)\n", s);
     }
 
     @Test
@@ -193,9 +187,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent[timestamp, name1(String)]", s);
+        assertEquals("MockTimedEvent[name1(String), timestamp(Long)]", s);
     }
 
     @Test
@@ -208,9 +200,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent\n  timestamp\n  name1(String)\n  name2(Integer)\n", s);
+        assertEquals("MockTimedEvent\n  name1(String)\n  name2(Integer)\n  timestamp(Long)\n", s);
     }
 
     @Test
@@ -223,9 +213,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent[timestamp, name1(String), name2(Integer)]", s);
+        assertEquals("MockTimedEvent[name1(String), name2(Integer), timestamp(Long)]", s);
     }
 
     @Test
@@ -238,9 +226,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    <empty>\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    <empty>\n  timestamp(Long)\n", s);
     }
 
     @Test
@@ -253,9 +239,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent[timestamp, name1(Map){}]", s);
+        assertEquals("MockTimedEvent[name1(Map){}, timestamp(Long)]", s);
     }
 
     @Test
@@ -270,9 +254,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    a\n    x\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  timestamp(Long)\n", s);
     }
 
     @Test
@@ -287,9 +269,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent[timestamp, name1(Map){a, x}]", s);
+        assertEquals("MockTimedEvent[name1(Map){a, x}, timestamp(Long)]", s);
     }
 
     @Test
@@ -305,9 +285,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent\n  timestamp\n  name1(Map)\n    a\n    x\n  name2(String)\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  name2(String)\n  timestamp(Long)\n", s);
     }
 
     @Test
@@ -323,9 +301,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        log.info(s);
-
-        assertEquals("MockTimedEvent[timestamp, name1(Map){a, x}, name2(String)]", s);
+        assertEquals("MockTimedEvent[name1(Map){a, x}, name2(String), timestamp(Long)]", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

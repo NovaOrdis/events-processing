@@ -19,7 +19,6 @@ package io.novaordis.events.processing.describe;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.MapProperty;
 import io.novaordis.events.api.event.Property;
-import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 
@@ -68,16 +67,9 @@ public class Describe extends TextOutputProcedure {
 
         level++;
 
-        if (event instanceof TimedEvent) {
-
-            signature += (yamlStandard ? "\n" + indentation(level) : "") + "timestamp";
-        }
-
         List<Property> properties = event.getProperties();
 
         if (!properties.isEmpty()) {
-
-            signature += yamlStandard ? "" : ", ";
 
             List<Property> sortedProperties = new ArrayList<>(properties);
             Collections.sort(sortedProperties);
