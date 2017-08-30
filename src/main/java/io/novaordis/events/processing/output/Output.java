@@ -93,7 +93,20 @@ public class Output extends TextOutputProcedure {
 
         configureFromCommandLine(from, commandlineArguments);
 
-        this.headerOutputStrategy = new DefaultHeaderOutputStrategy();
+        if (asb != null) {
+
+            this.headerOutputStrategy = asb.lookup(HeaderOutputStrategy.class);
+
+            if (this.headerOutputStrategy != null) {
+
+                log.debug("found custom header output strategy: " + headerOutputStrategy);
+            }
+        }
+
+        if (this.headerOutputStrategy == null) {
+
+            this.headerOutputStrategy = new DefaultHeaderOutputStrategy();
+        }
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------

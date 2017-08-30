@@ -23,6 +23,7 @@ import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.events.processing.ProcedureFactory;
 import io.novaordis.events.processing.TextOutputProcedureTest;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
 import io.novaordis.utilities.time.TimestampImpl;
 import org.junit.Test;
 
@@ -135,6 +136,24 @@ public class OutputTest extends TextOutputProcedureTest {
         Output o = new Output(os);
 
         assertEquals(os, o.getOutputStream());
+    }
+
+    @Test
+    public void constructor_CustomHeaderOutputStrategy() throws Exception {
+
+        OutputStream os = new ByteArrayOutputStream();
+
+        //
+        // install a custom header output strategy
+        //
+
+        MockHeaderOutputStrategy ms = new MockHeaderOutputStrategy();
+        ApplicationSpecificBehavior asb = new ApplicationSpecificBehavior(ms);
+
+        Output o = new Output(os, 0, Collections.emptyList(), asb);
+
+        HeaderOutputStrategy s = o.getHeaderOutputStrategy();
+        assertEquals(ms, s);
     }
 
     // output format ---------------------------------------------------------------------------------------------------
