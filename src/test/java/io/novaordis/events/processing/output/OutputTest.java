@@ -421,7 +421,7 @@ public class OutputTest extends TextOutputProcedureTest {
             throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setOutputHeader(false);
+        o.setDoOutputHeader(false);
 
         OutputFormatImpl f = new OutputFormatImpl("mock-property");
 
@@ -476,7 +476,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setOutputHeader(false);
+        o.setDoOutputHeader(false);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(true);
@@ -509,7 +509,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatDoNOTStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setOutputHeader(false);
+        o.setDoOutputHeader(false);
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(false);
@@ -546,7 +546,7 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setOutputHeader(false);
+        o.setDoOutputHeader(false);
 
         OutputFormatImpl of = new OutputFormatImpl("test-property");
         o.setOutputFormat(of);
@@ -633,7 +633,7 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = getTextOutputProcedureToTest(baos);
         o.setTimestampFormat(new SimpleDateFormat("s"));
-        o.setOutputHeader(false);
+        o.setDoOutputHeader(false);
 
         assertFalse(o.isOutputHeader());
 

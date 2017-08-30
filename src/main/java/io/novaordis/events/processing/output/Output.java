@@ -59,7 +59,7 @@ public class Output extends TextOutputProcedure {
 
     private DateFormat timestampFormat;
 
-    private boolean outputHeader;
+    private boolean doOutputHeader;
 
     private String headerMarker;
 
@@ -97,7 +97,7 @@ public class Output extends TextOutputProcedure {
         // we do output headers, by default
         //
 
-        this.outputHeader = true;
+        this.doOutputHeader = true;
         this.headerMarker = "# ";
 
     }
@@ -134,6 +134,17 @@ public class Output extends TextOutputProcedure {
 
             String header = null;
 
+            if (doOutputHeader) {
+
+                header = format.getHeader(in);
+
+                //
+                // turn off header request, so the next events will be displayed without header lines
+                //
+
+                doOutputHeader = false;
+            }
+
             String s = format.format(in);
 
             if (s == null) {
@@ -144,17 +155,6 @@ public class Output extends TextOutputProcedure {
                 }
 
                 return;
-            }
-
-
-            if (outputHeader) {
-
-                header = format.getHeader(in);
-
-                //
-                // turn off header request, so the next events will be displayed without header lines
-                //
-                outputHeader = false;
             }
 
             //
@@ -210,7 +210,7 @@ public class Output extends TextOutputProcedure {
      */
     public boolean isOutputHeader() {
 
-        return outputHeader;
+        return doOutputHeader;
     }
 
     // Package protected static ----------------------------------------------------------------------------------------
@@ -329,9 +329,9 @@ public class Output extends TextOutputProcedure {
      * If set to true, the instance will output a header on first event that matches the format, then reset the flag.
      * The flag can then be set again, to get a new header.
      */
-    void setOutputHeader(boolean b) {
+    void setDoOutputHeader(boolean b) {
 
-        this.outputHeader = b;
+        this.doOutputHeader = b;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------
