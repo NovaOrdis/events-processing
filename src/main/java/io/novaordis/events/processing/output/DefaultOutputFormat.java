@@ -27,6 +27,8 @@ import java.text.SimpleDateFormat;
  * type, as reflected by its class. This is most likely useless in most of the cases, so Output users should replace
  * it with something more useful.
  *
+ * For the description of the sequence, see https://kb.novaordis.com/index.php/Events-processing_output#Overview.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
  */

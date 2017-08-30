@@ -26,8 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Displays the requested properties. For timed events, the representation starts with a timestamp, whether it was
- * requested or not via format. If it was requested via format, it will displayed twice (or multiple times).
+ * The default implementation of a command-line configured OutputFormat. It understands pre-parsed standard command-line
+ * format specification arguments (property names and indexes), and encapsulates them in order to use them to
+ * format the events that are being handed over. For timed events, the representation starts with a timestamp, whether
+ * it was requested or not via format. If it was requested via format, it will displayed twice (or multiple times).
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17

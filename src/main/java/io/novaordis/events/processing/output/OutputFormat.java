@@ -21,7 +21,9 @@ import io.novaordis.events.api.event.Event;
 import java.text.DateFormat;
 
 /**
- * Encapsulates the output format specification and formats events according to the specification.
+ * Encapsulates the output format specification of the "output" procedure and it formats handed-over events according to
+ * the contained specification, by producing Strings that are further handled by the "output" procedure, presumably
+ * by sending them to the output stream.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
@@ -64,8 +66,14 @@ public interface OutputFormat {
      */
     String getSeparator();
 
+    /**
+     * @return the DateFormat used to format timestamps.
+     */
     DateFormat getTimestampFormat();
 
+    /**
+     * Set the DateFormat used to format timestamps.
+     */
     void setTimestampFormat(DateFormat df);
 
     // Package protected -----------------------------------------------------------------------------------------------
