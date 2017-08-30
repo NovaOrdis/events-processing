@@ -61,7 +61,7 @@ public class DescribeTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         Describe d = (Describe) f.find(Describe.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(d);

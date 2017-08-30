@@ -56,7 +56,7 @@ public class TimeGapsTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         TimeGaps d = (TimeGaps) f.find(TimeGaps.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(d);

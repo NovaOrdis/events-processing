@@ -16,12 +16,6 @@
 
 package io.novaordis.events.processing;
 
-import org.junit.Test;
-
-import java.util.Collections;
-
-import static org.junit.Assert.assertNull;
-
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -47,7 +41,7 @@ public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
     @Override
     protected DefaultProcedureFactory getProcedureFactoryToTest() throws Exception {
 
-        return new DefaultProcedureFactory();
+        return new DefaultProcedureFactory(null);
     }
 
     // Private ---------------------------------------------------------------------------------------------------------

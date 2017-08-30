@@ -54,7 +54,7 @@ public class CountTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         Count p = (Count) f.find(Count.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p);

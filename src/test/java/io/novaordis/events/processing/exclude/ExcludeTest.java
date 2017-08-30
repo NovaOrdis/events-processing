@@ -59,7 +59,7 @@ public class ExcludeTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         Exclude e = (Exclude) f.find(Exclude.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(e);

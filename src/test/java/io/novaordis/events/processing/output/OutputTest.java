@@ -65,7 +65,7 @@ public class OutputTest extends TextOutputProcedureTest {
     @Override
     public void procedureFactoryFind() throws Exception {
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         Output p = (Output) f.find(Output.COMMAND_LINE_LABEL, 0, Collections.emptyList());
         assertNotNull(p);
@@ -100,7 +100,7 @@ public class OutputTest extends TextOutputProcedureTest {
 
         List<String> args = new ArrayList<>(Arrays.asList("output", "-o", "something"));
 
-        ProcedureFactory f = new DefaultProcedureFactory();
+        ProcedureFactory f = new DefaultProcedureFactory(null);
 
         Output p = (Output) f.find("output", 1, args);
         assertNotNull(p);

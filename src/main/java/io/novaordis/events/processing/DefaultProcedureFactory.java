@@ -21,13 +21,15 @@ import io.novaordis.events.processing.describe.Describe;
 import io.novaordis.events.processing.exclude.Exclude;
 import io.novaordis.events.processing.output.Output;
 import io.novaordis.events.processing.timegaps.TimeGaps;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
- * The procedure factory that builds procedures shipped with this package.
+ * The procedure factory that builds procedures shipped with this package. The factory give the standard procedures
+ * a chance to configure themselves with application-specific behavior, if that is possible for a specific procedure.
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
@@ -42,7 +44,18 @@ public class DefaultProcedureFactory implements ProcedureFactory {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private ApplicationSpecificBehavior applicationSpecificBehavior;
+
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    /**
+     * @param asb may be null, it won't break anything, but the procedures built by this instance won't be able
+     *            to pull application-specific behavior.
+     */
+    public DefaultProcedureFactory(ApplicationSpecificBehavior asb) {
+
+        this.applicationSpecificBehavior = asb;
+    }
 
     // ProcedureFactory implementation ---------------------------------------------------------------------------------
 
@@ -94,7 +107,7 @@ public class DefaultProcedureFactory implements ProcedureFactory {
             // unless configured otherwise, write to System.out
             //
 
-            return new Output(System.out, from, arguments);
+            return new Output(System.out, from, arguments, applicationSpecificBehavior);
         }
         else {
 

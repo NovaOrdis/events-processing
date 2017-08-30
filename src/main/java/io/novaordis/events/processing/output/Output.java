@@ -20,6 +20,7 @@ import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,10 +77,14 @@ public class Output extends TextOutputProcedure {
 
     public Output(OutputStream os, List<String> commandlineArguments) {
 
-        this(os, 0, commandlineArguments);
+        this(os, 0, commandlineArguments, null);
     }
 
-    public Output(OutputStream os, int from, List<String> commandlineArguments) {
+    /**
+     * @param asb may be null, it won't break anything, but this procedure won't be able to pull application-specific
+     *            behavior.
+     */
+    public Output(OutputStream os, int from, List<String> commandlineArguments, ApplicationSpecificBehavior asb) {
 
         if (os != null) {
 
