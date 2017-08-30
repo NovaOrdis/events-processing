@@ -37,11 +37,11 @@ public class MockOutputFormat implements OutputFormat {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private boolean leadingTimestamp;
     // list because we need to preserve order
     private List<String> matchingProperties;
     private DateFormat timestampFormat;
     private boolean isProvidingHeader;
+    private boolean leadWitTimestamp;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -49,6 +49,7 @@ public class MockOutputFormat implements OutputFormat {
 
         this.matchingProperties = new ArrayList<>();
         this.isProvidingHeader = true;
+        this.leadWitTimestamp = true; // default behavior
     }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
@@ -81,7 +82,7 @@ public class MockOutputFormat implements OutputFormat {
 
         String s = "";
 
-        if (leadingTimestamp && e instanceof TimedEvent) {
+        if (leadWitTimestamp && e instanceof TimedEvent) {
 
             Long t = ((TimedEvent)e).getTime();
             s += timestampFormat.format(t);
@@ -118,12 +119,6 @@ public class MockOutputFormat implements OutputFormat {
     }
 
     @Override
-    public boolean isLeadingTimestamp() {
-
-        return leadingTimestamp;
-    }
-
-    @Override
     public String getSeparator() {
 
         return " ";
@@ -143,11 +138,6 @@ public class MockOutputFormat implements OutputFormat {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    public void setLeadingTimestamp(boolean b) {
-
-        this.leadingTimestamp = b;
-    }
-
     public void addMatchingProperty(String propertyName) {
 
         matchingProperties.add(propertyName);
@@ -156,6 +146,11 @@ public class MockOutputFormat implements OutputFormat {
     public void setProvidingHeader(boolean b) {
 
         this.isProvidingHeader = b;
+    }
+
+    public void setLeadWitTimestamp(boolean b) {
+
+        this.leadWitTimestamp = b;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

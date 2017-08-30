@@ -482,7 +482,6 @@ public class OutputTest extends TextOutputProcedureTest {
         o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         MockOutputFormat mof = new MockOutputFormat();
-        mof.setLeadingTimestamp(true);
         mof.addMatchingProperty("mock-property");
         mof.setTimestampFormat(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT);
 
@@ -516,7 +515,7 @@ public class OutputTest extends TextOutputProcedureTest {
         o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         MockOutputFormat mof = new MockOutputFormat();
-        mof.setLeadingTimestamp(false);
+        mof.setLeadWitTimestamp(false);
         mof.addMatchingProperty("mock-property");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -593,7 +592,6 @@ public class OutputTest extends TextOutputProcedureTest {
         MockOutputFormat mof = new MockOutputFormat();
         mof.addMatchingProperty("test-property");
         mof.setProvidingHeader(false);
-        mof.setLeadingTimestamp(true);
         mof.setTimestampFormat(new SimpleDateFormat("s"));
         assertNull(mof.formatHeader(e));
         o.setOutputFormat(mof);

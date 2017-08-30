@@ -232,12 +232,6 @@ public class OutputFormatImpl implements OutputFormat {
     }
 
     @Override
-    public boolean isLeadingTimestamp() {
-
-        return false;
-    }
-
-    @Override
     public String getSeparator() {
 
         return separator;

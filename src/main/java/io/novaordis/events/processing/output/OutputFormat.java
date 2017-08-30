@@ -56,15 +56,8 @@ public interface OutputFormat {
      * The instance must indicate whether the representation starts or not with a timestamp via method.
      *
      * @exception IllegalArgumentException if the event is null.
-     *
-     * @see OutputFormat#isLeadingTimestamp()
      */
     String format(Event e);
-
-    /**
-     * @return true if the representation returned by format contains a leading timestamp.
-     */
-    boolean isLeadingTimestamp();
 
     /**
      * The field separator.

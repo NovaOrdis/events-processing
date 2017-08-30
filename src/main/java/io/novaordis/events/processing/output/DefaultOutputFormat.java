@@ -123,12 +123,6 @@ public class DefaultOutputFormat implements OutputFormat {
     }
 
     @Override
-    public boolean isLeadingTimestamp() {
-
-        return true;
-    }
-
-    @Override
     public String getSeparator() {
 
         return DEFAULT_FIELD_SEPARATOR;

@@ -112,15 +112,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         assertEquals("MockTimedEvent", s);
     }
 
-    // isLeadingTimestamp() --------------------------------------------------------------------------------------------
-
-    @Test
-    public void weAssumeTheUnderlyingRepresentationProducersLeadWithTimestamp() throws Exception {
-
-        assertTrue(new DefaultOutputFormat().isLeadingTimestamp());
-    }
-
-    // formatHeader() -----------------------------------------------------------------------------------------------------
+    // formatHeader() --------------------------------------------------------------------------------------------------
 
     @Test
     public void getHeader_NullEvent() throws Exception {
