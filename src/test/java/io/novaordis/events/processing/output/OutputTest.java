@@ -39,6 +39,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -421,7 +422,8 @@ public class OutputTest extends TextOutputProcedureTest {
             throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setDoOutputHeader(false);
+
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         OutputFormatImpl f = new OutputFormatImpl("mock-property");
 
@@ -432,7 +434,6 @@ public class OutputTest extends TextOutputProcedureTest {
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("mock-property", "mock-value");
-
         e.setTimestamp(new TimestampImpl(10L));
 
         o.process(e);
@@ -448,6 +449,8 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = getTextOutputProcedureToTest(null);
 
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
+
         OutputFormatImpl f = new OutputFormatImpl("some-property");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -457,7 +460,6 @@ public class OutputTest extends TextOutputProcedureTest {
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("some-other-property", "mock-value");
-
         e.setTimestamp(new TimestampImpl(10L));
 
         //
@@ -476,7 +478,8 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setDoOutputHeader(false);
+
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(true);
@@ -509,7 +512,8 @@ public class OutputTest extends TextOutputProcedureTest {
     public void process_FormatManufacturesLinesThatDoNOTStartWithALeadingTimestamp() throws Exception {
 
         Output o = getTextOutputProcedureToTest(null);
-        o.setDoOutputHeader(false);
+
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         MockOutputFormat mof = new MockOutputFormat();
         mof.setLeadingTimestamp(false);
@@ -534,10 +538,10 @@ public class OutputTest extends TextOutputProcedureTest {
         String result = new String(baos.toByteArray());
 
         //
-        // the mock format does NOT add a timestamp but Output does:
+        // the mock format does NOT add a timestamp, and neither Output:
         //
 
-        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT.format(10L) + " mock-value", result.trim());
+        assertEquals("mock-value", result.trim());
     }
 
     @Test
@@ -546,11 +550,14 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setDoOutputHeader(false);
+
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         OutputFormatImpl of = new OutputFormatImpl("test-property");
+
+        of.setTimestampFormat(new SimpleDateFormat("s"));
+
         o.setOutputFormat(of);
-        o.setTimestampFormat(new SimpleDateFormat("s"));
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
@@ -568,7 +575,6 @@ public class OutputTest extends TextOutputProcedureTest {
 
         String result = new String(baos.toByteArray());
         assertEquals("1, A\n3, C\n", result);
-
     }
 
     // header tests ----------------------------------------------------------------------------------------------------
@@ -579,9 +585,6 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setTimestampFormat(new SimpleDateFormat("s"));
-
-        assertTrue(o.isOutputHeader());
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
@@ -590,8 +593,14 @@ public class OutputTest extends TextOutputProcedureTest {
         MockOutputFormat mof = new MockOutputFormat();
         mof.addMatchingProperty("test-property");
         mof.setProvidingHeader(false);
-        assertNull(mof.getHeader(e));
+        mof.setLeadingTimestamp(true);
+        mof.setTimestampFormat(new SimpleDateFormat("s"));
+        assertNull(mof.formatHeader(e));
         o.setOutputFormat(mof);
+
+        //
+        // the header output strategy wants header but the format provides null
+        //
 
         o.process(e);
 
@@ -605,19 +614,17 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setTimestampFormat(new SimpleDateFormat("s"));
-
-        assertTrue(o.isOutputHeader());
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
         e.setTimestamp(new TimestampImpl(1000L));
 
         OutputFormatImpl of = new OutputFormatImpl("test-property");
+        of.setTimestampFormat(new SimpleDateFormat("s"));
 
-        String header = of.getHeader(e);
+        String header = of.formatHeader(e);
+        assertEquals("# timestamp, test-property", header);
 
-        assertEquals("test-property", header);
         o.setOutputFormat(of);
 
         o.process(e);
@@ -632,20 +639,20 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setTimestampFormat(new SimpleDateFormat("s"));
-        o.setDoOutputHeader(false);
 
-        assertFalse(o.isOutputHeader());
+        o.setHeaderOutputStrategy(new NoHeaderOutputStrategy());
 
         GenericTimedEvent e = new GenericTimedEvent();
         e.setStringProperty("test-property", "A");
         e.setTimestamp(new TimestampImpl(1000L));
 
         OutputFormatImpl of = new OutputFormatImpl("test-property");
-        String header = of.getHeader(e);
-        assertEquals("test-property", header);
-        o.setOutputFormat(of);
+        of.setTimestampFormat(new SimpleDateFormat("s"));
 
+        String header = of.formatHeader(e);
+        assertEquals("# timestamp, test-property", header);
+
+        o.setOutputFormat(of);
         o.process(e);
 
         String result = new String(baos.toByteArray());
@@ -658,11 +665,10 @@ public class OutputTest extends TextOutputProcedureTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Output o = getTextOutputProcedureToTest(baos);
-        o.setTimestampFormat(new SimpleDateFormat("s"));
-
-        assertTrue(o.isOutputHeader());
 
         assertTrue(o.getFormat() instanceof DefaultOutputFormat);
+
+        o.getFormat().setTimestampFormat(new SimpleDateFormat("s"));
 
         MockTimedEvent mte = new MockTimedEvent();
         mte.setPreferredRepresentation("blue");
@@ -671,7 +677,7 @@ public class OutputTest extends TextOutputProcedureTest {
         o.process(mte);
 
         String result = new String(baos.toByteArray());
-        assertEquals("# red\nblue\n", result);
+        assertEquals("red\nblue\n", result);
     }
 
     // cleanCommas() ---------------------------------------------------------------------------------------------------
@@ -680,6 +686,7 @@ public class OutputTest extends TextOutputProcedureTest {
     public void cleanCommas_Null() throws Exception {
 
         String r = Output.cleanCommas(null);
+        //noinspection ConstantConditions
         assertNull(r);
     }
 
@@ -696,7 +703,6 @@ public class OutputTest extends TextOutputProcedureTest {
         String r = Output.cleanCommas("1, ");
         assertEquals("1", r);
     }
-
 
     @Test
     public void cleanCommas3() throws Exception {
@@ -752,6 +758,35 @@ public class OutputTest extends TextOutputProcedureTest {
 
         String r = Output.cleanCommas(",,,,,,,,,,,");
         assertNull(r);
+    }
+
+    // getHeaderOutputStrategy() ---------------------------------------------------------------------------------------
+
+    @Test
+    public void getHeaderOutputStrategy_Default() throws Exception {
+
+        Output o = new Output();
+
+        HeaderOutputStrategy hos = o.getHeaderOutputStrategy();
+
+        assertNotNull(hos);
+    }
+
+    @Test
+    public void setHeaderOutputStrategy_Null() throws Exception {
+
+        Output o = new Output();
+
+        try {
+
+            o.setHeaderOutputStrategy(null);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("null header output strategy"));
+        }
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

@@ -54,7 +54,7 @@ public class MockOutputFormat implements OutputFormat {
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
-    public String getHeader(Event e) {
+    public String formatHeader(Event e) {
 
         if (!isProvidingHeader) {
 
@@ -99,6 +99,11 @@ public class MockOutputFormat implements OutputFormat {
             }
         }
 
+        if (!s.isEmpty() && !values.isEmpty()) {
+
+            s += getSeparator();
+        }
+
         for(Iterator<Object> i = values.iterator(); i.hasNext(); ) {
 
             s += i.next();
@@ -124,6 +129,18 @@ public class MockOutputFormat implements OutputFormat {
         return " ";
     }
 
+    @Override
+    public DateFormat getTimestampFormat() {
+
+        return timestampFormat;
+    }
+
+    @Override
+    public void setTimestampFormat(DateFormat f) {
+
+        this.timestampFormat = f;
+    }
+
     // Public ----------------------------------------------------------------------------------------------------------
 
     public void setLeadingTimestamp(boolean b) {
@@ -134,11 +151,6 @@ public class MockOutputFormat implements OutputFormat {
     public void addMatchingProperty(String propertyName) {
 
         matchingProperties.add(propertyName);
-    }
-
-    public void setTimestampFormat(DateFormat f) {
-
-        this.timestampFormat = f;
     }
 
     public void setProvidingHeader(boolean b) {

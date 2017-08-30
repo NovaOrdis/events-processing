@@ -18,6 +18,7 @@ package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 /**
@@ -41,12 +42,19 @@ public class DefaultOutputFormat implements OutputFormat {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private DateFormat timestampFormat;
+
     // Constructors ----------------------------------------------------------------------------------------------------
+
+    public DefaultOutputFormat() {
+
+        setTimestampFormat(DEFAULT_TIMESTAMP_FORMAT);
+    }
 
     // OutputFormat implementation -------------------------------------------------------------------------------------
 
     @Override
-    public String getHeader(Event e) {
+    public String formatHeader(Event e) {
 
         if (e == null) {
 
@@ -124,6 +132,18 @@ public class DefaultOutputFormat implements OutputFormat {
     public String getSeparator() {
 
         return DEFAULT_FIELD_SEPARATOR;
+    }
+
+    @Override
+    public DateFormat getTimestampFormat() {
+
+        return timestampFormat;
+    }
+
+    @Override
+    public void setTimestampFormat(DateFormat df) {
+
+        this.timestampFormat = df;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

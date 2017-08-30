@@ -18,13 +18,16 @@ package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * By default, a header is displayed when the first event that matches the format is encountered.
+ * Displays the requested properties. For timed events, the representation starts with a timestamp, whether it was
+ * requested or not via format. If it was requested via format, it will displayed twice (or multiple times).
  *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 8/1/17
@@ -35,6 +38,8 @@ public class OutputFormatImpl implements OutputFormat {
 
     public static final String DEFAULT_SEPARATOR = ", ";
 
+    private static final String HEADER_MARKER = "# ";
+
     // Static ----------------------------------------------------------------------------------------------------------
 
     // Attributes ------------------------------------------------------------------------------------------------------
@@ -44,6 +49,8 @@ public class OutputFormatImpl implements OutputFormat {
     // Property identifiers - can only be Strings or valid Integers. List will preserve order, we need it for the header
 
     private List<Object> propertyIdentifiers;
+
+    private DateFormat timestampFormat;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -64,6 +71,7 @@ public class OutputFormatImpl implements OutputFormat {
 
         this.propertyIdentifiers = new ArrayList<>();
         this.separator = "" + DEFAULT_SEPARATOR;
+        this.timestampFormat = DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT;
 
         if (propertyIdentifiers != null && propertyIdentifiers.length > 0) {
 
@@ -93,13 +101,49 @@ public class OutputFormatImpl implements OutputFormat {
      * of properties, and we want the union of those.
      */
     @Override
-    public String getHeader(Event e) {
+    public String formatHeader(Event e) {
 
-        String s = "";
+        String s = HEADER_MARKER;
 
-        for(Iterator<Object> i = propertyIdentifiers.iterator(); i.hasNext(); ) {
+        if (e instanceof TimedEvent) {
 
-            s += i.next();
+            s += TimedEvent.TIMESTAMP_PROPERTY_NAME;
+        }
+
+        boolean first = true;
+
+        for(Iterator<Object> i = propertyIdentifiers.iterator(); i.hasNext(); first = false) {
+
+            if (first && !HEADER_MARKER.equals(s)) {
+
+                s += ", ";
+            }
+
+            Object identifier = i.next();
+
+            if (identifier instanceof String) {
+
+                s += identifier;
+            }
+            else if (identifier instanceof Integer) {
+
+                Property p = e.getProperty((Integer)identifier);
+
+                if (p == null) {
+
+                    s += " ";
+                }
+                else {
+
+                    s += p.getName();
+                }
+            }
+            else {
+
+                throw new IllegalStateException(
+                        "invalid property identifier " + identifier +
+                                (identifier == null ? "" : "(" + identifier.getClass().getName() + ")"));
+            }
 
             if (i.hasNext()) {
 
@@ -119,6 +163,7 @@ public class OutputFormatImpl implements OutputFormat {
         }
 
         int i = 0;
+
         String s = null;
 
         for(Iterator<Object> si = propertyIdentifiers.iterator(); si.hasNext(); i ++) {
@@ -173,6 +218,16 @@ public class OutputFormatImpl implements OutputFormat {
             }
         }
 
+        if (s != null && e instanceof TimedEvent) {
+
+            Long t = ((TimedEvent) e).getTime();
+
+            if (t != null) {
+
+                s = timestampFormat.format(t) + ", " + s;
+            }
+        }
+
         return s;
     }
 
@@ -186,6 +241,18 @@ public class OutputFormatImpl implements OutputFormat {
     public String getSeparator() {
 
         return separator;
+    }
+
+    @Override
+    public DateFormat getTimestampFormat() {
+
+        return timestampFormat;
+    }
+
+    @Override
+    public void setTimestampFormat(DateFormat f) {
+
+        this.timestampFormat = f;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------

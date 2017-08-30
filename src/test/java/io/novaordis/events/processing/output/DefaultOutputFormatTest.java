@@ -120,7 +120,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         assertTrue(new DefaultOutputFormat().isLeadingTimestamp());
     }
 
-    // getHeader() -----------------------------------------------------------------------------------------------------
+    // formatHeader() -----------------------------------------------------------------------------------------------------
 
     @Test
     public void getHeader_NullEvent() throws Exception {
@@ -129,7 +129,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
 
         try {
 
-            f.getHeader(null);
+            f.formatHeader(null);
             fail("should have thrown exception");
         }
         catch(IllegalArgumentException e) {
@@ -149,7 +149,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         me.setPreferredRepresentation("blue");
         me.setPreferredRepresentationHeader("red");
 
-        String header = f.getHeader(me);
+        String header = f.formatHeader(me);
 
         assertEquals("red", header);
     }
@@ -164,7 +164,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         me.setPreferredRepresentation("blue");
         me.setPreferredRepresentationHeader(null);
 
-        String header = f.getHeader(me);
+        String header = f.formatHeader(me);
 
         assertNull(header);
     }
@@ -179,7 +179,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         me.setPreferredRepresentation(null);
         me.setRawRepresentation("blue");
 
-        String header = f.getHeader(me);
+        String header = f.formatHeader(me);
 
         assertNull(header);
     }
@@ -194,7 +194,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         me.setPreferredRepresentation(null);
         me.setRawRepresentation(null);
 
-        String header = f.getHeader(me);
+        String header = f.formatHeader(me);
 
         assertEquals("event type", header);
     }

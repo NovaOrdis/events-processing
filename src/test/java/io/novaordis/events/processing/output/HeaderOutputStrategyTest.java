@@ -16,17 +16,16 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.Event;
+import org.junit.Test;
 
-import java.text.DateFormat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
- * Encapsulates the output format specification and formats events according to the specification.
- *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 8/1/17
+ * @since 8/30/17
  */
-public interface OutputFormat {
+public abstract class HeaderOutputStrategyTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -38,46 +37,45 @@ public interface OutputFormat {
 
     // Public ----------------------------------------------------------------------------------------------------------
 
-    /**
-     * @return a header line that corresponds to the given event, with its distinct elements separated by getSeparator()
-     * sequence of characters. The header line starts with a header marker. The event is needed as an argument because
-     * different outputs are possible for TimedEvents vs. non-TimedEvents.
-     *
-     * The implementation must never return null, at minimum it must return the header separator.
-     */
-    String formatHeader(Event e);
+    @Test
+    public void shouldDisplayHeader_NullEvent() throws Exception {
 
-    /**
-     * Format the event according to the specified format. If none of the format criteria match, the result is null,
-     * which is an indication to the calling layer that the event does not match the format. It is up to the calling
-     * layer to decide what to do - print noting, print empty line or whatever else it wants.
-     *
-     * The result may or may not start with a timestamp, depending on the underlying implementation and/or format.
-     * The instance must indicate whether the representation starts or not with a timestamp via method.
-     *
-     * @exception IllegalArgumentException if the event is null.
-     *
-     * @see OutputFormat#isLeadingTimestamp()
-     */
-    String format(Event e);
+        HeaderOutputStrategy s = getHeaderOutputStrategyToTest();
 
-    /**
-     * @return true if the representation returned by format contains a leading timestamp.
-     */
-    boolean isLeadingTimestamp();
+        try {
 
-    /**
-     * The field separator.
-     */
-    String getSeparator();
+            s.shouldDisplayHeader(null);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
 
-    DateFormat getTimestampFormat();
+            String msg = e.getMessage();
+            assertTrue(msg.contains("null event"));
+        }
+    }
 
-    void setTimestampFormat(DateFormat df);
+    @Test
+    public void headerDisplayed_NullEvent() throws Exception {
+
+        HeaderOutputStrategy s = getHeaderOutputStrategyToTest();
+
+        try {
+
+            s.headerDisplayed(null);
+            fail("should have thrown exception");
+        }
+        catch(IllegalArgumentException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("null event"));
+        }
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
+
+    protected abstract HeaderOutputStrategy getHeaderOutputStrategyToTest() throws Exception;
 
     // Private ---------------------------------------------------------------------------------------------------------
 

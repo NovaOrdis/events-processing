@@ -18,14 +18,12 @@ package io.novaordis.events.processing.output;
 
 import io.novaordis.events.api.event.EndOfStreamEvent;
 import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.event.TimedEvent;
 import io.novaordis.events.processing.EventProcessingException;
 import io.novaordis.events.processing.TextOutputProcedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,10 +31,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * The procedure inspects the events and sends their string representation, and optionally corresponding headers, to the
- * configured output stream. The formatting and header generation is delegated to the embedded OutputFormat instance.
- * The OutputFormat instance drives header logic generation, the Output procedure will displays whatever the
- * OutputFormat decides.
+ * The procedure inspects the events and sends their string representation, and optionally corresponding headers, to
+ * the configured output stream. The formatting and header generation is delegated to the embedded OutputFormat
+ * instance. The OutputFormat instance drives header logic generation, the Output procedure will displays whatever
+ * the OutputFormat decides.
  *
  * More details: https://kb.novaordis.com/index.php/Events-processing_output#Overview
  *
@@ -57,13 +55,9 @@ public class Output extends TextOutputProcedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
+    private HeaderOutputStrategy headerOutputStrategy;
+
     private OutputFormat format;
-
-    private DateFormat timestampFormat;
-
-    private boolean doOutputHeader;
-
-    private String headerMarker;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -92,16 +86,9 @@ public class Output extends TextOutputProcedure {
             setOutputStream(os);
         }
 
-        setTimestampFormat(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT);
         configureFromCommandLine(from, commandlineArguments);
 
-        //
-        // we do output headers, by default
-        //
-
-        this.doOutputHeader = true;
-        this.headerMarker = "# ";
-
+        this.headerOutputStrategy = new DefaultHeaderOutputStrategy();
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -134,25 +121,15 @@ public class Output extends TextOutputProcedure {
 
         try {
 
-            String header = null;
+            if (headerOutputStrategy.shouldDisplayHeader(in)) {
 
-            if (doOutputHeader) {
-
-                header = format.getHeader(in);
+                String header = format.formatHeader(in);
 
                 if (header != null) {
 
-                    if (!format.isLeadingTimestamp() && in instanceof TimedEvent) {
+                    println(header);
 
-                        header = TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
-                    }
-
-                    header = headerMarker + header;
-
-                    //
-                    // defer the actual output of the header until after we decide whether this event produces
-                    // valid output - if it doesn't, we don't display the header either.
-                    //
+                    headerOutputStrategy.headerDisplayed(in);
                 }
             }
 
@@ -166,39 +143,6 @@ public class Output extends TextOutputProcedure {
                 }
 
                 return;
-            }
-
-            if (header != null) {
-
-                //
-                // we deferred the actual output of the header until we knew that this event produces valid output
-                //
-
-                //
-                // turn off header request, so the next events will be displayed without header lines
-                //
-
-                doOutputHeader = false;
-
-                println(header);
-            }
-
-            //
-            // unless the format already added a timestamp at the beginning of the line, start the line with a timestamp
-            //
-
-            if (!format.isLeadingTimestamp() && in instanceof TimedEvent) {
-
-                Long timestamp = ((TimedEvent)in).getTime();
-
-                String sTimestamp = " ";
-
-                if (timestamp != null) {
-
-                    sTimestamp = timestampFormat.format(timestamp);
-                }
-
-                s = sTimestamp + format.getSeparator() + s;
             }
 
             println(s);
@@ -219,12 +163,19 @@ public class Output extends TextOutputProcedure {
         return format;
     }
 
-    /**
-     * @return true if the next line to be sent to the output stream is a header line, false otherwise.
-     */
-    public boolean isOutputHeader() {
+    public HeaderOutputStrategy getHeaderOutputStrategy() {
 
-        return doOutputHeader;
+        return headerOutputStrategy;
+    }
+
+    public void setHeaderOutputStrategy(HeaderOutputStrategy s) {
+
+        if (s == null) {
+
+            throw new IllegalArgumentException("null header output strategy");
+        }
+
+        this.headerOutputStrategy = s;
     }
 
     // Package protected static ----------------------------------------------------------------------------------------
@@ -327,25 +278,6 @@ public class Output extends TextOutputProcedure {
     void setOutputFormat(OutputFormat format) {
 
         this.format = format;
-    }
-
-    void setTimestampFormat(DateFormat df) {
-
-        if (df == null) {
-
-            throw new IllegalArgumentException("null timestamp format");
-        }
-
-        this.timestampFormat = df;
-    }
-
-    /**
-     * If set to true, the instance will output a header on first event that matches the format, then reset the flag.
-     * The flag can then be set again, to get a new header.
-     */
-    void setDoOutputHeader(boolean b) {
-
-        this.doOutputHeader = b;
     }
 
     // Protected -------------------------------------------------------------------------------------------------------

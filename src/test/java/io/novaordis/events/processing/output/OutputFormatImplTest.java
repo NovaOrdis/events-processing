@@ -20,6 +20,8 @@ import io.novaordis.events.api.event.GenericEvent;
 import io.novaordis.events.api.event.GenericTimedEvent;
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -201,6 +203,150 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals("coffee, leaf", s);
     }
 
+    @Test
+    public void format_formatHeader_TimedEvent_TimestampNotRequestedInFormat() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+
+        GenericTimedEvent e = new GenericTimedEvent(777L);
+        e.setStringProperty("A", "blue");
+
+        String actual = f.format(e);
+
+        String expected = f.getTimestampFormat().format(777L) + ", blue";
+        assertEquals(expected, actual);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# timestamp, A", s2);
+    }
+
+    @Test
+    public void format_formatHeader_TimedEvent_TimestampRequestedInFormat() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+        f.addPropertyName("timestamp");
+
+        GenericTimedEvent e = new GenericTimedEvent(777L);
+        e.setStringProperty("A", "blue");
+
+        String s = f.format(e);
+
+        //
+        // we don't convert the extra timestamp to its formatted representation on purpose, because we don't
+        // think we'll ever need this. If we do, we will need to change this test.
+        //
+        assertEquals(f.getTimestampFormat().format(777L) + ", blue, 777", s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# timestamp, A, timestamp", s2);
+    }
+
+    @Test
+    public void format_formatHeader_NonTimedEvent_TimestampNotRequestedInFormat() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("A", "blue");
+
+        String s = f.format(e);
+        assertEquals("blue", s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# A", s2);
+    }
+
+    @Test
+    public void format_formatHeader_NonTimedEvent_TimestampRequestedInFormat() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyIndex(0);
+        f.addPropertyName("timestamp");
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("A", "blue");
+
+        String s = f.format(e);
+        assertEquals("blue,", s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# A, timestamp", s2);
+    }
+
+    @Test
+    public void format_formatHeader_TimedEvent_TimestampNotRequestedInFormat_FormatDoesNotMatch() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyName("A");
+
+        GenericTimedEvent e = new GenericTimedEvent(777L);
+        e.setStringProperty("B", "blue");
+
+        String s = f.format(e);
+        assertNull(s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# timestamp, A", s2);
+    }
+
+    @Test
+    public void format_formatHeader_TimedEvent_TimestampRequestedInFormat_RestOfFormatDoesNotMatch() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyName("A");
+        f.addPropertyName("timestamp");
+
+        GenericTimedEvent e = new GenericTimedEvent(777L);
+        e.setStringProperty("B", "blue");
+
+        String s = f.format(e);
+
+        //
+        // we don't convert the extra timestamp to its formatted representation on purpose, because we don't
+        // think we'll ever need this. If we do, we will need to change this test.
+        //
+        assertEquals(f.getTimestampFormat().format(777L) + ", , 777", s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# timestamp, A, timestamp", s2);
+    }
+
+    @Test
+    public void format_formatHeader_NonTimedEvent_TimestampNotRequestedInFormat_FormatDoesNotMatch() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyName("A");
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("B", "blue");
+
+        String s = f.format(e);
+        assertNull(s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# A", s2);
+    }
+
+    @Test
+    public void format_formatHeader_NonTimedEvent_TimestampRequestedInFormat_FormatDoesNotMatch() throws Exception {
+
+        OutputFormatImpl f = getOutputFormatToTest();
+        f.addPropertyName("A");
+        f.addPropertyName("timestamp");
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("B", "blue");
+
+        String s = f.format(e);
+        assertNull(s);
+
+        String s2 = f.formatHeader(e);
+        assertEquals("# A, timestamp", s2);
+    }
+
     // separator -------------------------------------------------------------------------------------------------------
 
     @Test
@@ -226,7 +372,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
     // header ----------------------------------------------------------------------------------------------------------
 
     @Test
-    public void getHeader_NoFields() throws Exception {
+    public void getHeader_TimedEvent_NoFields() throws Exception {
 
         GenericTimedEvent e = new GenericTimedEvent(1000L);
         e.setStringProperty("test-property", "test-property value");
@@ -234,12 +380,14 @@ public class OutputFormatImplTest extends OutputFormatTest {
         e.setStringProperty("test-property3", "test-property3 value");
 
         OutputFormatImpl f = new OutputFormatImpl();
-        String header = f.getHeader(e);
-        assertEquals("", header);
+
+        String header = f.formatHeader(e);
+
+        assertEquals("# timestamp", header);
     }
 
     @Test
-    public void getHeader_OneField() throws Exception {
+    public void getHeader_TimedEvent_OneField() throws Exception {
 
         GenericTimedEvent e = new GenericTimedEvent(1000L);
         e.setStringProperty("test-property", "test-property value");
@@ -248,13 +396,13 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = new OutputFormatImpl("test-property");
 
-        String header = f.getHeader(e);
+        String header = f.formatHeader(e);
 
-        assertEquals("test-property", header);
+        assertEquals("# timestamp, test-property", header);
     }
 
     @Test
-    public void getHeader_TwoFields_EventContainsMoreProperties() throws Exception {
+    public void getHeader_TimedEvent_TwoFields_EventContainsMoreProperties() throws Exception {
 
         GenericTimedEvent e = new GenericTimedEvent(1000L);
         e.setStringProperty("test-property", "test-property value");
@@ -263,22 +411,80 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
 
-        String header = f.getHeader(e);
+        String header = f.formatHeader(e);
 
-        assertEquals("test-property, test-property2", header);
+        assertEquals("# timestamp, test-property, test-property2", header);
     }
 
     @Test
-    public void getHeader_TwoFields_EventContainsFewerProperties() throws Exception {
+    public void getHeader_TimedEvent_TwoFields_EventContainsFewerProperties() throws Exception {
 
         GenericTimedEvent e = new GenericTimedEvent(1000L);
         e.setStringProperty("test-property", "test-property value");
 
         OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
 
-        String header = f.getHeader(e);
+        String header = f.formatHeader(e);
 
-        assertEquals("test-property, test-property2", header);
+        assertEquals("# timestamp, test-property, test-property2", header);
+    }
+
+    @Test
+    public void getHeader_NonTimedEvent_NoFields() throws Exception {
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
+
+        OutputFormatImpl f = new OutputFormatImpl();
+
+        String header = f.formatHeader(e);
+
+        assertEquals("# ", header);
+    }
+
+    @Test
+    public void getHeader_NonTimedEvent_OneField() throws Exception {
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property");
+
+        String header = f.formatHeader(e);
+
+        assertEquals("# test-property", header);
+    }
+
+    @Test
+    public void getHeader_NonTimedEvent_TwoFields_EventContainsMoreProperties() throws Exception {
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("test-property", "test-property value");
+        e.setStringProperty("test-property2", "test-property2 value");
+        e.setStringProperty("test-property3", "test-property3 value");
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
+
+        String header = f.formatHeader(e);
+
+        assertEquals("# test-property, test-property2", header);
+    }
+
+    @Test
+    public void getHeader_NonTimedEvent_TwoFields_EventContainsFewerProperties() throws Exception {
+
+        GenericEvent e = new GenericEvent();
+        e.setStringProperty("test-property", "test-property value");
+
+        OutputFormatImpl f = new OutputFormatImpl("test-property", "test-property2");
+
+        String header = f.formatHeader(e);
+
+        assertEquals("# test-property, test-property2", header);
     }
 
     // addPropertyName()/addPropertyIndex() ----------------------------------------------------------------------------
@@ -344,6 +550,30 @@ public class OutputFormatImplTest extends OutputFormatTest {
             assertTrue(msg.contains("invalid attempt to add a property index as property name"));
             assertTrue(msg.contains("consider using addPropertyIndex()"));
         }
+    }
+
+    // getTimestampFormat()/setTimestampFormat() -----------------------------------------------------------------------
+
+    @Test
+    public void getTimestampFormat_Default() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl();
+
+        DateFormat tf = f.getTimestampFormat();
+        assertEquals(DefaultOutputFormat.DEFAULT_TIMESTAMP_FORMAT, tf);
+    }
+
+    @Test
+    public void setTimestampFormat_getTimestampFormat() throws Exception {
+
+        OutputFormatImpl f = new OutputFormatImpl();
+
+        SimpleDateFormat tf = new SimpleDateFormat("M");
+
+        f.setTimestampFormat(tf);
+
+        assertEquals(tf, f.getTimestampFormat());
+
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
