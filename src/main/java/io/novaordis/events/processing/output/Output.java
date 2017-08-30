@@ -56,9 +56,11 @@ public class Output extends TextOutputProcedure {
 
     // Attributes ------------------------------------------------------------------------------------------------------
 
-    private HeaderOutputStrategy headerOutputStrategy;
+    private OutputFormatFactory outputFormatFactory;
 
     private OutputFormat format;
+
+    private HeaderOutputStrategy headerOutputStrategy;
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
@@ -77,36 +79,73 @@ public class Output extends TextOutputProcedure {
 
     public Output(OutputStream os, List<String> commandlineArguments) {
 
-        this(os, 0, commandlineArguments, null);
+        this(os, null, 0, commandlineArguments);
     }
 
     /**
      * @param asb may be null, it won't break anything, but this procedure won't be able to pull application-specific
      *            behavior.
      */
-    public Output(OutputStream os, int from, List<String> commandlineArguments, ApplicationSpecificBehavior asb) {
+    public Output(OutputStream os, ApplicationSpecificBehavior asb, int from, List<String> commandlineArguments) {
 
         if (os != null) {
 
             setOutputStream(os);
         }
 
-        configureFromCommandLine(from, commandlineArguments);
+        //
+        // install application-specific behavior, if any:
+        //
 
         if (asb != null) {
 
-            this.headerOutputStrategy = asb.lookup(HeaderOutputStrategy.class);
+            //
+            // output format factory
+            //
 
-            if (this.headerOutputStrategy != null) {
+            DefaultOutputFormatFactory cf = asb.lookup(DefaultOutputFormatFactory.class);
 
-                log.debug("found custom header output strategy: " + headerOutputStrategy);
+            if (cf != null) {
+
+                log.debug("custom output format factory found: " + cf);
+
+                setOutputFormatFactory(cf);
+            }
+
+            //
+            // header output strategy
+            //
+
+            HeaderOutputStrategy chs = asb.lookup(HeaderOutputStrategy.class);
+
+            if (chs != null) {
+
+                log.debug("custom header output strategy found: " + chs);
+
+                setHeaderOutputStrategy(chs);
             }
         }
 
-        if (this.headerOutputStrategy == null) {
+        //
+        // resort to defaults if no application-specific behavior is detected
+        //
 
-            this.headerOutputStrategy = new DefaultHeaderOutputStrategy();
+        if (getOutputFormatFactory() == null) {
+
+            setOutputFormatFactory(new DefaultOutputFormatFactory());
         }
+
+        if (getHeaderOutputStrategy() == null) {
+
+            setHeaderOutputStrategy(new DefaultHeaderOutputStrategy());
+        }
+
+        //
+        // extract configuration form command line
+        //
+
+        configureFromCommandLine(from, commandlineArguments);
+
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -289,8 +328,18 @@ public class Output extends TextOutputProcedure {
             }
         }
 
-        OutputFormat f = OutputFormatFactory.fromArguments(outputFormatArgsWithSeparatorsRemoved);
+        OutputFormat f = outputFormatFactory.fromArguments(outputFormatArgsWithSeparatorsRemoved);
         setOutputFormat(f);
+    }
+
+    void setOutputFormatFactory(DefaultOutputFormatFactory f) {
+
+        this.outputFormatFactory = f;
+    }
+
+    OutputFormatFactory getOutputFormatFactory() {
+
+        return this.outputFormatFactory;
     }
 
     void setOutputFormat(OutputFormat format) {

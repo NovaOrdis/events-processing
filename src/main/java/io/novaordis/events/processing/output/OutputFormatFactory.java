@@ -16,18 +16,19 @@
 
 package io.novaordis.events.processing.output;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 8/1/17
+ * @since 8/30/17
  */
-public class OutputFormatFactory {
+public interface OutputFormatFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
     // Static ----------------------------------------------------------------------------------------------------------
+
+    // Public ----------------------------------------------------------------------------------------------------------
 
     /**
      * The factory method consumes all relevant arguments and removes them from the list.
@@ -41,64 +42,7 @@ public class OutputFormatFactory {
      *
      * @exception IllegalArgumentException if the argument list is null.
      */
-    public static OutputFormat fromArguments(List<String> mutableCommandLineArguments) {
+    OutputFormat fromArguments(List<String> mutableCommandLineArguments);
 
-        if (mutableCommandLineArguments == null) {
-
-            throw new IllegalArgumentException("null argument list");
-        }
-
-        if (mutableCommandLineArguments.isEmpty()) {
-
-            return new DefaultOutputFormat();
-        }
-
-        //
-        // we interpret the unqualified arguments as property names
-        //
-
-        OutputFormatImpl outputFormat = new OutputFormatImpl();
-
-        for(Iterator<String> i = mutableCommandLineArguments.iterator(); i.hasNext(); ) {
-
-            String propertyIdentifier = i.next(); // may be name, index, etc.
-            i.remove();
-
-            //
-            // if it can be converted to an int, it is an index
-            //
-
-            try {
-
-                int propertyIndex = Integer.parseInt(propertyIdentifier);
-                outputFormat.addPropertyIndex(propertyIndex);
-                continue; // conversion to index worked, process next ...
-            }
-            catch(Exception e) {
-
-                //
-                // that is fine, conversion to integer did not work, handle it as a property name
-                //
-            }
-
-            outputFormat.addPropertyName(propertyIdentifier);
-        }
-
-        return outputFormat;
-    }
-
-    // Attributes ------------------------------------------------------------------------------------------------------
-
-    // Constructors ----------------------------------------------------------------------------------------------------
-
-    // Public ----------------------------------------------------------------------------------------------------------
-
-    // Package protected -----------------------------------------------------------------------------------------------
-
-    // Protected -------------------------------------------------------------------------------------------------------
-
-    // Private ---------------------------------------------------------------------------------------------------------
-
-    // Inner classes ---------------------------------------------------------------------------------------------------
 
 }

@@ -150,7 +150,7 @@ public class OutputTest extends TextOutputProcedureTest {
         MockHeaderOutputStrategy ms = new MockHeaderOutputStrategy();
         ApplicationSpecificBehavior asb = new ApplicationSpecificBehavior(ms);
 
-        Output o = new Output(os, 0, Collections.emptyList(), asb);
+        Output o = new Output(os, asb, 0, Collections.emptyList());
 
         HeaderOutputStrategy s = o.getHeaderOutputStrategy();
         assertEquals(ms, s);

@@ -107,7 +107,7 @@ public class DefaultProcedureFactory implements ProcedureFactory {
             // unless configured otherwise, write to System.out
             //
 
-            return new Output(System.out, from, arguments, applicationSpecificBehavior);
+            return new Output(System.out, applicationSpecificBehavior, from, arguments);
         }
         else {
 
