@@ -156,6 +156,24 @@ public class OutputTest extends TextOutputProcedureTest {
         assertEquals(ms, s);
     }
 
+    @Test
+    public void constructor_CustomOutputFormatFactory() throws Exception {
+
+        OutputStream os = new ByteArrayOutputStream();
+
+        //
+        // install a custom output format factory
+        //
+
+        MockOutputFormatFactory mf = new MockOutputFormatFactory();
+        ApplicationSpecificBehavior asb = new ApplicationSpecificBehavior(mf);
+
+        Output o = new Output(os, asb, 0, Collections.emptyList());
+
+        OutputFormatFactory f = o.getOutputFormatFactory();
+        assertEquals(mf, f);
+    }
+
     // output format ---------------------------------------------------------------------------------------------------
 
     @Test

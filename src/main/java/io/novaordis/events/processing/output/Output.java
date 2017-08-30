@@ -103,7 +103,7 @@ public class Output extends TextOutputProcedure {
             // output format factory
             //
 
-            DefaultOutputFormatFactory cf = asb.lookup(DefaultOutputFormatFactory.class);
+            OutputFormatFactory cf = asb.lookup(OutputFormatFactory.class);
 
             if (cf != null) {
 
@@ -332,7 +332,7 @@ public class Output extends TextOutputProcedure {
         setOutputFormat(f);
     }
 
-    void setOutputFormatFactory(DefaultOutputFormatFactory f) {
+    void setOutputFormatFactory(OutputFormatFactory f) {
 
         this.outputFormatFactory = f;
     }
