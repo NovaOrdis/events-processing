@@ -213,6 +213,45 @@ public class Output extends TextOutputProcedure {
         return outputHeader;
     }
 
+    // Package protected static ----------------------------------------------------------------------------------------
+
+    static String cleanCommas(String argument) {
+
+        if (argument == null) {
+
+            return null;
+        }
+
+        argument = argument.trim();
+
+        int i;
+
+        for(i = 0; i < argument.length(); i ++) {
+
+            if (argument.charAt(i) != ',') {
+
+                break;
+            }
+        }
+
+        if (i >= argument.length()) {
+
+            return null;
+        }
+
+        int j;
+
+        for(j = argument.length() - 1; j >= 0; j --) {
+
+            if (argument.charAt(j) != ',') {
+
+                break;
+            }
+        }
+
+        return argument.substring(i, j + 1);
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     /**
@@ -247,8 +286,16 @@ public class Output extends TextOutputProcedure {
 
             if (collect) {
 
-                outputFormatArgsWithSeparatorsRemoved.add(arg);
                 si.remove();
+
+                arg = cleanCommas(arg);
+
+                if (arg == null) {
+
+                    continue;
+                }
+
+                outputFormatArgsWithSeparatorsRemoved.add(arg);
                 continue;
             }
 
@@ -256,7 +303,6 @@ public class Output extends TextOutputProcedure {
 
                 si.remove();
                 collect = true;
-
             }
         }
 

@@ -269,22 +269,24 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = new Output();
 
-        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", "1"));
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1", "2"));
 
         o.configureFromCommandLine(0, args);
 
-//        assertTrue(args.isEmpty());
-//
-//        OutputFormat f = o.getFormat();
-//
-//        assertFalse(f instanceof DefaultOutputFormat);
-//
-//        GenericTimedEvent e = new GenericTimedEvent();
-//        e.setStringProperty("green", "box");
-//        e.setStringProperty("yellow", "cat");
-//
-//        String formatted = f.format(e);
-//        assertEquals("box, cat", formatted);
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat, balloon", formatted);
     }
 
     @Test
@@ -292,22 +294,24 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = new Output();
 
-        List<String> args = new ArrayList<>(Arrays.asList("-o", "0,", "1"));
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1,", "2"));
 
         o.configureFromCommandLine(0, args);
 
-//        assertTrue(args.isEmpty());
-//
-//        OutputFormat f = o.getFormat();
-//
-//        assertFalse(f instanceof DefaultOutputFormat);
-//
-//        GenericTimedEvent e = new GenericTimedEvent();
-//        e.setStringProperty("green", "box");
-//        e.setStringProperty("yellow", "cat");
-//
-//        String formatted = f.format(e);
-//        assertEquals("box, cat", formatted);
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat, balloon", formatted);
     }
 
     @Test
@@ -315,22 +319,24 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = new Output();
 
-        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", ",", "1"));
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1", ",", "2"));
 
         o.configureFromCommandLine(0, args);
 
-//        assertTrue(args.isEmpty());
-//
-//        OutputFormat f = o.getFormat();
-//
-//        assertFalse(f instanceof DefaultOutputFormat);
-//
-//        GenericTimedEvent e = new GenericTimedEvent();
-//        e.setStringProperty("green", "box");
-//        e.setStringProperty("yellow", "cat");
-//
-//        String formatted = f.format(e);
-//        assertEquals("box, cat", formatted);
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat, balloon", formatted);
     }
 
     @Test
@@ -338,48 +344,75 @@ public class OutputTest extends TextOutputProcedureTest {
 
         Output o = new Output();
 
-        List<String> args = new ArrayList<>(Arrays.asList("-o", "0", ","));
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1", ","));
 
         o.configureFromCommandLine(0, args);
 
-//        assertTrue(args.isEmpty());
-//
-//        OutputFormat f = o.getFormat();
-//
-//        assertFalse(f instanceof DefaultOutputFormat);
-//
-//        GenericTimedEvent e = new GenericTimedEvent();
-//        e.setStringProperty("green", "box");
-//        e.setStringProperty("yellow", "cat");
-//
-//        String formatted = f.format(e);
-//        assertEquals("box, cat", formatted);
-    }
+        assertTrue(args.isEmpty());
 
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat", formatted);
+    }
 
     @Test
     public void configureFromCommandLine_FieldIndices_CommaSeparated_TrailingComma2() throws Exception {
 
         Output o = new Output();
 
-        List<String> args = new ArrayList<>(Arrays.asList("-o", "0,"));
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1,"));
 
         o.configureFromCommandLine(0, args);
 
-//        assertTrue(args.isEmpty());
-//
-//        OutputFormat f = o.getFormat();
-//
-//        assertFalse(f instanceof DefaultOutputFormat);
-//
-//        GenericTimedEvent e = new GenericTimedEvent();
-//        e.setStringProperty("green", "box");
-//        e.setStringProperty("yellow", "cat");
-//
-//        String formatted = f.format(e);
-//        assertEquals("box, cat", formatted);
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat", formatted);
     }
 
+    @Test
+    public void configureFromCommandLine_FieldIndices_CommaSeparated_LeadingComma() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", ",1"));
+
+        o.configureFromCommandLine(0, args);
+
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("cat", formatted);
+    }
 
     // process() -------------------------------------------------------------------------------------------------------
 
@@ -639,6 +672,86 @@ public class OutputTest extends TextOutputProcedureTest {
 
         String result = new String(baos.toByteArray());
         assertEquals("# red\nblue\n", result);
+    }
+
+    // cleanCommas() ---------------------------------------------------------------------------------------------------
+
+    @Test
+    public void cleanCommas_Null() throws Exception {
+
+        String r = Output.cleanCommas(null);
+        assertNull(r);
+    }
+
+    @Test
+    public void cleanCommas() throws Exception {
+
+        String r = Output.cleanCommas("1,");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas2() throws Exception {
+
+        String r = Output.cleanCommas("1, ");
+        assertEquals("1", r);
+    }
+
+
+    @Test
+    public void cleanCommas3() throws Exception {
+
+        String r = Output.cleanCommas(",1");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas4() throws Exception {
+
+        String r = Output.cleanCommas(" ,1");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas5() throws Exception {
+
+        String r = Output.cleanCommas(",");
+        assertNull(r);
+    }
+
+    @Test
+    public void cleanCommas6() throws Exception {
+
+        String r = Output.cleanCommas(" , ");
+        assertNull(r);
+    }
+
+    @Test
+    public void cleanCommas7() throws Exception {
+
+        String r = Output.cleanCommas(",1,");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas8() throws Exception {
+
+        String r = Output.cleanCommas(" ,1, ");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas9() throws Exception {
+
+        String r = Output.cleanCommas(",,,,,1,,,,,,");
+        assertEquals("1", r);
+    }
+
+    @Test
+    public void cleanCommas10() throws Exception {
+
+        String r = Output.cleanCommas(",,,,,,,,,,,");
+        assertNull(r);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
