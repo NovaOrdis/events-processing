@@ -33,8 +33,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * The default procedure to handle event streams: the procedure inspects the events and sends their string
- * representation to the configured output stream.
+ * The procedure inspects the events and sends their string representation, and optionally corresponding headers, to the
+ * configured output stream. The formatting and header generation is delegated to the embedded OutputFormat instance.
+ * The OutputFormat instance drives header logic generation, the Output procedure will displays whatever the
+ * OutputFormat decides.
  *
  * More details: https://kb.novaordis.com/index.php/Events-processing_output#Overview
  *
@@ -138,11 +140,20 @@ public class Output extends TextOutputProcedure {
 
                 header = format.getHeader(in);
 
-                //
-                // turn off header request, so the next events will be displayed without header lines
-                //
+                if (header != null) {
 
-                doOutputHeader = false;
+                    if (!format.isLeadingTimestamp() && in instanceof TimedEvent) {
+
+                        header = TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
+                    }
+
+                    header = headerMarker + header;
+
+                    //
+                    // defer the actual output of the header until after we decide whether this event produces
+                    // valid output - if it doesn't, we don't display the header either.
+                    //
+                }
             }
 
             String s = format.format(in);
@@ -157,6 +168,21 @@ public class Output extends TextOutputProcedure {
                 return;
             }
 
+            if (header != null) {
+
+                //
+                // we deferred the actual output of the header until we knew that this event produces valid output
+                //
+
+                //
+                // turn off header request, so the next events will be displayed without header lines
+                //
+
+                doOutputHeader = false;
+
+                println(header);
+            }
+
             //
             // unless the format already added a timestamp at the beginning of the line, start the line with a timestamp
             //
@@ -164,11 +190,6 @@ public class Output extends TextOutputProcedure {
             if (!format.isLeadingTimestamp() && in instanceof TimedEvent) {
 
                 Long timestamp = ((TimedEvent)in).getTime();
-
-                if (header != null) {
-
-                    header = TimedEvent.TIMESTAMP_PROPERTY_NAME + format.getSeparator() + header;
-                }
 
                 String sTimestamp = " ";
 
@@ -178,13 +199,6 @@ public class Output extends TextOutputProcedure {
                 }
 
                 s = sTimestamp + format.getSeparator() + s;
-            }
-
-            if (header != null) {
-
-                header = headerMarker + header;
-
-                println(header);
             }
 
             println(s);
