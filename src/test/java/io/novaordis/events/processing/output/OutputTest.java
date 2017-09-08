@@ -303,7 +303,7 @@ public class OutputTest extends TextOutputProcedureTest {
     }
 
     @Test
-    public void configureFromCommandLine_FieldIndices_SpaceSeparated() throws Exception {
+    public void configureFromCommandLine_FieldIndices_SpaceSeparated_TimedEvent() throws Exception {
 
         Output o = new Output();
 
@@ -318,6 +318,35 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("box, cat", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine_FieldIndices_SpaceSeparated_NonTimedEvent() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1", "2"));
+
+        o.configureFromCommandLine(0, args);
+
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericEvent e = new GenericEvent();
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
@@ -343,13 +372,16 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat, balloon", formatted);
+        assertEquals("box, cat", formatted);
     }
 
     @Test
@@ -368,13 +400,16 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat, balloon", formatted);
+        assertEquals("box, cat", formatted);
     }
 
     @Test
@@ -393,13 +428,16 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat", formatted);
+        assertEquals("box", formatted);
     }
 
     @Test
@@ -418,13 +456,16 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat", formatted);
+        assertEquals("box", formatted);
     }
 
     @Test
@@ -443,13 +484,44 @@ public class OutputTest extends TextOutputProcedureTest {
         assertFalse(f instanceof DefaultOutputFormat);
 
         GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
         e.setStringProperty("green", "box");
         e.setStringProperty("yellow", "cat");
         e.setStringProperty("big", "balloon");
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat", formatted);
+        assertEquals("box", formatted);
+    }
+
+    @Test
+    public void configureFromCommandLine__EmbeddedComma() throws Exception {
+
+        Output o = new Output();
+
+        List<String> args = new ArrayList<>(Arrays.asList("-o", "1,3"));
+
+        o.configureFromCommandLine(0, args);
+
+        assertTrue(args.isEmpty());
+
+        OutputFormat f = o.getFormat();
+
+        assertFalse(f instanceof DefaultOutputFormat);
+
+        GenericTimedEvent e = new GenericTimedEvent();
+
+        // 0 is always the timestamp
+
+        e.setStringProperty("green", "box");
+        e.setStringProperty("yellow", "cat");
+        e.setStringProperty("big", "balloon");
+        e.setStringProperty("awesome", "vacation");
+
+        String formatted = f.format(e);
+        assertEquals("box, balloon", formatted);
     }
 
     // process() -------------------------------------------------------------------------------------------------------
@@ -720,79 +792,116 @@ public class OutputTest extends TextOutputProcedureTest {
     @Test
     public void cleanCommas_Null() throws Exception {
 
-        String r = Output.cleanCommas(null);
-        //noinspection ConstantConditions
-        assertNull(r);
+        List<String> r = Output.cleanCommas(null);
+        assertTrue(r.isEmpty());
     }
 
     @Test
     public void cleanCommas() throws Exception {
 
-        String r = Output.cleanCommas("1,");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas("1,");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas2() throws Exception {
 
-        String r = Output.cleanCommas("1, ");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas("1, ");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas3() throws Exception {
 
-        String r = Output.cleanCommas(",1");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas(",1");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas4() throws Exception {
 
-        String r = Output.cleanCommas(" ,1");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas(" ,1");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas5() throws Exception {
 
-        String r = Output.cleanCommas(",");
-        assertNull(r);
+        List<String> r = Output.cleanCommas(",");
+
+        assertTrue(r.isEmpty());
     }
 
     @Test
     public void cleanCommas6() throws Exception {
 
-        String r = Output.cleanCommas(" , ");
-        assertNull(r);
+        List<String> r = Output.cleanCommas(" , ");
+
+        assertTrue(r.isEmpty());
     }
 
     @Test
     public void cleanCommas7() throws Exception {
 
-        String r = Output.cleanCommas(",1,");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas(",1,");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas8() throws Exception {
 
-        String r = Output.cleanCommas(" ,1, ");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas(" ,1, ");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas9() throws Exception {
 
-        String r = Output.cleanCommas(",,,,,1,,,,,,");
-        assertEquals("1", r);
+        List<String> r = Output.cleanCommas(",,,,,1,,,,,,");
+
+        assertEquals(1, r.size());
+        assertEquals("1", r.get(0));
     }
 
     @Test
     public void cleanCommas10() throws Exception {
 
-        String r = Output.cleanCommas(",,,,,,,,,,,");
-        assertNull(r);
+        List<String> r = Output.cleanCommas(",,,,,,,,,,,");
+
+        assertTrue(r.isEmpty());
+    }
+
+    @Test
+    public void cleanCommas_Embedded() throws Exception {
+
+        List<String> r = Output.cleanCommas("1,2");
+
+        assertEquals(2, r.size());
+        assertEquals("1", r.get(0));
+        assertEquals("2", r.get(1));
+    }
+
+    @Test
+    public void cleanCommas_Embedded2() throws Exception {
+
+        List<String> r = Output.cleanCommas("5,6,9");
+
+        assertEquals(3, r.size());
+        assertEquals("5", r.get(0));
+        assertEquals("6", r.get(1));
+        assertEquals("9", r.get(2));
     }
 
     // getHeaderOutputStrategy() ---------------------------------------------------------------------------------------

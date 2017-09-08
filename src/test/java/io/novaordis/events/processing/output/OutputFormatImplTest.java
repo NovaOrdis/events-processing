@@ -206,7 +206,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
     public void format_formatHeader_TimedEvent_TimestampNotRequestedInFormat() throws Exception {
 
         OutputFormatImpl f = getOutputFormatToTest();
-        f.addPropertyIndex(0);
+        f.addPropertyIndex(1);
 
         GenericTimedEvent e = new GenericTimedEvent(777L);
         e.setStringProperty("A", "blue");
@@ -225,6 +225,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = getOutputFormatToTest();
         f.addPropertyIndex(0);
+        f.addPropertyIndex(1);
         f.addPropertyName("timestamp");
 
         GenericTimedEvent e = new GenericTimedEvent(777L);
@@ -236,10 +237,10 @@ public class OutputFormatImplTest extends OutputFormatTest {
         // we don't convert the extra timestamp to its formatted representation on purpose, because we don't
         // think we'll ever need this. If we do, we will need to change this test.
         //
-        assertEquals(f.getTimestampFormat().format(777L) + ", blue, 777", s);
+        assertEquals(f.getTimestampFormat().format(777L) + ", 777, blue, 777", s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# timestamp, A, timestamp", s2);
+        assertEquals("# timestamp, timestamp, A, timestamp", s2);
     }
 
     @Test

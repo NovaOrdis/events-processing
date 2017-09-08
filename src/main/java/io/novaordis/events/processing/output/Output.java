@@ -146,6 +146,8 @@ public class Output extends TextOutputProcedure {
 
         configureFromCommandLine(from, commandlineArguments);
 
+        log.debug(this + " created");
+
     }
 
     // Procedure implementation ----------------------------------------------------------------------------------------
@@ -237,11 +239,15 @@ public class Output extends TextOutputProcedure {
 
     // Package protected static ----------------------------------------------------------------------------------------
 
-    static String cleanCommas(String argument) {
+    /**
+     * If commas are embedded, and there are no adjacent spaces to the commas, more than one argument can be extracted.
+     * May return an empty list if no arguments are identified.
+     */
+    static List<String> cleanCommas(String argument) {
 
         if (argument == null) {
 
-            return null;
+            return Collections.emptyList();
         }
 
         argument = argument.trim();
@@ -258,7 +264,7 @@ public class Output extends TextOutputProcedure {
 
         if (i >= argument.length()) {
 
-            return null;
+            return Collections.emptyList();
         }
 
         int j;
@@ -271,7 +277,36 @@ public class Output extends TextOutputProcedure {
             }
         }
 
-        return argument.substring(i, j + 1);
+        String s = argument.substring(i, j + 1);
+
+        List<String> result = new ArrayList<>();
+
+        //
+        // handle internal commas
+        //
+
+        j = 0;
+
+        for(i = 0; i < s.length(); i ++) {
+
+            if (s.charAt(i) == ',') {
+
+                result.add(s.substring(j, i));
+
+                j = i + 1;
+            }
+        }
+
+        if (j == 0) {
+
+            result.add(s);
+        }
+        else if (j <= s.length() - 1) {
+
+            result.add(s.substring(j));
+        }
+
+        return result;
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
@@ -280,6 +315,22 @@ public class Output extends TextOutputProcedure {
      * Process the command line argument list and remove arguments if recognized as our own.
      */
     void configureFromCommandLine(int from, List<String> mutableCommandLineArgumentsList) {
+
+        if (log.isDebugEnabled()) {
+
+            String debug = this + " parsing procedure-specific configuration from command line: ";
+            for(int i = from; i < mutableCommandLineArgumentsList.size(); i ++) {
+
+                debug += "\"" + mutableCommandLineArgumentsList.get(i) + "\"";
+
+                if (i < mutableCommandLineArgumentsList.size() - 1) {
+
+                    debug += ", ";
+                }
+            }
+
+            log.debug(debug);
+        }
 
         //
         // tokenized output format arguments, with separators removed
@@ -310,14 +361,10 @@ public class Output extends TextOutputProcedure {
 
                 si.remove();
 
-                arg = cleanCommas(arg);
+                List<String> args = cleanCommas(arg);
 
-                if (arg == null) {
+                outputFormatArgsWithSeparatorsRemoved.addAll(args);
 
-                    continue;
-                }
-
-                outputFormatArgsWithSeparatorsRemoved.add(arg);
                 continue;
             }
 

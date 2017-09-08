@@ -16,6 +16,9 @@
 
 package io.novaordis.events.processing.output;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +29,8 @@ import java.util.List;
 public class DefaultOutputFormatFactory implements OutputFormatFactory {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultOutputFormatFactory.class);
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -43,46 +48,77 @@ public class DefaultOutputFormatFactory implements OutputFormatFactory {
             throw new IllegalArgumentException("null argument list");
         }
 
+        if (log.isDebugEnabled()) {
+
+            String debug = this + " building output format from: ";
+            for(int i = 0; i < mutableCommandLineArguments.size(); i ++) {
+
+                debug += "\"" + mutableCommandLineArguments.get(i) + "\"";
+
+                if (i < mutableCommandLineArguments.size() - 1) {
+
+                    debug += ", ";
+                }
+            }
+
+            log.debug(debug);
+        }
+
+        OutputFormat result;
+
         if (mutableCommandLineArguments.isEmpty()) {
 
-            return new DefaultOutputFormat();
+            result = new DefaultOutputFormat();
         }
-
-        //
-        // we interpret the unqualified arguments as property names
-        //
-
-        OutputFormatImpl outputFormat = new OutputFormatImpl();
-
-        for(Iterator<String> i = mutableCommandLineArguments.iterator(); i.hasNext(); ) {
-
-            String propertyIdentifier = i.next(); // may be name, index, etc.
-            i.remove();
+        else {
 
             //
-            // if it can be converted to an int, it is an index
+            // we interpret the unqualified arguments as property names
             //
 
-            try {
+            OutputFormatImpl outputFormat = new OutputFormatImpl();
 
-                int propertyIndex = Integer.parseInt(propertyIdentifier);
-                outputFormat.addPropertyIndex(propertyIndex);
-                continue; // conversion to index worked, process next ...
-            }
-            catch(Exception e) {
+            for (Iterator<String> i = mutableCommandLineArguments.iterator(); i.hasNext(); ) {
+
+                String propertyIdentifier = i.next(); // may be name, index, etc.
+
+                i.remove();
 
                 //
-                // that is fine, conversion to integer did not work, handle it as a property name
+                // if it can be converted to an int, it is an index
                 //
+
+                try {
+
+                    int propertyIndex = Integer.parseInt(propertyIdentifier);
+                    outputFormat.addPropertyIndex(propertyIndex);
+                    continue; // conversion to index worked, process next ...
+                }
+                catch (Exception e) {
+
+                    //
+                    // that is fine, conversion to integer did not work, handle it as a property name
+                    //
+                }
+
+                outputFormat.addPropertyName(propertyIdentifier);
             }
 
-            outputFormat.addPropertyName(propertyIdentifier);
+            result = outputFormat;
         }
 
-        return outputFormat;
+        log.debug(this + " built " + result);
+
+        return result;
     }
 
     // Public ----------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+
+        return "DefaultOutputFormatFactory[" + Integer.toHexString(System.identityHashCode(this)) + "]";
+    }
 
     // Package protected -----------------------------------------------------------------------------------------------
 

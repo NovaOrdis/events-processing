@@ -297,6 +297,36 @@ public class OutputFormatImpl implements OutputFormat {
         propertyIdentifiers.add(index);
     }
 
+    @Override
+    public String toString() {
+
+        String s = "OutputFormatImpl[";
+
+        for(Iterator<Object> i = propertyIdentifiers.iterator(); i.hasNext(); ) {
+
+            Object o = i.next();
+
+            if (o instanceof Integer) {
+
+                s += "field[" + o + "]";
+            }
+            else {
+
+                s += "\"" + o + "\"";
+            }
+
+            if (i.hasNext()) {
+
+                s += ", ";
+            }
+        }
+
+        s += "]";
+
+        return s;
+
+    }
+
     // Package protected -----------------------------------------------------------------------------------------------
 
     /**
