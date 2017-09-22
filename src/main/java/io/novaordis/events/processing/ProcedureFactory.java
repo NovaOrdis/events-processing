@@ -37,16 +37,19 @@ public interface ProcedureFactory {
      * @param commandLineLabel the command line label for the candidate procedure. Note that it can be the normal
      *                         label or the abbreviated label.
      *
-     * @param from the index of the first argument  in the following argument list that can be interpreted as
-     *              procedure argument. Note that the arguments that are recognized as procedure arguments are
-     *              removed from the argument list.
+     * @param from the index of the first argument to be examined in the argument list. All arguments with an index
+     *             equal to 'from' and higher can be interpreted as procedure arguments. The arguments that are
+     *             recognized as procedure arguments must be removed from the argument list, otherwise they may confuse
+     *             other subsystems that get to process the argument list after this.
      *
-     * @param arguments the list - which must be mutable - of the possible arguments for the procedure. The arguments
-     *                  that are recognized as procedure arguments are removed from the list.
+     * @param commandLineArguments the command line argument list. The list may contain possible arguments for the
+     *                             procedure. The list must be mutable. The arguments that are recognized as procedure
+     *                             arguments are removed from the list, otherwise they may confuse other subsystems that
+     *                             get to process the argument list after this.
      *
      * @return null if no such procedure is found in classpath.
      */
-    Procedure find(String commandLineLabel, int from, List<String> arguments);
+    Procedure find(String commandLineLabel, int from, List<String> commandLineArguments);
 
 
 }
