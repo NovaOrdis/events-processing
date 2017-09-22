@@ -16,6 +16,8 @@
 
 package io.novaordis.events.processing;
 
+import io.novaordis.utilities.UserErrorException;
+
 import java.util.List;
 
 /**
@@ -48,8 +50,11 @@ public interface ProcedureFactory {
      *                             get to process the argument list after this.
      *
      * @return null if no such procedure is found in classpath.
+     *
+     * @exception UserErrorException is thrown if the procedure signature is identified on the command line but
+     * arguments that belong to the procedure lead to an initialization failure.
      */
-    Procedure find(String commandLineLabel, int from, List<String> commandLineArguments);
+    Procedure find(String commandLineLabel, int from, List<String> commandLineArguments) throws UserErrorException;
 
 
 }
