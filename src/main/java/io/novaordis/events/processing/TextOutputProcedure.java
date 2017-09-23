@@ -114,17 +114,44 @@ public abstract class TextOutputProcedure extends ProcedureBase {
      * API for subclasses to use when they need to output text.
      *
      * Converts the given object to string (or to the "null" string, if the object is null) and sends the text to the
-     * underlying output stream, flushing it after that.
+     * underlying output stream, followed by a new line, flushing it after that.
      *
      * @exception IllegalStateException if an OutputStream was not installed.
      */
     protected void println(Object o) throws IOException {
 
+        print(o);
+        pw.println();
+        pw.flush();
+    }
+
+    /**
+     * API for subclasses to use when they need to output text.
+     *
+     * Converts the given object to string (or to the "null" string, if the object is null) and sends the text to the
+     * underlying output stream, flushing it after that.
+     *
+     * @exception IllegalStateException if an OutputStream was not installed.
+     */
+    protected void print(Object o) throws IOException {
+
         insureInitialized();
 
         String s = o == null ? NULL : o.toString();
 
-        pw.println(s);
+        pw.print(s);
+        pw.flush();
+    }
+
+    /**
+     * API for subclasses to use when they need to output text. Convenience method for rendering new lines.
+     *
+     * @exception IllegalStateException if an OutputStream was not installed.
+     */
+    protected void println() throws IOException {
+
+        insureInitialized();
+        pw.println();
         pw.flush();
     }
 

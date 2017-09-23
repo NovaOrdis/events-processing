@@ -87,6 +87,47 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
         p.println("else");
 
         assertEquals("something\nelse\n", new String(baos.toByteArray()));
+    }
+
+    @Test
+    public void println_NoArgument_InstanceNotInitialized() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest(null);
+
+        assertNull(p.getOutputStream());
+
+        try {
+
+            p.println();
+            fail("should have thrown exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("was not initialized: no output stream"));
+        }
+    }
+
+    @Test
+    public void println_NoArgument() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        p.setOutputStream(baos);
+
+        p.println();
+
+        //
+        // this should also flush
+        //
+
+        assertEquals("\n", new String(baos.toByteArray()));
+
+        p.println();
+
+        assertEquals("\n\n", new String(baos.toByteArray()));
 
     }
 
@@ -107,6 +148,66 @@ public abstract class TextOutputProcedureTest extends ProcedureTest {
 
         assertEquals("null\n", new String(baos.toByteArray()));
     }
+
+    @Test
+    public void print_InstanceNotInitialized() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest(null);
+
+        assertNull(p.getOutputStream());
+
+        try {
+
+            p.print("something");
+            fail("should have thrown exception");
+        }
+        catch(IllegalStateException e) {
+
+            String msg = e.getMessage();
+            assertTrue(msg.contains("was not initialized: no output stream"));
+        }
+    }
+
+    @Test
+    public void print() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        p.setOutputStream(baos);
+
+        p.print("something");
+
+        //
+        // this should also flush
+        //
+
+        assertEquals("something", new String(baos.toByteArray()));
+
+        p.print("else");
+
+        assertEquals("somethingelse", new String(baos.toByteArray()));
+    }
+
+    @Test
+    public void print_Null() throws Exception {
+
+        TextOutputProcedure p = getTextOutputProcedureToTest();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        p.setOutputStream(baos);
+
+        p.print(null);
+
+        //
+        // this should also flush
+        //
+
+        assertEquals("null", new String(baos.toByteArray()));
+    }
+
 
     // printf() --------------------------------------------------------------------------------------------------------
 
