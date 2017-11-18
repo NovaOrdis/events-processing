@@ -48,6 +48,8 @@ public class DefaultProcedureFactory implements ProcedureFactory {
 
     private ApplicationSpecificBehavior applicationSpecificBehavior;
 
+    private Help helpReference;
+
     // Constructors ----------------------------------------------------------------------------------------------------
 
     /**
@@ -57,6 +59,7 @@ public class DefaultProcedureFactory implements ProcedureFactory {
     public DefaultProcedureFactory(ApplicationSpecificBehavior asb) {
 
         this.applicationSpecificBehavior = asb;
+        this.helpReference = new Help();
     }
 
     // ProcedureFactory implementation ---------------------------------------------------------------------------------
@@ -69,7 +72,7 @@ public class DefaultProcedureFactory implements ProcedureFactory {
         // annotation scanning instead.
         //
 
-        if (Help.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+        if (helpReference.getCommandLineLabels().contains(commandLineLabel)) {
 
             return new Help();
         }

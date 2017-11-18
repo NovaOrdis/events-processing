@@ -45,13 +45,43 @@ public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
     // Tests -----------------------------------------------------------------------------------------------------------
 
     @Test
-    public void helpCommand() throws Exception {
+    public void helpCommand_Help() throws Exception {
+
+        String arg = "help";
 
         DefaultProcedureFactory d = getProcedureFactoryToTest();
 
-        List<String> args = new ArrayList<>(Collections.singletonList("help"));
+        List<String> args = new ArrayList<>(Collections.singletonList(arg));
 
-        Procedure procedure = d.find("help", 1, args);
+        Procedure procedure = d.find(arg, 1, args);
+
+        assertTrue(procedure instanceof Help);
+    }
+
+    @Test
+    public void helpCommand_DashHelp() throws Exception {
+
+        String arg = "-help";
+
+        DefaultProcedureFactory d = getProcedureFactoryToTest();
+
+        List<String> args = new ArrayList<>(Collections.singletonList(arg));
+
+        Procedure procedure = d.find(arg, 1, args);
+
+        assertTrue(procedure instanceof Help);
+    }
+
+    @Test
+    public void helpCommand_DashDashHelp() throws Exception {
+
+        String arg = "--help";
+
+        DefaultProcedureFactory d = getProcedureFactoryToTest();
+
+        List<String> args = new ArrayList<>(Collections.singletonList(arg));
+
+        Procedure procedure = d.find(arg, 1, args);
 
         assertTrue(procedure instanceof Help);
     }

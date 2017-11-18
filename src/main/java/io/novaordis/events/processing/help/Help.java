@@ -16,7 +16,7 @@
 
 package io.novaordis.events.processing.help;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import io.novaordis.events.api.event.Event;
@@ -34,6 +34,8 @@ public class Help implements Procedure {
     // Constants -------------------------------------------------------------------------------------------------------
 
     public static final String COMMAND_LINE_LABEL = "help";
+    public static final String COMMAND_LINE_LABEL_2 = "-help";
+    public static final String COMMAND_LINE_LABEL_3 = "--help";
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -49,7 +51,10 @@ public class Help implements Procedure {
     @Override
     public List<String> getCommandLineLabels() {
 
-        return Collections.singletonList(COMMAND_LINE_LABEL);
+        return Arrays.asList(
+                COMMAND_LINE_LABEL,
+                COMMAND_LINE_LABEL_2,
+                COMMAND_LINE_LABEL_3);
     }
 
     @Override
