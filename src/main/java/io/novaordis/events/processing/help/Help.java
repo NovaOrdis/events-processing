@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.processing;
+package io.novaordis.events.processing.help;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-
-import io.novaordis.events.processing.help.Help;
-
-import static org.junit.Assert.assertTrue;
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.processing.EventProcessingException;
+import io.novaordis.events.processing.Procedure;
 
 /**
+ * Help display.
+ *
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
  * @since 7/19/17
  */
-public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
+public class Help implements Procedure {
 
     // Constants -------------------------------------------------------------------------------------------------------
+
+    public static final String COMMAND_LINE_LABEL = "help";
 
     // Static ----------------------------------------------------------------------------------------------------------
 
@@ -40,31 +41,44 @@ public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
 
     // Constructors ----------------------------------------------------------------------------------------------------
 
-    // Public ----------------------------------------------------------------------------------------------------------
-
-    // Tests -----------------------------------------------------------------------------------------------------------
-
-    @Test
-    public void helpCommand() throws Exception {
-
-        DefaultProcedureFactory d = getProcedureFactoryToTest();
-
-        List<String> args = new ArrayList<>(Collections.singletonList("help"));
-
-        Procedure procedure = d.find("help", 1, args);
-
-        assertTrue(procedure instanceof Help);
+    public Help() {
     }
+
+    // Procedure implementation ----------------------------------------------------------------------------------------
+
+    @Override
+    public List<String> getCommandLineLabels() {
+
+        return Collections.singletonList(COMMAND_LINE_LABEL);
+    }
+
+    @Override
+    public void process(Event in) throws EventProcessingException {
+        throw new RuntimeException("process() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public void process(List<Event> in) throws EventProcessingException {
+        throw new RuntimeException("process() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public long getInvocationCount() {
+        throw new RuntimeException("getInvocationCount() NOT YET IMPLEMENTED");
+    }
+
+    @Override
+    public boolean isExitLoop() {
+        throw new RuntimeException("isExitLoop() NOT YET IMPLEMENTED");
+    }
+
+    // Public ----------------------------------------------------------------------------------------------------------
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
 
-    @Override
-    protected DefaultProcedureFactory getProcedureFactoryToTest() throws Exception {
-
-        return new DefaultProcedureFactory(null);
-    }
+    // Static Protected ------------------------------------------------------------------------------------------------
 
     // Private ---------------------------------------------------------------------------------------------------------
 

@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package io.novaordis.events.processing;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+package io.novaordis.events.processing.help;
 
 import org.junit.Test;
 
-import io.novaordis.events.processing.help.Help;
-
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
- * @since 7/19/17
+ * @since 11/18/17
  */
-public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
+public class HelpTest {
 
     // Constants -------------------------------------------------------------------------------------------------------
 
@@ -44,27 +36,17 @@ public class DefaultProcedureFactoryTest extends ProcedureFactoryTest {
 
     // Tests -----------------------------------------------------------------------------------------------------------
 
+    // constructor -----------------------------------------------------------------------------------------------------
+
     @Test
-    public void helpCommand() throws Exception {
+    public void constructor() throws Exception {
 
-        DefaultProcedureFactory d = getProcedureFactoryToTest();
-
-        List<String> args = new ArrayList<>(Collections.singletonList("help"));
-
-        Procedure procedure = d.find("help", 1, args);
-
-        assertTrue(procedure instanceof Help);
+        Help h = new Help();
     }
 
     // Package protected -----------------------------------------------------------------------------------------------
 
     // Protected -------------------------------------------------------------------------------------------------------
-
-    @Override
-    protected DefaultProcedureFactory getProcedureFactoryToTest() throws Exception {
-
-        return new DefaultProcedureFactory(null);
-    }
 
     // Private ---------------------------------------------------------------------------------------------------------
 

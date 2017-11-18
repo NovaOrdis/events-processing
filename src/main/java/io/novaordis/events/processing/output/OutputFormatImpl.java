@@ -16,14 +16,14 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.event.Property;
-import io.novaordis.events.api.event.TimedEvent;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 
 /**
  * The default implementation of a command-line configured OutputFormat. It understands pre-parsed standard command-line
@@ -109,7 +109,7 @@ public class OutputFormatImpl implements OutputFormat {
 
         if (e instanceof TimedEvent) {
 
-            s += TimedEvent.TIMESTAMP_PROPERTY_NAME;
+            s += TimedEvent.TIME_PROPERTY_NAME;
         }
 
         boolean first = true;

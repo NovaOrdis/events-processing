@@ -16,13 +16,15 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.GenericEvent;
-import io.novaordis.events.api.event.GenericTimedEvent;
-import org.junit.Test;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import org.junit.Test;
+
+import io.novaordis.events.api.event.GenericEvent;
+import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.TimedEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -217,7 +219,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals(expected, actual);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# timestamp, A", s2);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", A", s2);
     }
 
     @Test
@@ -226,7 +228,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
         OutputFormatImpl f = getOutputFormatToTest();
         f.addPropertyIndex(0);
         f.addPropertyIndex(1);
-        f.addPropertyName("timestamp");
+        f.addPropertyName(TimedEvent.TIME_PROPERTY_NAME);
 
         GenericTimedEvent e = new GenericTimedEvent(777L);
         e.setStringProperty("A", "blue");
@@ -240,7 +242,8 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals(f.getTimestampFormat().format(777L) + ", 777, blue, 777", s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# timestamp, timestamp, A, timestamp", s2);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", " +
+                TimedEvent.TIME_PROPERTY_NAME + ", A, " + TimedEvent.TIME_PROPERTY_NAME, s2);
     }
 
     @Test
@@ -264,7 +267,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = getOutputFormatToTest();
         f.addPropertyIndex(0);
-        f.addPropertyName("timestamp");
+        f.addPropertyName(TimedEvent.TIME_PROPERTY_NAME);
 
         GenericEvent e = new GenericEvent();
         e.setStringProperty("A", "blue");
@@ -273,7 +276,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals("blue,", s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# A, timestamp", s2);
+        assertEquals("# A, " + TimedEvent.TIME_PROPERTY_NAME, s2);
     }
 
     @Test
@@ -289,17 +292,20 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertNull(s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# timestamp, A", s2);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", A", s2);
     }
 
     @Test
     public void format_formatHeader_TimedEvent_TimestampRequestedInFormat_RestOfFormatDoesNotMatch() throws Exception {
 
         OutputFormatImpl f = getOutputFormatToTest();
+
         f.addPropertyName("A");
-        f.addPropertyName("timestamp");
+
+        f.addPropertyName(TimedEvent.TIME_PROPERTY_NAME);
 
         GenericTimedEvent e = new GenericTimedEvent(777L);
+
         e.setStringProperty("B", "blue");
 
         String s = f.format(e);
@@ -311,7 +317,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertEquals(f.getTimestampFormat().format(777L) + ", , 777", s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# timestamp, A, timestamp", s2);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", A, " + TimedEvent.TIME_PROPERTY_NAME, s2);
     }
 
     @Test
@@ -335,7 +341,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         OutputFormatImpl f = getOutputFormatToTest();
         f.addPropertyName("A");
-        f.addPropertyName("timestamp");
+        f.addPropertyName(TimedEvent.TIME_PROPERTY_NAME);
 
         GenericEvent e = new GenericEvent();
         e.setStringProperty("B", "blue");
@@ -344,7 +350,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
         assertNull(s);
 
         String s2 = f.formatHeader(e);
-        assertEquals("# A, timestamp", s2);
+        assertEquals("# A, " + TimedEvent.TIME_PROPERTY_NAME, s2);
     }
 
     // separator -------------------------------------------------------------------------------------------------------
@@ -370,7 +376,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         String header = f.formatHeader(e);
 
-        assertEquals("# timestamp", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME, header);
     }
 
     @Test
@@ -385,7 +391,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         String header = f.formatHeader(e);
 
-        assertEquals("# timestamp, test-property", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property", header);
     }
 
     @Test
@@ -400,7 +406,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         String header = f.formatHeader(e);
 
-        assertEquals("# timestamp, test-property, test-property2", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property, test-property2", header);
     }
 
     @Test
@@ -413,7 +419,7 @@ public class OutputFormatImplTest extends OutputFormatTest {
 
         String header = f.formatHeader(e);
 
-        assertEquals("# timestamp, test-property, test-property2", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property, test-property2", header);
     }
 
     @Test

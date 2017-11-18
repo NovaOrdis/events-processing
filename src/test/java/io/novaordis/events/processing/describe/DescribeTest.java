@@ -16,22 +16,24 @@
 
 package io.novaordis.events.processing.describe;
 
-import io.novaordis.events.api.event.IntegerProperty;
-import io.novaordis.events.api.event.MapProperty;
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.processing.DefaultProcedureFactory;
-import io.novaordis.events.processing.MockTimedEvent;
-import io.novaordis.events.processing.ProcedureFactory;
-import io.novaordis.events.processing.TextOutputProcedureTest;
-import io.novaordis.utilities.time.TimestampImpl;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.Test;
+
+import io.novaordis.events.api.event.IntegerProperty;
+import io.novaordis.events.api.event.MapProperty;
+import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.event.TimedEvent;
+import io.novaordis.events.processing.DefaultProcedureFactory;
+import io.novaordis.events.processing.MockTimedEvent;
+import io.novaordis.events.processing.ProcedureFactory;
+import io.novaordis.events.processing.TextOutputProcedureTest;
+import io.novaordis.utilities.time.TimestampImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -175,7 +177,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        assertEquals("MockTimedEvent\n  name1(String)\n  timestamp(Long)\n", s);
+        assertEquals("MockTimedEvent\n  name1(String)\n  " + TimedEvent.TIME_PROPERTY_NAME + "(Long)\n", s);
     }
 
     @Test
@@ -187,7 +189,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        assertEquals("MockTimedEvent[name1(String), timestamp(Long)]", s);
+        assertEquals("MockTimedEvent[name1(String), " + TimedEvent.TIME_PROPERTY_NAME + "(Long)]", s);
     }
 
     @Test
@@ -200,7 +202,8 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        assertEquals("MockTimedEvent\n  name1(String)\n  name2(Integer)\n  timestamp(Long)\n", s);
+        assertEquals(
+                "MockTimedEvent\n  name1(String)\n  name2(Integer)\n  " + TimedEvent.TIME_PROPERTY_NAME + "(Long)\n", s);
     }
 
     @Test
@@ -213,7 +216,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        assertEquals("MockTimedEvent[name1(String), name2(Integer), timestamp(Long)]", s);
+        assertEquals("MockTimedEvent[name1(String), name2(Integer), " + TimedEvent.TIME_PROPERTY_NAME + "(Long)]", s);
     }
 
     @Test
@@ -226,7 +229,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        assertEquals("MockTimedEvent\n  name1(Map)\n    <empty>\n  timestamp(Long)\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    <empty>\n  " + TimedEvent.TIME_PROPERTY_NAME + "(Long)\n", s);
     }
 
     @Test
@@ -239,7 +242,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        assertEquals("MockTimedEvent[name1(Map){}, timestamp(Long)]", s);
+        assertEquals("MockTimedEvent[name1(Map){}, " + TimedEvent.TIME_PROPERTY_NAME + "(Long)]", s);
     }
 
     @Test
@@ -254,7 +257,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  timestamp(Long)\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  " + TimedEvent.TIME_PROPERTY_NAME + "(Long)\n", s);
     }
 
     @Test
@@ -269,7 +272,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        assertEquals("MockTimedEvent[name1(Map){a, x}, timestamp(Long)]", s);
+        assertEquals("MockTimedEvent[name1(Map){a, x}, " + TimedEvent.TIME_PROPERTY_NAME + "(Long)]", s);
     }
 
     @Test
@@ -285,7 +288,8 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML);
 
-        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  name2(String)\n  timestamp(Long)\n", s);
+        assertEquals("MockTimedEvent\n  name1(Map)\n    a\n    x\n  name2(String)\n  " +
+                TimedEvent.TIME_PROPERTY_NAME + "(Long)\n", s);
     }
 
     @Test
@@ -301,7 +305,7 @@ public class DescribeTest extends TextOutputProcedureTest {
 
         String s = Describe.getSignature(e, Describe.YAML_INLINE);
 
-        assertEquals("MockTimedEvent[name1(Map){a, x}, name2(String), timestamp(Long)]", s);
+        assertEquals("MockTimedEvent[name1(Map){a, x}, name2(String), " + TimedEvent.TIME_PROPERTY_NAME + "(Long)]", s);
     }
 
     // Package protected -----------------------------------------------------------------------------------------------

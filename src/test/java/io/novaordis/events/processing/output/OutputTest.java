@@ -16,17 +16,6 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.GenericEvent;
-import io.novaordis.events.api.event.GenericTimedEvent;
-import io.novaordis.events.api.event.StringProperty;
-import io.novaordis.events.processing.DefaultProcedureFactory;
-import io.novaordis.events.processing.MockTimedEvent;
-import io.novaordis.events.processing.ProcedureFactory;
-import io.novaordis.events.processing.TextOutputProcedureTest;
-import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
-import io.novaordis.utilities.time.TimestampImpl;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -34,6 +23,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Test;
+
+import io.novaordis.events.api.event.GenericEvent;
+import io.novaordis.events.api.event.GenericTimedEvent;
+import io.novaordis.events.api.event.StringProperty;
+import io.novaordis.events.api.event.TimedEvent;
+import io.novaordis.events.processing.DefaultProcedureFactory;
+import io.novaordis.events.processing.MockTimedEvent;
+import io.novaordis.events.processing.ProcedureFactory;
+import io.novaordis.events.processing.TextOutputProcedureTest;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
+import io.novaordis.utilities.time.TimestampImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -730,14 +732,14 @@ public class OutputTest extends TextOutputProcedureTest {
         of.setTimestampFormat(new SimpleDateFormat("s"));
 
         String header = of.formatHeader(e);
-        assertEquals("# timestamp, test-property", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property", header);
 
         o.setOutputFormat(of);
 
         o.process(e);
 
         String result = new String(baos.toByteArray());
-        assertEquals("# timestamp, test-property\n1, A\n", result);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property\n1, A\n", result);
     }
 
     @Test
@@ -757,7 +759,7 @@ public class OutputTest extends TextOutputProcedureTest {
         of.setTimestampFormat(new SimpleDateFormat("s"));
 
         String header = of.formatHeader(e);
-        assertEquals("# timestamp, test-property", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property", header);
 
         o.setOutputFormat(of);
         o.process(e);

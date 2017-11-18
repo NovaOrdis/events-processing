@@ -16,16 +16,18 @@
 
 package io.novaordis.events.processing;
 
-import io.novaordis.events.processing.count.Count;
-import io.novaordis.events.processing.describe.Describe;
-import io.novaordis.events.processing.exclude.Exclude;
-import io.novaordis.events.processing.output.Output;
-import io.novaordis.events.processing.timegaps.TimeGaps;
-import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import io.novaordis.events.processing.count.Count;
+import io.novaordis.events.processing.describe.Describe;
+import io.novaordis.events.processing.exclude.Exclude;
+import io.novaordis.events.processing.help.Help;
+import io.novaordis.events.processing.output.Output;
+import io.novaordis.events.processing.timegaps.TimeGaps;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
 
 /**
  * The procedure factory that builds procedures shipped with this package. The factory give the standard procedures
@@ -67,7 +69,11 @@ public class DefaultProcedureFactory implements ProcedureFactory {
         // annotation scanning instead.
         //
 
-        if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+        if (Help.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
+
+            return new Help();
+        }
+        else if (Describe.COMMAND_LINE_LABEL.equals(commandLineLabel)) {
 
             //
             // unless configured otherwise, write to System.out
