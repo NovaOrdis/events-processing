@@ -16,11 +16,11 @@
 
 package io.novaordis.events.processing;
 
-import io.novaordis.events.api.event.EndOfStreamEvent;
-import io.novaordis.events.api.event.Event;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import io.novaordis.events.api.event.EndOfStreamEvent;
+import io.novaordis.events.api.event.Event;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -56,7 +56,8 @@ public abstract class ProcedureBase implements Procedure {
     }
 
     /**
-     * Override that does EOS accounting, etc.
+     * Override that does EOS accounting and invocation count incrementation. The method *will* send the EndOfStream
+     * to subclass.
      */
     @Override
     public void process(Event e) throws EventProcessingException {
@@ -122,6 +123,8 @@ public abstract class ProcedureBase implements Procedure {
 
     /**
      * EndOfStream will be sent to subclasses, they may need to know when the stream ends.
+     *
+     * @param invocationCount is updated by the base class before invoking this method.
      */
     protected abstract void process(AtomicLong invocationCount, Event e) throws EventProcessingException;
 
