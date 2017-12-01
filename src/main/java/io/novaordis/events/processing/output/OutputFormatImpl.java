@@ -153,6 +153,12 @@ public class OutputFormatImpl implements OutputFormat {
             }
         }
 
+        //
+        // we manage the new line
+        //
+
+        s += "\n";
+
         return s;
     }
 
@@ -229,6 +235,17 @@ public class OutputFormatImpl implements OutputFormat {
                 s = timestampFormat.format(t) + ", " + s;
             }
         }
+
+        if (s == null) {
+
+            return null;
+        }
+
+        s  += "\n";
+
+        //
+        // we manage the new line
+        //
 
         return s;
     }

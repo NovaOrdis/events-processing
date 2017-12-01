@@ -16,14 +16,14 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.api.event.Property;
-import io.novaordis.events.api.event.TimedEvent;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.api.event.Property;
+import io.novaordis.events.api.event.TimedEvent;
 
 /**
  * @author Ovidiu Feodorov <ovidiu@novaordis.com>
@@ -114,6 +114,8 @@ public class MockOutputFormat implements OutputFormat {
                 s += getSeparator();
             }
         }
+
+        s += "\n";
 
         return s;
     }

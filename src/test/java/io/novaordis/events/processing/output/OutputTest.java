@@ -253,7 +253,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("yellow", "cat");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -278,7 +278,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("yellow", "cat");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -301,7 +301,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("yellow", "cat");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -329,7 +329,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -355,7 +355,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("cat, balloon", formatted);
+        assertEquals("cat, balloon\n", formatted);
     }
 
     @Test
@@ -383,7 +383,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -411,7 +411,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box, cat", formatted);
+        assertEquals("box, cat\n", formatted);
     }
 
     @Test
@@ -439,7 +439,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box", formatted);
+        assertEquals("box\n", formatted);
     }
 
     @Test
@@ -467,7 +467,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box", formatted);
+        assertEquals("box\n", formatted);
     }
 
     @Test
@@ -495,7 +495,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box", formatted);
+        assertEquals("box\n", formatted);
     }
 
     @Test
@@ -523,7 +523,7 @@ public class OutputTest extends TextOutputProcedureTest {
         e.setStringProperty("awesome", "vacation");
 
         String formatted = f.format(e);
-        assertEquals("box, balloon", formatted);
+        assertEquals("box, balloon\n", formatted);
     }
 
     // process() -------------------------------------------------------------------------------------------------------
@@ -732,7 +732,7 @@ public class OutputTest extends TextOutputProcedureTest {
         of.setTimestampFormat(new SimpleDateFormat("s"));
 
         String header = of.formatHeader(e);
-        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property\n", header);
 
         o.setOutputFormat(of);
 
@@ -759,7 +759,7 @@ public class OutputTest extends TextOutputProcedureTest {
         of.setTimestampFormat(new SimpleDateFormat("s"));
 
         String header = of.formatHeader(e);
-        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property", header);
+        assertEquals("# " + TimedEvent.TIME_PROPERTY_NAME + ", test-property\n", header);
 
         o.setOutputFormat(of);
         o.process(e);
@@ -780,8 +780,8 @@ public class OutputTest extends TextOutputProcedureTest {
         o.getFormat().setTimestampFormat(new SimpleDateFormat("s"));
 
         MockTimedEvent mte = new MockTimedEvent();
-        mte.setPreferredRepresentation("blue");
-        mte.setPreferredRepresentationHeader("red");
+        mte.setPreferredRepresentation("blue\n");
+        mte.setPreferredRepresentationHeader("red\n");
 
         o.process(mte);
 

@@ -16,20 +16,21 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.EndOfStreamEvent;
-import io.novaordis.events.api.event.Event;
-import io.novaordis.events.processing.EventProcessingException;
-import io.novaordis.events.processing.TextOutputProcedure;
-import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.novaordis.events.api.event.EndOfStreamEvent;
+import io.novaordis.events.api.event.Event;
+import io.novaordis.events.processing.EventProcessingException;
+import io.novaordis.events.processing.TextOutputProcedure;
+import io.novaordis.utilities.appspec.ApplicationSpecificBehavior;
 
 /**
  * The procedure inspects the events and sends their string representation, and optionally corresponding headers, to
@@ -186,7 +187,7 @@ public class Output extends TextOutputProcedure {
 
                 if (header != null) {
 
-                    println(header);
+                    print(header);
 
                     headerOutputStrategy.headerDisplayed(in);
                 }
@@ -204,7 +205,11 @@ public class Output extends TextOutputProcedure {
                 return;
             }
 
-            println(s);
+            //
+            // the format is responsible for managing the new lines; an empty string returned by the format means
+            // "print nothing", not even a new line
+            //
+            print(s);
         }
         catch(Exception e) {
 

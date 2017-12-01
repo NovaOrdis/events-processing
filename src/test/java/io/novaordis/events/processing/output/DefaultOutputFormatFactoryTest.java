@@ -16,13 +16,14 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.GenericEvent;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.junit.Test;
+
+import io.novaordis.events.api.event.GenericEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -93,7 +94,7 @@ public class DefaultOutputFormatFactoryTest extends OutputFormatFactoryTest {
         ge.setStringProperty("green", "bean");
 
         String s = fmt.format(ge);
-        assertEquals("sky, apple, bean", s);
+        assertEquals("sky, apple, bean\n", s);
     }
 
     @Test
@@ -118,7 +119,7 @@ public class DefaultOutputFormatFactoryTest extends OutputFormatFactoryTest {
 
         // a property with an index of 5 does not exist, hence the trailing comma
 
-        assertEquals("sky, bean,", s);
+        assertEquals("sky, bean,\n", s);
     }
 
     @Test
@@ -140,7 +141,7 @@ public class DefaultOutputFormatFactoryTest extends OutputFormatFactoryTest {
         ge.setStringProperty("green", "bean");
 
         String s = fmt.format(ge);
-        assertEquals("sky, sky,, bean, apple", s);
+        assertEquals("sky, sky,, bean, apple\n", s);
     }
 
     @Test

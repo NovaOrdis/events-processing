@@ -16,9 +16,9 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.Event;
-
 import java.text.DateFormat;
+
+import io.novaordis.events.api.event.Event;
 
 /**
  * Encapsulates the output format specification of the "output" procedure and it formats handed-over events according to
@@ -50,12 +50,15 @@ public interface OutputFormat {
     String formatHeader(Event e);
 
     /**
-     * Format the event according to the specified format. If none of the format criteria match, the result is null,
-     * which is an indication to the calling layer that the event does not match the format. It is up to the calling
-     * layer to decide what to do - print noting, print empty line or whatever else it wants.
+     * Format the event according to the rules encapsulated within this instance. If none of the formatting rules can
+     * be applied because the event is not compatible, the method must return null. This is an indication for the
+     * calling layer that the event does not match the format. It is up to the calling layer to decide what to do -
+     * print noting, print empty line or something else.
      *
      * The result may or may not start with a timestamp, depending on the underlying implementation and/or format.
-     * The instance must indicate whether the representation starts or not with a timestamp via method.
+     *
+     * New Line handling: the implementation is responsible for managing new lines: if the event representation requires
+     * a new line, it must be present in the string that is returned. Empty string means "display nothing".
      *
      * @exception IllegalArgumentException if the event is null.
      */

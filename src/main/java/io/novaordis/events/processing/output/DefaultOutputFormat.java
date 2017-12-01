@@ -16,10 +16,10 @@
 
 package io.novaordis.events.processing.output;
 
-import io.novaordis.events.api.event.Event;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import io.novaordis.events.api.event.Event;
 
 /**
  * A very generic OutputFormat, that is a fall back if nothing more specific is installed. It displays the raw
@@ -107,21 +107,30 @@ public class DefaultOutputFormat implements OutputFormat {
 
         if (s != null) {
 
+            //
+            // the preferred representation is supposed to manage the new lines, so we do not interfere with it - this
+            // way it may indicate that it wants nothing displayed, not even a new line
+            //
+
             return s;
         }
+
+        //
+        // for raw representation we manage the new lines, the raw representation does NOT include a trailing new line
+        //
 
         s = e.getRawRepresentation();
 
-        if (s != null) {
+        if (s == null) {
 
-            return s;
+            //
+            // do not display timestamp, Output does that by default
+            //
+
+            return e.getClass().getSimpleName() + "\n";
         }
 
-        //
-        // do not display timestamp, Output does that by default
-        //
-
-        return e.getClass().getSimpleName();
+        return s + "\n";
     }
 
     @Override

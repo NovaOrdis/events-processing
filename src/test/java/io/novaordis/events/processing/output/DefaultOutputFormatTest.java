@@ -16,10 +16,11 @@
 
 package io.novaordis.events.processing.output;
 
+import org.junit.Test;
+
 import io.novaordis.events.processing.MockEvent;
 import io.novaordis.events.processing.MockTimedEvent;
 import io.novaordis.utilities.time.TimestampImpl;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -69,7 +70,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         me.setRawRepresentation("something");
 
         String s = f.format(me);
-        assertEquals("something", s);
+        assertEquals("something\n", s);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
         assertNull(me.getRawRepresentation());
 
         String s = f.format(me);
-        assertEquals("MockEvent", s);
+        assertEquals("MockEvent\n", s);
     }
 
     @Test
@@ -96,7 +97,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
 
         String s = f.format(me);
 
-        assertEquals("MockTimedEvent", s);
+        assertEquals("MockTimedEvent\n", s);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class DefaultOutputFormatTest extends OutputFormatTest {
 
         String s = f.format(me);
 
-        assertEquals("MockTimedEvent", s);
+        assertEquals("MockTimedEvent\n", s);
     }
 
     // formatHeader() --------------------------------------------------------------------------------------------------
