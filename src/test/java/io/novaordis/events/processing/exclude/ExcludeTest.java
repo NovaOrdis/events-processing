@@ -16,6 +16,13 @@
 
 package io.novaordis.events.processing.exclude;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Test;
+
 import io.novaordis.events.api.event.Event;
 import io.novaordis.events.processing.DefaultProcedureFactory;
 import io.novaordis.events.processing.MockTimedEvent;
@@ -24,12 +31,7 @@ import io.novaordis.events.processing.TextOutputProcedureTest;
 import io.novaordis.events.query.MatchNone;
 import io.novaordis.events.query.NullQuery;
 import io.novaordis.events.query.Query;
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
+import io.novaordis.events.query.QueryException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -157,9 +159,34 @@ public class ExcludeTest extends TextOutputProcedureTest {
 
         e.setQuery(new Query() {
             @Override
+            public boolean offerLexicalToken(String literal) throws QueryException {
+                throw new RuntimeException("offerLexicalToken() NOT YET IMPLEMENTED");
+            }
+
+            @Override
+            public Query negate() throws QueryException {
+                throw new RuntimeException("negate() NOT YET IMPLEMENTED");
+            }
+
+            @Override
+            public void compile() throws QueryException {
+                throw new RuntimeException("compile() NOT YET IMPLEMENTED");
+            }
+
+            @Override
+            public boolean isCompiled() {
+                throw new RuntimeException("isCompiled() NOT YET IMPLEMENTED");
+            }
+
+            @Override
             public boolean selects(Event e) {
 
                 return e == willMatch;
+            }
+
+            @Override
+            public boolean selects(long timestamp) {
+                throw new RuntimeException("selects() NOT YET IMPLEMENTED");
             }
 
             @Override
